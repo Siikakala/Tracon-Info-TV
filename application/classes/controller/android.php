@@ -139,15 +139,14 @@ class Controller_Android extends Controller{
                     $vaihtoehdot[0] = "twitter";
                     if($result2) foreach($result2 as $row => $data){
                         $vaihtoehdot[$data['id']] = $this->utf8($data['tunniste']);
-                    }else
-                        $vaihtoehdot = false;
+                    }
 
                     if(!$result){
                         $pos = $id - 499;
                     }else{
                         $pos = $id - 499 + $result[0]["pos"];
                     }
-                    $text = "<tr class=\"new\" new=\"$id\"><td>".form::input('pos-'.$id,$pos,array("size"=>"1"))."</td><td>".form::select('text-'.$id,$vaihtoehdot,1)."</td><td>".form::select('time-'.$id,Date::seconds(1,1,121),10)."</td><td>".form::checkbox('hidden-'.$id,1,false)."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del\" >X</a></td></tr>";
+                    $text = array("id" => $id,"pos" => $pos, "diat" => $vaihtoehdot,'time' => Date::seconds(1,1,121),'hidden' => false);
                     $return = array("ret" => $text);
                     break;
                 case "rulla_save":
@@ -248,30 +247,27 @@ class Controller_Android extends Controller{
                     $vaihtoehdot[0] = "twitter";
                     if($result2) foreach($result2 as $row => $data){
                         $vaihtoehdot[$data['id']] = $this->utf8($data['tunniste']);
-                    }else
-                        $vaihtoehdot = false;
-                    $text = form::open(null, array("onsubmit" => "return false;", "id" => "form"))."<table id=\"rulla\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Kohta</th><th class=\"ui-state-default\">Dia</th><th class=\"ui-state-default\">Aika (~s)</th><th class=\"ui-state-default\">Piilotettu?</th></tr></thead><tbody>";
+                    }
 
                     if($result) foreach($result as $row=>$data){
                         if($data['type'] == 2)//jos twitter.
                             $selector = 0;//joka on aina ensimmäinen vaihtoehdoista.
                         else
                             $selector = $data['selector'];
-                        $text .= "<tr class=\"".$data["id"]."\"><td>".form::input('pos-'.$data["id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('text-'.$data["id"],$vaihtoehdot,$selector,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('time-'.$data["id"],Date::seconds(1,1,121),$data["time"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["id"].")\" >X</a></td></tr>";
+                        $text = array("id"=>$data["id"],'pos' => $data["pos"], 'text' => $vaihtoehdot[$selector],'time' => $data["time"],'hidden'=>(boolean)$data["hidden"]);
                     }
-                    $text .= "</tbody></table>".form::close();
                     $return = array("ret"=>$text);
                     break;
                 case "rulla_delete":
                     if(!$param2){
-                        $ret = false;
+                        $ret = "Ongelma rivin poistamisessa";
                     }else{
                         $query = DB::query(Database::DELETE,
                                             "DELETE FROM rulla ".
                                             "WHERE       rul_id = :id"
                                             );
                         $query->param(":id",$param2)->execute(__db);
-                        $ret = true;
+                        $ret = "Rivi poistettu!";
                     }
                     $return = array("ret" => $ret);
                     break;
