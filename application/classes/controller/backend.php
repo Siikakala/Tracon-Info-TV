@@ -357,7 +357,7 @@ class Controller_Backend extends Controller {
 
     public function parse_ohjelmatags($text){
         $text = $this->utf8($text);
-        $days = array(6=>"Lauantai",0=>"Sunnuntai");
+        $days = array(1=>"Maanantai",2=>"Tiistai",3=>"Keskiviikko",4=>"Torstai",5=>"Perjantai",6=>"Lauantai",0=>"Sunnuntai");
         //* //<- poista ensimmäinen kauttaviiva jos haluat määritellä ajankohdan manuaalisesti
         if(date("w") == 6 or date("w") == 0){//jos on lauantai tai sunnuntai
             $paiva = $days[date("w")]; //viikonpäivä
