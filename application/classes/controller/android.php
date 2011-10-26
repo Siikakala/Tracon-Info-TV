@@ -311,7 +311,7 @@ class Controller_Android extends Controller{
                         $result = $query->execute(__db);
                         if($result->count() > 0){
                             $data = $result->as_array();
-                            $ret = "<br/>".form::textarea("loota-".$param2,$this->utf8($data[0]['data']),array("id"=>"loota","class"=>"tinymce"));
+                            $ret = array("loota",$this->utf8($data[0]['data']));
                             $tunniste = $this->utf8($data[0]['tunniste']);
                         }else{
                             $ret = false;
@@ -353,10 +353,10 @@ class Controller_Android extends Controller{
                                                  ":id"       => $post['id']
                                                  ));
                         $result = $query->execute(__db);
-                        $ret = true;
+                        $ret = "Dia tallennettu!";
                     }else{
                         //data ei tullu perille :|
-                        $ret = "Tallennus epäonnistui.";
+                        $ret = "Dian tallennus epäonnistui.";
                     }
                     $return = array("ret" => $ret);
                     break;
@@ -387,7 +387,7 @@ class Controller_Android extends Controller{
                                                 "WHERE       dia_id = :id"
                                                 );
                             $query->param(":id",$param2)->execute(__db);
-                            $ret = true;
+                            $ret = "Dia poistettu.";
                         }
                     }
                     $return = array("ret" => $ret);
