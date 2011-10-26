@@ -428,7 +428,7 @@ class Controller_Android extends Controller{
                                                 "WHERE       stream_id = :id"
                                                 );
                             $query->param(":id",$param2)->execute(__db);
-                            $ret = true;
+                            $ret = "Stream poistettu";
                         }
                     }
                     $return = array("ret" => $ret);
@@ -503,14 +503,10 @@ class Controller_Android extends Controller{
                         $count = 0;
                     }
 
-                    $text .= form::open(null, array("onsubmit" => "return false;", "id" => "form"));
-                    $text .= "<table id=\"streamit\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Streamin tunniste</th><th class=\"ui-state-default\">URL</th><th class=\"ui-state-default\">Järjestysnro</th></tr></thead><tbody>";
-
                     if($result) foreach($result as $row => $data){
-                        $text .= "<tr class=\"".$data['stream_id']."\"><td>".form::input("ident-".$data['stream_id'],$data['tunniste'],array("class" => "tunniste","size" => "15","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("url-".$data['stream_id'],$data['url'],array("id" => $data['stream_id'],"class" => "url","size" => "35","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("jarkka-".$data['stream_id'],$data['jarjestys'],array("size" => "1", "onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["stream_id"].")\">X</a></td><td style=\"border:0px; border-bottom-style: none; padding: 0px;\"><a href=\"javascript:;\" onclick=\"load(".$data['stream_id'].");\">&nbsp;Esikatsele</a></td></tr>";
+                        $text = array("id" => $data['stream_id'],"ident" => $data['tunniste'],"url"=>$data['url'],"jarkka"=>$data['jarjestys']);
                     }
 
-                    $text .= "</tbody></table>".form::close();
                     $return = array("ret" => $text);
                     break;
                 case "frontend_save":
@@ -582,8 +578,6 @@ class Controller_Android extends Controller{
 
                     if($result){
                         $streams = $this->get_streams();
-                        $text = form::open(null, array("onsubmit" => "return false;", "id" => "form"));
-                        $text .= "<table id=\"frontendit\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Frontend</th><th class=\"ui-state-default\">Näytä</th><th class=\"ui-state-default\">Käytä globaalia?</th></tr></thead><tbody>";
                         foreach($result as $row => $data){
                             if($data['show_tv'] == 1){
                                 $nayta_stream = "inline";
@@ -595,141 +589,12 @@ class Controller_Android extends Controller{
                                 $nayta_stream = "none";
                                 $nayta_dia = "none";
                             }
-                            $text .= "<tr class=\"".$data['f_id']."\"><td>".form::input("ident-".$data['f_id'],$data['tunniste'],array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$data['f_id'],array("Diashow","Streami","Yksittäinen dia"),$data['show_tv'],array("id"=>$data['f_id']."-tv","onchange"=>"check(this.value,\"".$data['f_id']."\");$(this).addClass(\"new\");$(\"#".$data['f_id']."-stream\").addClass(\"new\");$(\"#".$data['f_id']."-dia\").addClass(\"new\");")).form::select("show_stream-".$data['f_id'],$streams,$data['show_stream'],array("id"=>$data['f_id']."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$data['f_id'],$diat,$data['dia'],array("id"=>$data['f_id']."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;"))."</td><td>".form::checkbox("use_global-".$data['f_id'],1,(boolean)$data['use_global'],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
+                            $text = array("id"=>$data['f_id'],"ident"=>$data['tunniste'],"show_tv"=>$data['show_tv'],"show_stream"=>$data['show_stream'],"dia"=>$data['dia'],"use_global"=>(boolean)$data['use_global'],"streams"=>$streams,"diat"=>$diat);
                         }
-                        $text .= "</tbody></table>".form::close();
                     }else{
-                        $text = "<p>Yhtään aktiivista frontendiä ei löytynyt.</p>";
+                        $text = "Yhtään aktiivista frontendiä ei löytynyt.";
                     }
                     $return = array("ret" => $text);
-                    break;
-                case "upload"://käsittele tiedoston uploadaukset.
-                    $upload_handler = new Upload();
-
-                    header('Pragma: no-cache');
-                    header('Cache-Control: private, no-cache');
-                    header('Content-Disposition: inline; filename="files.json"');
-                    header('X-Content-Type-Options: nosniff');
-
-                    if($this->request->query('del') == 1){
-                        $upload_handler->delete();
-                    }else{
-                        switch ($_SERVER['REQUEST_METHOD']) {
-                            case 'HEAD':
-                            case 'GET':
-                                $upload_handler->get();
-                                break;
-                            case 'POST':
-                                $upload_handler->post();
-                                break;
-                            case 'DELETE':
-                                $upload_handler->delete();
-                                break;
-                            default:
-                                header('HTTP/1.0 405 Method Not Allowed');
-                        }
-                    }
-                    break;
-                case "ohjelma"://prosessoi ohjelmdakarttatiedosto.
-                    $post = $_POST;
-
-                    $ohjelma_data = array();
-                    $salinimet = array();
-                    //<siviskoodi>
-                    $fp = @fopen(__documentroot."files/".$post['file'], "r");
-                    if($fp === FALSE)
-                        $ret = "Tiedostoa ei pysytty avaamaan!";
-                    while(!feof($fp)){//[päivä] [sali] [alkuaika] [kesto|nimi|järjestäjä|tyyppi|kuvaus]
-                        $buf = $this->utf8(fgets($fp));
-                        if(!strncasecmp("O::", $buf, 3)){
-                            $flag = 0;
-                            $tmparr = explode("::", $buf);
-                            $paiva = trim($tmparr[1]);
-
-                            $alkuaika = constant("ALKUAIKA_".$paiva);
-
-                            $salinimi = strtolower(str_replace(" ", "_", trim($tmparr[2])));
-                            $aika = intval(trim($tmparr[3]))-$alkuaika+1;
-                            if(!isset($salinimet[$salinimi]))
-                                $salinimet[$salinimi] = trim($tmparr[2]);
-                            $curohjelma =& $ohjelma_data[trim($tmparr[1])][$salinimi][$aika];
-                            $curohjelma = array(
-                                            "kesto" => trim($tmparr[4]),
-                                            "nimi" => str_replace("&", "&amp;", trim($tmparr[5])),
-                                            "jarjestaja" => str_replace("&", "&amp;", trim($tmparr[6])),
-                                            "tyyppi" => strtolower(trim($tmparr[7])),
-                                            "kuvaus" => "",
-                                            );
-                        }elseif(isset($curohjelma)){
-                            if($flag){
-                                $curohjelma["kuvaus"] .= '</p><p>';
-                            }
-                            $flag = 1;
-                            $curohjelma["kuvaus"] .= str_replace("&", "&amp;", $buf);
-                        }
-                    }
-                    fclose($fp);
-                    //</siviskoodi>
-                    if(!isset($ohjelma_data["Lauantai"])){//tää vaatinee tapahtumakohtasta puukkoa mut..
-                        $ret = "Tiedoston syntaksi ei ole käyttökelpoinen.";
-                    }else{//data = ok.
-                        $q1 = DB::query(Database::DELETE,//eka vanhat pois
-                                        "TRUNCATE ohjelmadata"
-                                        )->execute(__db);
-                        $error = 0;
-                        foreach($ohjelma_data as $paiva => $d1){
-                            foreach($d1 as $sali => $d2){
-                                foreach($d2 as $alkuaika => $data){
-                                    $query = DB::query(Database::INSERT,//ja uudet tilalle.
-                                                        "INSERT INTO ohjelmadata ".
-                                                        "           (paiva ".
-                                                        "           ,sali ".
-                                                        "           ,alku ".
-                                                        "           ,kesto ".
-                                                        "           ,nimi ".
-                                                        "           ,jarjestaja ".
-                                                        "           ,tyyppi ".
-                                                        "           ,kuvaus ".
-                                                        "           ,`update` ".
-                                                        "           ) ".
-                                                        "VALUES     (:paiva ".
-                                                        "           ,:sali ".
-                                                        "           ,:alku ".
-                                                        "           ,:kesto ".
-                                                        "           ,:nimi ".
-                                                        "           ,:jarjestaja ".
-                                                        "           ,:tyyppi ".
-                                                        "           ,:kuvaus ".
-                                                        "           ,NOW() ".
-                                                        "           )"
-                                                        );
-                                    $query->parameters(array(
-                                                            ":paiva"      => $paiva,
-                                                            ":sali"       => $sali,
-                                                            ":alku"       => $alkuaika,
-                                                            ":kesto"      => $data['kesto'],
-                                                            ":nimi"       => $data['nimi'],
-                                                            ":jarjestaja" => $data['jarjestaja'],
-                                                            ":tyyppi"     => $data['tyyppi'],
-                                                            ":kuvaus"     => $data['kuvaus']
-                                                            ));
-                                    list($insert_id, $affected_rows) = $query->execute(__db);
-                                    if($affected_rows == 0){
-                                        $error = 1;
-                                    }
-                                }
-                            }
-                        }
-                        if($error){
-                            $ret = "Ohjelmakartan päivityksessä tapahtui virhe. Yritä uudelleen.";
-                        }else{
-                            $ret = "Ohjelmakartan päivitys onnistui!";
-                        }
-                    }
-                    $return = array("ret" => $ret);
-                    break;
-                case "lastupdate"://x)
-                    $return = array("ret" => date("d.m.Y H:i"));
                     break;
                 case "login":
                     $auth = new Model_Authi();
@@ -751,8 +616,7 @@ class Controller_Android extends Controller{
             $data = "<p>Sessio on vanhentunut. ".html::file_anchor('admin/?return='.$ref,'Kirjaudu uudelleen').", palaat takaisin tälle sivulle.</p>";
             $return = array("ret" => $data);
         }
-        if($param1 != "upload")//upload ei tykänny ylimääräsestä "" json-palautuksen lopussa.
-            print json_encode($return);
+        print json_encode($return);
     }
 
         /**
