@@ -1,0 +1,214 @@
+* {
+ 	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: #333;
+	color: #111;
+	font-family: "Helvetica", "Arial", sans-serif;
+	font-size: 14px;
+}
+
+a.del:link, a.del:visited{
+    color: #AAA;
+    background-color: transparent;
+    font-weight: bold;
+    font-size:16px;
+}
+a.hover:hover, a.hover:active{
+    color: #F44;
+    background-color: transparent;
+}
+
+#flash-message {
+	width: 200px;
+	height: 30px;
+	padding-top: 10px;
+	text-align: center;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+.flash-error {
+	color: Red;
+	background-color: #333;
+	border: 1px solid #f00;
+}
+
+.flash-notify {
+	color: #000;
+	background-color: #333;
+	border: 1px solid #000;
+}
+
+#main {
+	border: 2px solid black;
+	background-color: #EEE;
+	margin: 25px auto;
+	width: 960px;
+}
+
+#header {
+	background-color: #CCC;
+	padding: 15px 25px 15px 25px;
+}
+
+#login {
+	float: right;
+	text-align: right;
+}
+#show {
+	float: right;
+	text-align: right;
+	padding-right: 20px;
+    padding-top: 5px;
+}
+
+#show_stream{
+    display:none;
+}
+
+#upload{
+    width: 450px;
+}
+
+#links {
+	float: left;
+	margin: 25px 20px;
+	width: 160px;
+}
+
+#links ul {
+	list-style-type: none;
+	margin-left: 0;
+}
+
+#links li {
+	font-weight: bold;
+	margin-bottom: 2px;
+    width: 130px;
+    text-align:left;
+}
+
+#links li a {
+	padding: 5px;
+	text-decoration: none;
+}
+
+#links li a:hover {
+	background-color: transparent;
+	color: white;
+}
+
+#text {
+	border-left: 2px solid #CCC;
+	margin: 25px 25px 25px 175px;
+	padding: 0px 0px 0px 25px;
+	min-height: 200px;
+}
+
+#footer {
+	clear: both;
+	color: #666;
+	font-size: 10px;
+	text-align: center;
+}
+
+label.error {
+	float: none;
+	color: red;
+	padding-left: .5em;
+	vertical-align: top;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:link, a:visited {
+	color: #F44;
+}
+
+a:hover, a:active {
+	background-color: #F44;
+	color: white;
+}
+
+h1 {
+	font-size: 24px;
+}
+
+h2 {
+	font-size: 20px;
+	margin-bottom: 15px;
+}
+
+h3 {
+	font-size: 16px;
+	margin-bottom: 10px;
+	margin-top: 20px;
+}
+
+p {
+	margin-bottom: 10px;
+}
+
+ol, ul {
+	margin-bottom: 10px;
+	margin-left: 25px;
+}
+
+table.stats {
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+	margin-bottom: 10px;
+}
+
+table.stats th {
+	background-color: #CCC;
+	padding: 3px 15px 3px 3px;
+	text-align: left;
+}
+
+/* Tämä tagataan jokaiseen uuteen ja muutettuun riviin rulla- ja scrollerhallinnassa */
+.new {
+    background-color: #a34000;
+    color:#FFF;
+}
+
+#progress{
+    color: black;
+    padding-left:20px;
+    padding-top:2px;
+}
+
+table.stats td {
+	border: 1px solid #CCC;
+	padding: 3px 15px 3px 3px;
+}
+
+form {
+	margin-bottom: 10px;
+}
+
+form table td {
+	padding: 1px 5px 1px 0px;
+}
+
+form input {
+	padding: 2px;
+}
+
+fieldset {
+	margin-top: 20px;
+	padding: 0;
+	border: none;
+}
+
+label.manual {
+    float: left;
+	display: block;
+    width: 150px;
+	margin-right: 0.5em;
+	text-align: right;
+}

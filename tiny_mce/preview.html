@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fi" lang="fi">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="shortcut icon" href="/tracon_info-tv/favicon.gif" />
+	<title>Tracon VI Info-TV</title>
+	<link type="text/css" href="/css/admin.css" rel="stylesheet" />
+	<script language="javascript" src="/tiny_mce/tiny_mce_popup.js"></script>
+    <script type="text/javascript" src="/js/embed.js"></script>
+    <script type="text/javascript">
+    tinyMCEPopup.onInit.add(function(ed) {
+    	var dom = tinyMCEPopup.dom;
+
+    	// Load editor content_css
+    	tinymce.each(ed.settings.content_css.split(','), function(u) {
+    		dom.loadCSS(ed.documentBaseURI.toAbsolute(u));
+    	});
+
+    	// Place contents inside div container
+    	dom.setHTML('text', ed.getContent());
+    });
+    </script>
+</head>
+<body>
+     <div id="swirlhack">
+			<div id="swirl"></div>
+		</div>
+	<div id="main">
+		<div id="header">
+			<p id="login"></p>
+			<h1>Tracon VI Info-TV</h1>
+			<div id="kello">13:37</div>
+		</div>
+		<div id="text_cont">
+    		<div id="text">
+
+       		</div>
+       	</div>
+
+   		<div id="footer">
+		</div>
+	</div>
+</body>
+</html>

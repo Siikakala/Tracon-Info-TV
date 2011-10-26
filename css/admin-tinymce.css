@@ -1,0 +1,189 @@
+* {
+ 	margin: 0;
+	padding: 0;
+}
+
+body {
+	/*background: #CBCBCB url('../imgs/background.png') repeat-x scroll center top;*/
+	color: #111;
+	font-family: "Helvetica", "Arial", sans-serif;
+	font-size: 50px;
+	overflow:hidden;
+}
+#swirlhack {
+	position: relative;
+	width: 950px;
+	margin: 0 auto 0 auto;
+
+}
+#swirl {
+	position: absolute;
+	left: 450px;
+	width: 567px;
+	height: 152px;
+	top:-80px;
+
+	background: transparent url('../imgs/swirl.png') no-repeat scroll left top;
+}
+a.del:link, a.del:visited{
+    color: #AAA;
+    background-color: transparent;
+    font-weight: bold;
+    font-size:16px;
+}
+a.hover:hover, a.hover:active{
+    color: #F44;
+    background-color: transparent;
+}
+
+#flash-message {
+	width: 200px;
+	height: 30px;
+	padding-top: 10px;
+	text-align: center;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+.flash-error {
+	color: Red;
+	background-color: #333;
+	border: 1px solid #f00;
+}
+
+.flash-notify {
+	color: #000;
+	background-color: #333;
+	border: 1px solid #000;
+}
+
+#main {
+	border: 2px solid black;
+	background-color: #FFF;
+	margin: 80px auto;
+	width: 1000px;
+	height:650px;
+}
+
+#header {
+	padding: 15px 25px 15px 25px;
+
+	background: transparent url('../imgs/logo.png') no-repeat scroll right top;
+    background-size: 290px;
+}
+
+#login {
+	float: right;
+	text-align: right;
+}
+
+.twtr-tweet-text {
+    font-size: 30px;
+}
+
+#text {
+	margin: 25px 25px 25px 25px;
+	padding: 0px 0px 0px 25px;
+	height: 450px;
+	vertical-align: 50%;
+	background-color: #FFF;
+}
+
+#twitter{
+	padding: 10px 10px 10px 10px;
+    position: relative;
+    top:0px;
+}
+
+#footer {
+	clear: both;
+	color: #666;
+	font-size: 10px;
+	text-align: center;
+}
+
+label.error {
+	float: none;
+	color: red;
+	padding-left: .5em;
+	vertical-align: top;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:link, a:visited {
+	color: #F44;
+}
+
+a:hover, a:active {
+	background-color: #F44;
+	color: white;
+}
+
+h1 {
+	font-size: 80px;
+}
+
+h2 {
+	font-size: 20px;
+	margin-bottom: 15px;
+}
+
+h3 {
+	font-size: 16px;
+	margin-bottom: 10px;
+	margin-top: 20px;
+}
+
+p {
+	margin-bottom: 10px;
+}
+
+ol, ul {
+	margin-bottom: 10px;
+	margin-left: 25px;
+}
+
+table.stats {
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+	margin-bottom: 10px;
+}
+
+table.stats th {
+	background-color: #CCC;
+	padding: 3px 15px 3px 3px;
+	text-align: left;
+}
+
+table.stats td {
+	border: 1px solid #CCC;
+	padding: 3px 15px 3px 3px;
+}
+
+form {
+	margin-bottom: 10px;
+}
+
+form table td {
+	padding: 1px 5px 1px 0px;
+}
+
+form input {
+	padding: 2px;
+}
+
+fieldset {
+	margin-top: 20px;
+	padding: 0;
+	border: none;
+}
+
+label.manual {
+    float: left;
+	display: block;
+    width: 150px;
+	margin-right: 0.5em;
+	text-align: right;
+}

@@ -1,0 +1,55 @@
+body{
+background-color: #888;
+color: #111;
+}
+
+#flash-message{
+     width: 200px;
+     height: 30px;
+     padding-top: 10px;
+     text-align:center;
+     margin-bottom: 20px;
+     font-weight: bold;
+}
+.flash-error{
+     color:Red;
+     background-color: #333;
+     border: 1px solid #f00;
+}
+
+.flash-notify{
+     color: #000;
+     background-color: #333;
+     border: 1px solid #000;
+}
+
+#links{
+position: fixed;
+top:15px;
+left:18px;
+}
+
+#text{
+margin-left: 150px;
+margin-top: 5px;
+margin-bottom: 40px;
+min-height:80px;
+}
+
+a:link, a:visited{
+color:#F44;
+}
+
+a:hover, a:active{
+color:#000;
+}
+
+#main{
+border: 2px solid black;
+background-color: #EEE;
+height: 80%;
+}
+
+#links{
+
+}

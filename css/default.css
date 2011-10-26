@@ -1,0 +1,105 @@
+body {
+	margin: 15px 0 15px;
+	padding: 0px;
+	text-align: center;
+	background: #205020;
+	color: black;
+	font: 9pt verdana, arial, helvetica, sans-serif;
+}
+
+#main {
+    margin: 0 auto;
+    width: 600px;
+
+}
+
+#content {
+	width: 600px;
+	margin: 0 auto;
+	text-align: left;
+	padding: 15px;
+	background: #E0E0E0;
+	border: 2px solid #000;
+}
+
+h1 {
+	font: bold italic 15pt verdana, arial, helvetica, sans-serif;
+	margin: 10px 5px 30px 20px;
+    color: #005000;
+	text-align: left;
+	max-width: 310px;
+}
+
+h2 {
+	font: bold italic 12pt verdana, arial, helvetica, sans-serif;
+        margin: 30px 5px 20px 20px;
+	color: #005000;
+}
+
+h3 {
+	font: italic 13pt verdana, arial, helvetica, sans-serif;
+	margin: 10px 5px 30px 30px;
+	text-align: right;
+}
+a, a:active, a:visited {
+        color: #118;
+}
+p {
+	margin: 10px 5px 5px 30px;
+}
+
+ul {
+	margin: 10px 5px 5px 30px;
+}
+
+li {
+	margin-left: 15px;
+}
+
+form {
+	margin: 15px 5px 5px 30px;
+}
+
+form div {
+        clear: left;
+	display: block;
+	margin: 5px 0 0 0;
+}
+
+fieldset {
+	clear: both;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+label {
+       	float: left;
+	display: block;
+        width: 150px;
+	margin-right: 0.5em;
+	text-align: right;
+}
+
+label.error{
+    color: #FF0000;
+    float: right;
+    text-align: left;
+    width: 230px;
+}
+
+#login {
+    background: #E0E0E0;
+    border: 1px solid #000;
+    float: right;
+    margin-left: 350px;
+    padding: 5px;
+    position: absolute;
+    text-align: left;
+    width: 330px;
+    top: 25px;
+    opacity: 0.8;
+}
+p.login{
+    margin: 2px;
+}
