@@ -1,0 +1,37 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+
+
+return array
+(
+	'dev' => array
+	(
+		'type'       => 'mysql',
+		'connection' => array(
+   			'hostname'   => 'localhost',
+			'database'   => '',//development database
+			'username'   => '',//..username
+			'password'   => '',//..and password
+			'persistent' => TRUE,
+		),
+		'table_prefix' => '',
+		'charset'      => '',
+		'caching'      => TRUE,
+		'profiling'    => TRUE,
+    ),
+    'prod' => array
+	(
+		'type'       => 'mysql',
+		'connection' => array(
+   			'hostname'   => 'localhost',
+			'database'   => '',//production database
+			'username'   => '',//username
+			'password'   => '',//and password
+			'persistent' => TRUE,
+		),
+		'table_prefix' => '',
+		'charset'      => '',
+		'caching'      => TRUE,
+		'profiling'    => TRUE,
+    )
+
+);
