@@ -609,13 +609,16 @@ class Controller_Android extends Controller{
                     }
                     break;
             }
+            $ok = true;
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
         	if(empty($_SERVER['HTTP_REFERER'])) $referer = "";//pitää tehdä vaikeesti koska kohanassa ei oo suoraa tähän funkkaria.
         	else $referer = $_SERVER['HTTP_REFERER'];
             $ref = substr_replace(URL::base($this->request), "", $referer);
-            $data = "<p>Sessio on vanhentunut. ".html::file_anchor('admin/?return='.$ref,'Kirjaudu uudelleen').", palaat takaisin tälle sivulle.</p>";
+            $data = "Sessio on vanhentunut. Kirjaudu uudelleen sisään.";
             $return = array("ret" => $data);
+            $ok = false;
         }
+        $return["session"] = $ok;
         print json_encode($return);
     }
 
