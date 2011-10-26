@@ -28,7 +28,7 @@ class Controller_Android extends Controller{
                     foreach($post as $key => $value){
                         $parts = explode("-",$key);
                         $rivi = $this->utf8($parts[1]);
-                        $data[$rivi][$this->utf8($parts[0])] = $this->utf8($value);//automagiikka <input name="data-id" value="value"> -> $data['id']['data'] = value
+                        $data[$rivi][$this->utf8($parts[0])] = $this->utf8($value);//automagiikka <input name="field-id" value="value"> -> $data['id']['field'] = value
                     }
                     foreach($data as $row => $datat){
                         if(empty($datat["text"]) && empty($datat["pos"])){
