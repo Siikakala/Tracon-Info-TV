@@ -162,7 +162,13 @@ class Controller_Android extends Controller{
                         if(empty($datat["pos"])){
                             $err .= "Jokin dian positio jäi täyttämättä. Kyseisen dian tietoja <strong>EI</strong> ole tallennettu.";
                         }else{
-                            if(!isset($datat["hidden"]))
+                            if(!isset($datat["hidden"]))//checkkaamattomat checkboxit ei tuu mukaan ollenkaan.
+                                $datat["hidden"] = false;
+                            if($datat["hidden"] == "true")
+                                $datat["hidden"] = true;
+                            elseif($datat["hidden"] == "false")
+                                $datat["hidden"] = false;
+                            else
                                 $datat["hidden"] = false;
                             if($row >= 0 && $row < 500){
                                 if($datat["text"] == 0)
