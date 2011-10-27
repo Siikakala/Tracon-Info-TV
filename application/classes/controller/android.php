@@ -260,7 +260,7 @@ class Controller_Android extends Controller{
                             $selector = 0;//joka on aina ensimmäinen vaihtoehdoista.
                         else
                             $selector = $data['selector'];
-                        $text[$row] = array("id"=>$data["id"],'pos' => $data["pos"], 'text' => $vaihtoehdot[$selector],'time' => $data["time"],'hidden'=>(boolean)$data["hidden"]);
+                        $text[$row] = array("id"=>$data["id"],'pos' => $data["pos"],"sel" => $selector, 'text' => $vaihtoehdot[$selector],'time' => $data["time"],'hidden'=>(boolean)$data["hidden"]);
                     }
                     $return = array("ret"=>$text);
                     break;
