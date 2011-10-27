@@ -274,9 +274,8 @@ class Controller_Android extends Controller{
                     $vaihtoehdot[0]["id"] = 0;
                     $vaihtoehdot[0]["text"] = "twitter";
                     if($result2) foreach($result2 as $row => $data){
-                        $rivi = $row + 1;
-                        $vaihtoehdot[$rivi]["text"] = $this->utf8($data['tunniste']);
-                        $vaihtoehdot[$rivi]["id"] = $this->utf8($data['id']);
+                        $vaihtoehdot[$row]["text"] = $this->utf8($data['tunniste']);
+                        $vaihtoehdot[$row]["id"] = $this->utf8($data['id']);
                     }
 
                     $return = array("ret"=>$vaihtoehdot);
