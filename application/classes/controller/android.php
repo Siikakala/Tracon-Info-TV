@@ -258,6 +258,27 @@ class Controller_Android extends Controller{
                     }
                     $return = array("ret"=>$text);
                     break;
+                case "rulla_loadall":
+                    $query2 = DB::query(Database::SELECT,
+                                        "SELECT    dia_id as \"id\"".
+                                        "         ,tunniste ".
+                                        "FROM      diat ".
+                                        "ORDER BY  dia_id"
+                                        )->execute(__db);
+                    if($query2->count() > 0)
+                        $result2 = $query2->as_array();
+                    else
+                        $result2 = false;
+
+                    $vaihtehdot = array();
+                    $vaihtoehdot[0] = "twitter";
+                    if($result2) foreach($result2 as $row => $data){
+                        $vaihtoehdot[$row]["text"] = $this->utf8($data['tunniste']);
+                        $vaihtoehdot[$row]["id"] = $this->utf8($data['id']);
+                    }
+
+                    $return = array("ret"=>$vaihtoehdot);
+                    break;
                 case "rulla_delete":
                     if(!$param2){
                         $ret = "Ongelma rivin poistamisessa";
