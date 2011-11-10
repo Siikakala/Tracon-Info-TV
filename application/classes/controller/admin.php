@@ -158,6 +158,7 @@ class Controller_Admin extends Controller{
     	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/streams','Streamit')."</li><br/>";
     	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/frontends','Frontendit')."</li><br/>";
     	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/ohjelmakartta','Ohjelmakartta')."</li><br/>";
+    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/logi','Lokikirja')."</li><br/>";
             $this->view->content->links .= "\n</ul><br /><ul>";
     	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/logout','Kirjaudu ulos')."</li><br/>";
     	    $this->view->content->links .= "\n<li>".html::file_anchor('','Info-TV')."</li>";
@@ -184,7 +185,10 @@ class Controller_Admin extends Controller{
                 case "ohjelmakartta":
                 	$this->ohjelmakartta($param1);
                 	break;
-            	default:
+                case "logi":
+                    $this->logi($param1);
+                    break;
+                default:
                		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>";
                		break;
 
@@ -1056,6 +1060,65 @@ class Controller_Admin extends Controller{
 
     }
 
+    private function logi(){
+
+        $this->view->content->text = "<h2>Lokikirja</h2>";
+        $this->view->header->js .= '
+            <script type="text/javascript">
+
+                function refresh(){
+                    var container = $("#table");
+                    fetch = \''.URL::base($this->request).'admin/ajax/todo_refresh/\'
+                    $.getJSON(fetch+ \'?\' + Math.round(new Date().getTime()),function(data) {
+                        $.each(data,function(key,val){
+                            container.html(val);
+                        });
+                    });
+                    return false;
+                };
+
+                function save(){
+                    var container = $("#feedback");
+                    container.hide(\'fast\');
+                    fetch = \''.URL::base($this->request).'admin/ajax/todo_save/\'
+                    $.post(fetch,$("#form").serialize(),function(data) {
+                        container.html(data.ret);
+                    },"json");
+                    container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
+                    refresh();
+                    $( "form" )[ 0 ].reset();
+                    window.setTimeout(function(){
+                        container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
+                    },4000);
+                    return false;
+                };
+
+                $("form").submit(function(e) {
+                    e.preventDefault();
+                });
+            </script>
+            ';
+
+        $query = DB::query(Database::SELECT,
+                           'SELECT   tag '.
+                           '        ,comment '.
+                           '        ,adder '.
+                           'FROM     logi '.
+                           'ORDER BY stamp DESC'
+                           )->execute(__db);
+        $types = array("Löytötavara","Ongelma","Tiedote","Kysely");
+        $add = form::open(null, array("onsubmit" => "return save();", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,0,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"tag")).form::submit(null,'Lisää').form::close();
+        $this->view->content->text .= "<div id=\"add\">$add</div><div id=\"feedback\"></div>";
+
+        if($query->count() > 0){
+            $this->view->content->text .= "<div id=\"table\"><table class=\"stats\"><tr><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+            foreach($query as $row){
+                $this->view->content->text .= "<tr><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+            }
+            $this->view->content->text .= "</table></div>";
+        }
+    }
+
     /**
     * Warning! Casting Magics ahead!
     *
@@ -1776,6 +1839,43 @@ class Controller_Admin extends Controller{
                     break;
                 case "lastupdate"://x)
                     $return = array("ret" => date("d.m.Y H:i"));
+                    break;
+                case "todo_save":
+                  $post = $_POST;
+                  $query = DB::query(Database::INSERT,
+                                      'INSERT INTO logi '.
+                                      '           (tag '.
+                                      '           ,comment '.
+                                      '           ,adder '.
+                                      '            ) '.
+                                      'VALUES     ( '.
+                                      '            :tag '.
+                                      '           ,:comment '.
+                                      '           ,:adder '.
+                                      '            )'
+                                      );
+                  $query->parameters(array(":tag"     => $post['tag']
+                                          ,":comment" => $post['comment']
+                                          ,":adder"   => $this->session->get('user')
+                                          ));
+                  $result = $query->execute(__db);
+                  $return = array("ret"=>"Rivi lisätty onnistuneesti. Päivitetään listaus, odota hetki.");
+                  break;
+              case "todo_ref":
+                    $query = DB::query(Database::SELECT,
+                               'SELECT   tag '.
+                               '        ,comment '.
+                               '        ,adder '.
+                               'FROM     logi '.
+                               'ORDER BY stamp DESC'
+                               )->execute(__db);
+                    $text = "<table class=\"stats\"><tr><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+                    $types = array("Löytötavara","Ongelma","Tiedote","Kysely");
+                    foreach($query as $row){
+                        $text .= "<tr><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                    }
+                    $text .= "</table>";
+                    $return = array("ret"=>$text);
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
