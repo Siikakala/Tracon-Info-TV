@@ -170,6 +170,26 @@ table.stats th {
 	text-align: left;
 }
 
+table.stats td {
+	border: 1px solid #CCC;
+	padding: 3px 15px 3px 3px;
+}
+table.stats tr.type-0 td{
+    background-color: violet;
+}
+
+table.stats tr.type-1 td{
+    background-color: #AA0000;
+}
+
+table.stats tr.type-2 td{
+    background-color: #00AA00;
+}
+
+table.stats tr.type-3 td{
+    background-color: #EEEEEE;
+}
+
 /* Tämä tagataan jokaiseen uuteen ja muutettuun riviin rulla- ja scrollerhallinnassa */
 .new {
     background-color: #a34000;
@@ -181,12 +201,6 @@ table.stats th {
     padding-left:20px;
     padding-top:2px;
 }
-
-table.stats td {
-	border: 1px solid #CCC;
-	padding: 3px 15px 3px 3px;
-}
-
 form {
 	margin-bottom: 10px;
 }

@@ -12,8 +12,10 @@ body {
 }
 
 body.mceContentBody {
-   background: #FFF;
+    background: #FFF;
 }
+
+
 
 #swirlhack {
 	position: relative;

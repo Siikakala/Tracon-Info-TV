@@ -1124,7 +1124,7 @@ class Controller_Admin extends Controller{
         if($query->count() > 0){
             $this->view->content->text .= "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
             foreach($query as $row){
-                $this->view->content->text .= "<tr><td>".date("d.m.Y H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                $this->view->content->text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
             }
             $this->view->content->text .= "</table>";
         }
@@ -1885,7 +1885,7 @@ class Controller_Admin extends Controller{
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
                     $types = array("Löytötavara","Ongelma","Tiedote","Kysely");
                     foreach($query as $row){
-                        $text .= "<tr><td>".date("d.m.Y H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                        $text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
