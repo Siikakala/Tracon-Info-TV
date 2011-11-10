@@ -83,6 +83,8 @@ if (Kohana::$environment === Kohana::PRODUCTION)
 
     //tehdään juttuja.
 
+    error_reporting(-1);//Let's get errors from everything! Muahahahaa!
+
     define("__db","dev"); //Käytetään kehitystietokantaa
 
     define("__documentroot","/var/www/tracon_info-tv/"); //ja kehityshakemistoa.

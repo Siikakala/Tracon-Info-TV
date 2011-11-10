@@ -89,7 +89,7 @@ class Controller_Admin extends Controller{
     */
     public function action_index(){
     	if(!$this->session->get('logged_in')){
-			$this->view->content->text = "<h2>Kirjaudu sisään</h2><!-- Notloggedin -->";
+			$this->view->content->text = "<h2>Kirjaudu sisään</h2>";
     	    $this->view->content->text .= form::open('admin/login');
 			$this->view->content->text .= "<table><tr><td>";
 			$this->view->content->text .= form::label('user','Käyttäjätunnus:')."</td><td>";
@@ -118,7 +118,7 @@ class Controller_Admin extends Controller{
             if(isset($_POST['return'])) $this->request->redirect($_POST['return']);//jos return-urli on määritelty, palataan sinne.
             else $this->request->redirect('admin/face');//muuten mennään oletussivulle.
         }else{
-            $this->view->content->text = "<!-- Notloggedin --><p class=\"error\">Väärä käyttäjätunnus tai salasana!</p>";
+            $this->view->content->text = "<p class=\"error\">Väärä käyttäjätunnus tai salasana!</p>";
             $this->view->content->links = "";
         }
         $this->response->body($this->view->render());
