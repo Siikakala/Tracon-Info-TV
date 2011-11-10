@@ -17,9 +17,12 @@ class Controller_Admin extends Controller{
         	$this->view->header->title = "Hallintapaneeli";
         	$this->view->header->css = html::style('css/admin_small.css');
         	$this->view->header->css .= html::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
-        	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.6.2.min.js"></script>';
+        	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.min.js"></script>';
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.16.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.uitablefilter.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.min.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.pager.js\"></script>";
             $this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             if($this->session->get("g-show_tv",false) === false){//2. parametri = mihin defaultataan.
                 $this->get_set();//määritelty alempana, asettaa g_show_tv ja g_show_stream sessiomuuttujat.
@@ -1066,7 +1069,14 @@ class Controller_Admin extends Controller{
         $this->view->header->js .= '
             <script type="text/javascript">
                 $(document).ready(function() {
-                    ref();
+                    //ref();
+                });
+
+                $(function() {
+                    $("#filter").live("keyup",function(event) {
+                        var theTable = $(\'table.stats\');
+                        $.uiTableFilter( theTable, this.value );
+                    })
                 });
 
                 function refresh(){
@@ -1077,6 +1087,11 @@ class Controller_Admin extends Controller{
                             container.html(val);
                         });
                     });
+                    window.setTimeout(function(){
+                        var theTable = $(\'table.stats\');
+                        var arvo = $("#filter").value;
+                        $.uiTableFilter( theTable, arvo );
+                    },40);
                     return false;
                 };
 
@@ -1117,16 +1132,17 @@ class Controller_Admin extends Controller{
                            'FROM     logi '.
                            'ORDER BY stamp DESC'
                            )->execute(__db);
-        $types = array("Löytötavara","Ongelma","Tiedote","Kysely");
-        $add = form::open(null, array("onsubmit" => "return save();", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,0,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"tag")).form::submit(null,'Lisää').form::close();
-        $this->view->content->text .= "<div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div><div id=\"table\">";
+        $types = array("Löytötavara","Ongelma","Tiedote","Kysely","Muu");
+        $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,0,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',null,array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
+        $this->view->content->text .= "<div id=\"filter\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter"))."</div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
+        <div id=\"table\">\n";
 
         if($query->count() > 0){
-            $this->view->content->text .= "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+            $this->view->content->text .= "<table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
             foreach($query as $row){
-                $this->view->content->text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                $this->view->content->text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>\n";
             }
-            $this->view->content->text .= "</table>";
+            $this->view->content->text .= "</tbody></table>";
         }
         $this->view->content->text .= "</div>";
     }
@@ -1868,27 +1884,36 @@ class Controller_Admin extends Controller{
                                       );
                   $query->parameters(array(":tag"     => $post['tag']
                                           ,":comment" => $post['comment']
-                                          ,":adder"   => $this->session->get('user')
+                                          ,":adder"   => $post['adder']
                                           ));
                   $result = $query->execute(__db);
                   $return = array("ret"=>"Rivi lisätty onnistuneesti.");
                   break;
               case "todo_refresh":
                     $query = DB::query(Database::SELECT,
-                               'SELECT   tag '.
-                               '        ,comment '.
-                               '        ,adder '.
-                               '        ,stamp '.
-                               'FROM     logi '.
-                               'ORDER BY stamp DESC'
-                               )->execute(__db);
+                                       'SELECT   tag '.
+                                       '        ,comment '.
+                                       '        ,adder '.
+                                       '        ,stamp '.
+                                       'FROM     logi '.
+                                       'ORDER BY stamp DESC'
+                                       )->execute(__db);
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
-                    $types = array("Löytötavara","Ongelma","Tiedote","Kysely");
+                    $types = array("Löytötavara","Ongelma","Tiedote","Kysely","Muu");
                     foreach($query as $row){
                         $text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
+                    break;
+              case "populate_logi":
+                    $query = DB::query(Database::INSERT,
+                                        'INSERT INTO logi (tag,comment,adder) '.
+                                        'VALUES (:tag,:comment,:adder)'
+                                        );
+                    for($i=1;$i<600;$i++){
+                        $query->parameters(array(":tag"=>($i%5),":comment"=>"Kommentti $i",":adder"=>"Automagia"))->execute(__db);
+                    }
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.

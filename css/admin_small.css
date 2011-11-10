@@ -191,6 +191,11 @@ table.stats tr.type-3 td{
     background-color: #EEEEEE;
 }
 
+table.stats tr.type-4 td{
+    background-color: #33F;
+    color: #FFFFFF;
+}
+
 /* Tämä tagataan jokaiseen uuteen ja muutettuun riviin rulla- ja scrollerhallinnassa */
 .new {
     background-color: #a34000;
