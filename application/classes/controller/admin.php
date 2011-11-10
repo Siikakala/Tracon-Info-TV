@@ -264,7 +264,7 @@ class Controller_Admin extends Controller{
                     }
                 }
 
-                $(".del").live({
+                $(".del").on({
                         mouseenter: function() {
                             $(this).addClass(\'hover\');
                         },
@@ -385,7 +385,7 @@ class Controller_Admin extends Controller{
                     }
                 }
 
-                $(".del").live({
+                $(".del").on({
                         mouseenter: function() {
                             $(this).addClass(\'hover\');
                         },
@@ -673,7 +673,7 @@ class Controller_Admin extends Controller{
                     },100);
                 }
 
-                $(".del").live({
+                $(".del").on({
                     mouseenter: function() {
                         $(this).addClass(\'hover\');
                     },
@@ -816,7 +816,7 @@ class Controller_Admin extends Controller{
                     },100);
                 }
 
-                $(".del").live({
+                $(".del").on({
                     mouseenter: function() {
                         $(this).addClass(\'hover\');
                     },
@@ -926,7 +926,7 @@ class Controller_Admin extends Controller{
 
                 // Open download dialogs via iframes,
                 // to prevent aborting current uploads:
-                $(\'#upload .files a:not([target^=_blank])\').live(\'click\', function (e) {
+                $(\'#upload .files a:not([target^=_blank])\').on(\'click\', function (e) {
                     e.preventDefault();
                     $(\'<iframe style="display:none;"></iframe>\')
                         .prop(\'src\', this.href)
@@ -1073,7 +1073,7 @@ class Controller_Admin extends Controller{
                 });
 
                 $(function() {
-                    $("#filter").live("keyup",function(event) {
+                    $("#filter").on("keyup",function(event) {
                         var theTable = $(\'table.stats\');
                         $.uiTableFilter( theTable, this.value );
                     })
@@ -1132,8 +1132,8 @@ class Controller_Admin extends Controller{
                            'FROM     logi '.
                            'ORDER BY stamp DESC'
                            )->execute(__db);
-        $types = array("Löytötavara","Ongelma","Tiedote","Kysely","Muu");
-        $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,0,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',null,array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
+        $types = array(2=>"Tiedote",1=>"Ongelma",3=>"Kysely",0=>"Löytötavara",4=>"Muu");
+        $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,2,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',null,array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
         $this->view->content->text .= "<div id=\"filter\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter"))."</div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
         <div id=\"table\">\n";
 
