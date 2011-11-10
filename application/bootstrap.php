@@ -161,7 +161,7 @@ Route::set('frontend', '(<id>)')
 	));
 
 
-define("__title","Tracon VI Info-TV");
+define("__title","Tracon Info-Manager");
 
 //ohjelmakarttaprosessointia varten.
 define("ALKUAIKA_Lauantai", 10);

@@ -1065,6 +1065,9 @@ class Controller_Admin extends Controller{
         $this->view->content->text = "<h2>Lokikirja</h2>";
         $this->view->header->js .= '
             <script type="text/javascript">
+                $(document).ready(function() {
+                    ref();
+                });
 
                 function refresh(){
                     var container = $("#table");
@@ -1093,6 +1096,13 @@ class Controller_Admin extends Controller{
                     return false;
                 };
 
+                function ref(){
+                    refresh();
+                    window.setTimeout(function(){
+                        ref();
+                    },5000);
+                };
+
                 $("form").submit(function(e) {
                     e.preventDefault();
                 });
@@ -1103,20 +1113,22 @@ class Controller_Admin extends Controller{
                            'SELECT   tag '.
                            '        ,comment '.
                            '        ,adder '.
+                           '        ,stamp '.
                            'FROM     logi '.
                            'ORDER BY stamp DESC'
                            )->execute(__db);
         $types = array("Löytötavara","Ongelma","Tiedote","Kysely");
         $add = form::open(null, array("onsubmit" => "return save();", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,0,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"tag")).form::submit(null,'Lisää').form::close();
-        $this->view->content->text .= "<div id=\"add\">$add</div><div id=\"feedback\"></div>";
+        $this->view->content->text .= "<div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div><div id=\"table\">";
 
         if($query->count() > 0){
-            $this->view->content->text .= "<div id=\"table\"><table class=\"stats\"><tr><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+            $this->view->content->text .= "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
             foreach($query as $row){
-                $this->view->content->text .= "<tr><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                $this->view->content->text .= "<tr><td>".date("d.m.Y H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
             }
-            $this->view->content->text .= "</table></div>";
+            $this->view->content->text .= "</table>";
         }
+        $this->view->content->text .= "</div>";
     }
 
     /**
@@ -1859,20 +1871,21 @@ class Controller_Admin extends Controller{
                                           ,":adder"   => $this->session->get('user')
                                           ));
                   $result = $query->execute(__db);
-                  $return = array("ret"=>"Rivi lisätty onnistuneesti. Päivitetään listaus, odota hetki.");
+                  $return = array("ret"=>"Rivi lisätty onnistuneesti.");
                   break;
-              case "todo_ref":
+              case "todo_refresh":
                     $query = DB::query(Database::SELECT,
                                'SELECT   tag '.
                                '        ,comment '.
                                '        ,adder '.
+                               '        ,stamp '.
                                'FROM     logi '.
                                'ORDER BY stamp DESC'
                                )->execute(__db);
-                    $text = "<table class=\"stats\"><tr><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+                    $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
                     $types = array("Löytötavara","Ongelma","Tiedote","Kysely");
                     foreach($query as $row){
-                        $text .= "<tr><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                        $text .= "<tr><td>".date("d.m.Y H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
