@@ -1069,29 +1069,36 @@ class Controller_Admin extends Controller{
         $this->view->header->js .= '
             <script type="text/javascript">
                 $(document).ready(function() {
-                    //ref();
+                    ref();
                 });
 
                 $(function() {
-                    $("#filter").on("keyup",function(event) {
-                        var theTable = $(\'table.stats\');
-                        $.uiTableFilter( theTable, this.value );
+                    $("#filter_cont").delegate("input","keyup",function(event) {
+                        search();
                     })
                 });
 
                 function refresh(){
                     var container = $("#table");
                     fetch = \''.URL::base($this->request).'admin/ajax/todo_refresh/\'
-                    $.getJSON(fetch+ \'?\' + Math.round(new Date().getTime()),function(data) {
-                        $.each(data,function(key,val){
-                            container.html(val);
-                        });
+                    $.getJSON(fetch,function(data) {
+                        container.html(data.ret);
                     });
                     window.setTimeout(function(){
                         var theTable = $(\'table.stats\');
-                        var arvo = $("#filter").value;
+                        var arvo = $("#filter").val();
                         $.uiTableFilter( theTable, arvo );
-                    },40);
+                    },80);
+                    return false;
+                };
+
+                function search(){
+                    var container = $("#table");
+                    var search = $("#filter").val();
+                    fetch = \''.URL::base($this->request).'admin/ajax/todo_search/\'
+                    $.post(fetch,{ "search": search},function(data) {
+                        container.html(data.ret);
+                    },"json");
                     return false;
                 };
 
@@ -1101,10 +1108,12 @@ class Controller_Admin extends Controller{
                     fetch = \''.URL::base($this->request).'admin/ajax/todo_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         container.html(data.ret);
+                        if(data.ok)
+                            $( "form" )[ 0 ].reset();
                     },"json");
                     container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
                     refresh();
-                    $( "form" )[ 0 ].reset();
+
                     window.setTimeout(function(){
                         container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
                     },4000);
@@ -1112,7 +1121,7 @@ class Controller_Admin extends Controller{
                 };
 
                 function ref(){
-                    refresh();
+                    search();
                     window.setTimeout(function(){
                         ref();
                     },5000);
@@ -1132,9 +1141,9 @@ class Controller_Admin extends Controller{
                            'FROM     logi '.
                            'ORDER BY stamp DESC'
                            )->execute(__db);
-        $types = array(2=>"Tiedote",1=>"Ongelma",3=>"Kysely",0=>"Löytötavara",4=>"Muu");
+        $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
         $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,2,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',null,array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
-        $this->view->content->text .= "<div id=\"filter\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter"))."</div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
+        $this->view->content->text .= "<div id=\"filter_cont\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter"))."</div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
         <div id=\"table\">\n";
 
         if($query->count() > 0){
@@ -1870,24 +1879,37 @@ class Controller_Admin extends Controller{
                     break;
                 case "todo_save":
                   $post = $_POST;
-                  $query = DB::query(Database::INSERT,
-                                      'INSERT INTO logi '.
-                                      '           (tag '.
-                                      '           ,comment '.
-                                      '           ,adder '.
-                                      '            ) '.
-                                      'VALUES     ( '.
-                                      '            :tag '.
-                                      '           ,:comment '.
-                                      '           ,:adder '.
-                                      '            )'
-                                      );
-                  $query->parameters(array(":tag"     => $post['tag']
-                                          ,":comment" => $post['comment']
-                                          ,":adder"   => $post['adder']
-                                          ));
-                  $result = $query->execute(__db);
-                  $return = array("ret"=>"Rivi lisätty onnistuneesti.");
+                  trim($post['adder']);
+                  trim($post['comment']);
+                  if(empty($post['comment']) or empty($post['adder'])){
+                      $ret = "";
+                      if(empty($post['comment']) and empty($post['adder']))
+                          $ret = "Molemmat kentät ovat tyhjiä, täytä ne ja lisää rivi sen jälkeen uudelleen.";
+                      elseif(empty($post['comment']))
+                          $ret = "Viesti puuttuu! Kirjoita se ensin.";
+                      elseif(empty($post['adder']))
+                          $ret = "Lisääjä on pakko ilmoittaa.";
+                      $return = array("ret" => $ret,"ok"=>false);
+                  }else{
+                      $query = DB::query(Database::INSERT,
+                                          'INSERT INTO logi '.
+                                          '           (tag '.
+                                          '           ,comment '.
+                                          '           ,adder '.
+                                          '            ) '.
+                                          'VALUES     ( '.
+                                          '            :tag '.
+                                          '           ,:comment '.
+                                          '           ,:adder '.
+                                          '            )'
+                                          );
+                      $query->parameters(array(":tag"     => $post['tag']
+                                              ,":comment" => $post['comment']
+                                              ,":adder"   => $post['adder']
+                                              ));
+                      $result = $query->execute(__db);
+                      $return = array("ret"=>"Rivi lisätty onnistuneesti.","ok"=>true);
+                  }
                   break;
               case "todo_refresh":
                     $query = DB::query(Database::SELECT,
@@ -1899,20 +1921,60 @@ class Controller_Admin extends Controller{
                                        'ORDER BY stamp DESC'
                                        )->execute(__db);
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
-                    $types = array("Löytötavara","Ongelma","Tiedote","Kysely","Muu");
+                    $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     foreach($query as $row){
                         $text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
                     break;
+              case "todo_search":
+                    $param = $_POST['search'];
+                    $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
+                    $query = DB::query(Database::SELECT,
+                                       'SELECT   tag '.
+                                       '        ,comment '.
+                                       '        ,adder '.
+                                       '        ,stamp '.
+                                       'FROM     logi '.
+                                       'WHERE    tag REGEXP :search '.
+                                       '     OR  comment REGEXP :search '.
+                                       '     OR  adder REGEXP :search '.
+                                       '     OR  stamp REGEXP :search '.
+                                       'ORDER BY stamp DESC'
+                                       );
+                    $tyypit = "";
+                    if(!empty($param))
+                        $tyypit = array_values(preg_grep("/".$param."/",$types));
+                    if(!empty($tyypit) && is_array($tyypit)){
+                        $param = "^".$tyypit[0]."$";
+                    }
+                    $result = $query->param(":search",".*".$param.".*")->execute(__db);
+                    $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+
+                    foreach($result as $row){
+                        $text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                    }
+                    $text .= "</table>";
+                    $return = array("ret"=>$text);
+                    break;
               case "populate_logi":
+                    $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
+                    $keys = array_keys($types);
+                    function rand_word(){
+                        return substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',5)),0,5);
+                    }
                     $query = DB::query(Database::INSERT,
                                         'INSERT INTO logi (tag,comment,adder) '.
                                         'VALUES (:tag,:comment,:adder)'
                                         );
                     for($i=1;$i<600;$i++){
-                        $query->parameters(array(":tag"=>($i%5),":comment"=>"Kommentti $i",":adder"=>"Automagia"))->execute(__db);
+                        $randomi = "";
+                        $sanoja = rand(0,10);
+                        for($y=0;$y<=$sanoja;$y++){
+                            $randomi .= " ".rand_word();
+                        }
+                        $query->parameters(array(":tag"=>$keys[$i%5],":comment"=>"Kommentti $i: $randomi",":adder"=>"Automagia"))->execute(__db);
                     }
                     break;
             }

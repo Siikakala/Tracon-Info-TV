@@ -174,24 +174,24 @@ table.stats td {
 	border: 1px solid #CCC;
 	padding: 3px 15px 3px 3px;
 }
-table.stats tr.type-0 td{
+table.stats tr.type-löytötavara td{
     background-color: violet;
 }
 
-table.stats tr.type-1 td{
+table.stats tr.type-ongelma td{
     background-color: #AA0000;
     color: #FFFFFF;
 }
 
-table.stats tr.type-2 td{
+table.stats tr.type-tiedote td{
     background-color: #00AA00;
 }
 
-table.stats tr.type-3 td{
+table.stats tr.type-kysely td{
     background-color: #EEEEEE;
 }
 
-table.stats tr.type-4 td{
+table.stats tr.type-muu td{
     background-color: #33F;
     color: #FFFFFF;
 }
