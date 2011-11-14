@@ -1943,12 +1943,6 @@ class Controller_Admin extends Controller{
                                        '     OR  stamp REGEXP :search '.
                                        'ORDER BY stamp DESC'
                                        );
-                    $tyypit = "";
-                    if(!empty($param))
-                        $tyypit = array_values(preg_grep("/".$param."/",$types));
-                    if(!empty($tyypit) && is_array($tyypit)){
-                        $param = "^".$tyypit[0]."$";
-                    }
                     $result = $query->param(":search",".*".$param.".*")->execute(__db);
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
 
