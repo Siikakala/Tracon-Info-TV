@@ -147,19 +147,17 @@ Route::set('backend', '<controller>(/<page>(/<action>(/<param1>)))',
          'action' => 'check',
      ));
 
-Route::set('ajax', 'admin(/<action>(/<param1>(/<param2>)))',
-     array(
-         'action' => 'ajax'
-     ))->defaults(array(
-         'controller' => 'ajax',
-         'action' => 'index'
-     ));
-
 Route::set('admin', '<controller>(/<action>(/<param1>(/<param2>)))',
      array(
          'controller' => 'admin|android'
      ))->defaults(array(
          'action' => 'index'
+     ));
+
+Route::set('ajax', 'ajax(/<param1>(/<param2>))')
+     ->defaults(array(
+         'controller' => 'ajax',
+         'action' => 'ajax'
      ));
 
 Route::set('frontend', '(<id>)')

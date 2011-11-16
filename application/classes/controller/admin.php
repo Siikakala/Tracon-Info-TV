@@ -50,7 +50,7 @@ class Controller_Admin extends Controller{
                                             container.hide(0);
                                             var nayta = $(\"#show_tv\").val();
                                             var stream = $(\"#show_stream\").val();
-                                            fetch = '".URL::base($this->request)."admin/ajax/tv/'
+                                            fetch = '".URL::base($this->request)."ajax/tv/'
                                             $.post(fetch, { \"nayta\": nayta, \"stream\": stream }, function(data){
                                                 if(data.ret == true){
                                                     container.html(\"Muutettu.\");
@@ -217,7 +217,7 @@ class Controller_Admin extends Controller{
                 function save(){
                     var container = $("#feedback");
                     container.hide(0);
-                    fetch = \''.URL::base($this->request).'admin/ajax/scroller_save/\'
+                    fetch = \''.URL::base($this->request).'ajax/scroller_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
                             container.html(val);
@@ -238,7 +238,7 @@ class Controller_Admin extends Controller{
 
                 function refresh_data(){
                     var container = $("#formidata");
-                    fetch = \''.URL::base($this->request).'admin/ajax/scroller_load/\'
+                    fetch = \''.URL::base($this->request).'ajax/scroller_load/\'
                     $.getJSON(fetch, function(data) {
                         container.html(data.data);
                     });
@@ -250,7 +250,7 @@ class Controller_Admin extends Controller{
                     container.hide(0);
                     var sure = confirm("Oletko varma, että haluat poistaa tämän scrollerinpalan?")
                     if(sure){
-                        fetch = \''.URL::base($this->request).'admin/ajax/scroller_delete/\' + row;
+                        fetch = \''.URL::base($this->request).'ajax/scroller_delete/\' + row;
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+row).remove();
@@ -317,7 +317,7 @@ class Controller_Admin extends Controller{
                 var id = 500;
 
                 function addrow(){
-                    fetch = \''.URL::base($this->request).'admin/ajax/rulla_row/\' + id
+                    fetch = \''.URL::base($this->request).'ajax/rulla_row/\' + id
                     $.getJSON(fetch, function(data) {
                         $(\'#rulla\').append(data.ret);
                     });
@@ -332,7 +332,7 @@ class Controller_Admin extends Controller{
                 function save(){
                     var container = $("#feedback");
                     container.hide(0);
-                    fetch = \''.URL::base($this->request).'admin/ajax/rulla_save/\'
+                    fetch = \''.URL::base($this->request).'ajax/rulla_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
                             container.html(val);
@@ -353,7 +353,7 @@ class Controller_Admin extends Controller{
 
                 function refresh_data(post){
                     var container = $("#formidata");
-                    fetch = \''.URL::base($this->request).'admin/ajax/rulla_load/\'
+                    fetch = \''.URL::base($this->request).'ajax/rulla_load/\'
                     $.getJSON(fetch,function(data) {
                         container.html(data.data);
                     });
@@ -367,7 +367,7 @@ class Controller_Admin extends Controller{
                     container.hide(0);
                     var sure = confirm("Oletko varma, että haluat poistaa tämän dian diashowsta?")
                     if(sure){
-                        fetch = \''.URL::base($this->request).'admin/ajax/rulla_delete/\' + row;
+                        fetch = \''.URL::base($this->request).'ajax/rulla_delete/\' + row;
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+row).remove();
@@ -475,7 +475,7 @@ class Controller_Admin extends Controller{
                     }else{
                         container.html("Ladataan dia id "+id+", odota hetki.");
                         container.show("medium");
-                        fetch = \''.URL::base($this->request).'admin/ajax/dia_load/\' + id;
+                        fetch = \''.URL::base($this->request).'ajax/dia_load/\' + id;
                         $.getJSON(fetch, function(data) {
                             if(data.ret){
                                 gid = id;
@@ -518,7 +518,7 @@ class Controller_Admin extends Controller{
                         $("#ident").addClass("new");
                     }else{
                         m.tinymce().setProgressState(1); // Show progress
-                        fetch = \''.URL::base($this->request).'admin/ajax/dia_save/\'
+                        fetch = \''.URL::base($this->request).'ajax/dia_save/\'
                         $.post(fetch, { "cont": cont, "ident": ident, "id": gid }, function(data){
                             if(data.ret == true){
                                 //kaikki ok.
@@ -540,7 +540,7 @@ class Controller_Admin extends Controller{
                     }else{
                         var sure = confirm("Oletko varma että haluat poistaa dian " + $("#ident").val() + "?");
                         if(sure){
-                            fetch = \''.URL::base($this->request).'admin/ajax/dia_delete/\' + gid;
+                            fetch = \''.URL::base($this->request).'ajax/dia_delete/\' + gid;
                             $.getJSON(fetch, function(data) {
                                 if(data.ret == true){
                                     $("#edit").hide(500);
@@ -617,7 +617,7 @@ class Controller_Admin extends Controller{
                     var sure = confirm("Oletko varma että haluat poistaa tämän streamin?");
                     var container = $("#feedback");
                     if(sure){
-                        fetch = \''.URL::base($this->request).'admin/ajax/stream_delete/\' + id;
+                        fetch = \''.URL::base($this->request).'ajax/stream_delete/\' + id;
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+id).remove();
@@ -643,7 +643,7 @@ class Controller_Admin extends Controller{
                 function save(){
                     var container = $("#feedback");
                     container.hide(0);
-                    fetch = \''.URL::base($this->request).'admin/ajax/stream_save/\'
+                    fetch = \''.URL::base($this->request).'ajax/stream_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
                             container.html(val);
@@ -664,7 +664,7 @@ class Controller_Admin extends Controller{
 
                 function refresh_data(post){
                     var container = $("#formidata");
-                    fetch = \''.URL::base($this->request).'admin/ajax/stream_load/\'
+                    fetch = \''.URL::base($this->request).'ajax/stream_load/\'
                     $.getJSON(fetch,function(data) {
                         container.html(data.ret);
                     });
@@ -765,7 +765,7 @@ class Controller_Admin extends Controller{
                     var sure = confirm("Oletko varma että haluat poistaa tämän frontendin? Se nollaa frontendin asetukset ja nimen.");
                     var container = $("#feedback");
                     if(sure){
-                        fetch = \''.URL::base($this->request).'admin/ajax/fronted_delete/\' + id;
+                        fetch = \''.URL::base($this->request).'ajax/fronted_delete/\' + id;
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+id).remove();
@@ -786,7 +786,7 @@ class Controller_Admin extends Controller{
                 function save(){
                     var container = $("#feedback");
                     container.hide(0);
-                    fetch = \''.URL::base($this->request).'admin/ajax/frontend_save/\'
+                    fetch = \''.URL::base($this->request).'ajax/frontend_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
                             container.html(val);
@@ -807,7 +807,7 @@ class Controller_Admin extends Controller{
 
                 function refresh_data(post){
                     var container = $("#formidata");
-                    fetch = \''.URL::base($this->request).'admin/ajax/frontend_load/\'
+                    fetch = \''.URL::base($this->request).'ajax/frontend_load/\'
                     $.getJSON(fetch,function(data) {
                         container.html(data.ret);
                     });
@@ -942,7 +942,7 @@ class Controller_Admin extends Controller{
                     bar.show(\'medium\');
                     window.setTimeout(function(){
                         window.setTimeout(function(){
-                            fetch = \''.URL::base($this->request).'admin/ajax/ohjelma/\'
+                            fetch = \''.URL::base($this->request).'ajax/ohjelma/\'
                             $.post(fetch, { "file": filename }, function(data){
                                 $("#baari").hide(\'blind\',\'300\');
                                 window.setTimeout(function(){
@@ -950,11 +950,11 @@ class Controller_Admin extends Controller{
                                     $("#baari").show(\'300\');
                                     window.setTimeout(function(){
                                         bar.hide(\'blind\',\'slow\');
-                                        fetch = \''.URL::base($this->request).'admin/ajax/upload/?file=\' + filename + \'&del=1\';
+                                        fetch = \''.URL::base($this->request).'ajax/upload/?file=\' + filename + \'&del=1\';
                                         $.getJSON(fetch,function(data){
                                             $("tr.template-download").hide(\'medium\');
                                         });
-                                        fetch = \''.URL::base($this->request).'admin/ajax/lastupdate/\';
+                                        fetch = \''.URL::base($this->request).'ajax/lastupdate/\';
                                         $.getJSON(fetch,function(data){
                                             $("#lastupdate").html(data.ret);
                                         });
@@ -1044,7 +1044,7 @@ class Controller_Admin extends Controller{
         }
 
         $this->view->content->text .= "<div id=\"upload\">".
-                                            form::open(URL::base($this->request).'admin/ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post')).
+                                            form::open(URL::base($this->request).'ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post')).
                                                 "<div class=\"fileupload-buttonbar\">
                                                     <label class=\"fileinput-button\">
                                                         <span>Päivitä ohjelmakartta</span>".
@@ -1080,7 +1080,7 @@ class Controller_Admin extends Controller{
 
                 function refresh(){
                     var container = $("#table");
-                    fetch = \''.URL::base($this->request).'admin/ajax/todo_refresh/\'
+                    fetch = \''.URL::base($this->request).'ajax/todo_refresh/\'
                     $.getJSON(fetch,function(data) {
                         container.html(data.ret);
                     });
@@ -1095,7 +1095,7 @@ class Controller_Admin extends Controller{
                 function search(){
                     var container = $("#table");
                     var search = $("#filter").val();
-                    fetch = \''.URL::base($this->request).'admin/ajax/todo_search/\'
+                    fetch = \''.URL::base($this->request).'ajax/todo_search/\'
                     $.post(fetch,{ "search": search},function(data) {
                         container.html(data.ret);
                     },"json");
@@ -1105,7 +1105,7 @@ class Controller_Admin extends Controller{
                 function save(){
                     var container = $("#feedback");
                     container.hide(\'fast\');
-                    fetch = \''.URL::base($this->request).'admin/ajax/todo_save/\'
+                    fetch = \''.URL::base($this->request).'ajax/todo_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         container.html(data.ret);
                         if(data.ok)
