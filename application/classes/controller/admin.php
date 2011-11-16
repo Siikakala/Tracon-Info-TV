@@ -712,11 +712,7 @@ class Controller_Admin extends Controller{
             $result = false;
             $count = 0;
         }
-        if($this->session->get("level",0) < 3){
-            $disabled = "disabled";
-        }else{
-            $disabled = "";
-        }
+        $disabled = "";
 
         $this->view->content->text .= "<div id=\"formidata\">";
         $this->view->content->text .= form::open(null, array("onsubmit" => "return false;", "id" => "form"));

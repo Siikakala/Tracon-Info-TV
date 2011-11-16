@@ -11,20 +11,58 @@ class Controller_Ajax extends Controller{
     	$this->session = Session::instance();
     }
 
-     public function action_index(){
-         $return = array("ret","Tuntematon kutsu.");
-         print json_encode($return);
-     }
-
     /**
     * Warning! Casting Magics ahead!
     *
-    * Tässä metodissa tapahtuu siis 90% koko controllerin toiminnallisuudesta.
+    * Tässä metodissa tapahtuu siis 90% koko järjestelmän toiminnallisuudesta.
     */
     public function action_ajax($param1 = null,$param2 = null){
     	$return = "";
-    	//if($this->request->param($param1)) $param1 = $this->request->param($param1);
-    	if($this->session->get('logged_in') and $this->session->get('level') > 0){//varmistetaan että on kirjauduttu sisään ja oikeudet muokata asioita.
+    	$this->session->set('results',array());
+    	$kutsut = array(
+        	"infotv-common" => array(
+                  "kutsut" =>
+                      array("scroller_save","scroller_load","scroller_delete","scroller_delete","rulla_row","rulla_save","rulla_load","rulla_delete","tv","dia_load","dia_save","dia_delete","stream_load","frontend_load","upload","ohjelma","lastupdate"),
+                  "level"  => 1
+                  ),
+            "infotv-adv" => array(
+                  "kutsut" =>
+                      array("stream_delete","stream_save","frontend_save"),
+                  "level"  => 3
+                  ),
+            "logi-common" => array(
+                  "kutsut" =>
+                      array("todo_save","todo_refresh","todo_search"),
+                  "level"  => 1
+                  ),
+            "logi-adv" => array(
+                  "kutsut" =>
+                      array("populate_logi"),
+                  "level"  => 3
+                  )
+              );
+
+        function search($array,$key,$search){
+            $data = array_search($search,$array["kutsut"]);
+            if($data === false){
+            }else{
+                array_push($_SESSION['results'],$key);
+            }
+        }
+        array_walk($kutsut,"search",$param1);
+        $resultsi = $this->session->get('results',null);
+        if(empty($resultsi)){
+            $kutsu_ok = false;
+            throw new Kohana_Exception("Kutsua :param1 ei löydy",array(":param1"=>$param1),E_WARNING);
+        }else{
+            $kutsu_ok = true;
+        }
+        if(count($resultsi) > 1)
+            throw new Kohana_Exception("Kutsu määritelty useampaan kertaan. :param1 määritelty ryhmissä :kutsut.",array(":param1"=>$param1,":kutsut"=>implode(", ",$resultsi)),E_NOTICE);
+
+        if($kutsu_ok !== true){
+            $return = array("ret"=>false);
+        }elseif($this->session->get('level',0) >= $kutsut[$resultsi[0]]['level']){//varmistetaan että on kirjauduttu sisään ja oikeudet muokata asioita.
         	switch($param1){
                 case "scroller_save":
                     $post = $_POST;
@@ -833,11 +871,15 @@ class Controller_Ajax extends Controller{
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
-        	if(empty($_SERVER['HTTP_REFERER'])) $referer = "";//pitää tehdä vaikeesti koska kohanassa ei oo suoraa tähän funkkaria.
-        	else $referer = $_SERVER['HTTP_REFERER'];
-            $ref = substr_replace(URL::base($this->request), "", $referer);
-            $data = "<p>Sessio on vanhentunut. ".html::file_anchor('admin/?return='.$ref,'Kirjaudu uudelleen').", palaat takaisin tälle sivulle.</p>";
-            $return = array("ret" => $data);
+        	if($this->session->get("logged_in",false)){
+                $return = array("ret" => "Sinulla ei ole oikeuksia tähän toimintoon.");
+            }else{
+            	if(empty($_SERVER['HTTP_REFERER'])) $referer = "";//pitää tehdä vaikeesti koska kohanassa ei oo suoraa tähän funkkaria.
+            	else $referer = $_SERVER['HTTP_REFERER'];
+                $ref = substr_replace(URL::base($this->request), "", $referer);
+                $data = "<p>Sessio on vanhentunut. ".html::file_anchor('admin/?return='.$ref,'Kirjaudu uudelleen').", palaat takaisin tälle sivulle.</p>";
+                $return = array("ret" => $data);
+            }
         }
         if($param1 != "upload")//upload ei tykänny ylimääräsestä "" json-palautuksen lopussa.
             print json_encode($return);
