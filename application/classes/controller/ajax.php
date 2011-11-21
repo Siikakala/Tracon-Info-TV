@@ -16,7 +16,9 @@ class Controller_Ajax extends Controller{
     *
     * Tässä metodissa tapahtuu siis 90% koko järjestelmän toiminnallisuudesta.
     */
-    public function action_ajax($param1 = null,$param2 = null){
+    public function action_ajax(){
+        $param1 = $this->request->param('param1',null);
+        $param2 = $this->request->param('param2',null);
     	$return = "";
     	$this->session->set('results',array());
     	$kutsut = array(
