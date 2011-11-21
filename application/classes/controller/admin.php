@@ -134,9 +134,8 @@ class Controller_Admin extends Controller{
     * Suurin osa magiasta tapahtuu kuitenkin ajax-metodissa.
     */
     public function action_face(){
-        $page = $this->request->param('page',null);
-        $param1 = $this->request->param('param1',null);
-        $param2 = $this->request->param('param2',null);
+        $page = $this->request->param('param1',null);
+        $param1 = $this->request->param('param2',null);
     	if(!$this->session->get('logged_in')){
 			$this->request->redirect('admin/?return='.$this->request->uri()); // Ohjataan suoraan kirjautumiseen, mikäli yritetään avata tämä sivu ei-kirjautuneena
     	}elseif($this->session->get('level',0) < 1){//2. parametri = defaulttaa nollaks
