@@ -854,7 +854,7 @@ class Controller_Ajax extends Controller{
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     $keys = array_keys($types);
                     function rand_word(){
-                        return substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',5)),0,5);
+                        return substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',15)),0,rand(2,15));
                     }
                     $query = DB::query(Database::INSERT,
                                         'INSERT INTO logi (tag,comment,adder) '.
