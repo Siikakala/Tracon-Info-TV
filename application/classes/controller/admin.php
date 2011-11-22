@@ -142,31 +142,63 @@ class Controller_Admin extends Controller{
         	$this->view->content->text = '<p>Valitettavasti sinulla ei ole ylläpito-oikeuksia.</p>';
         	$this->view->content->links = "";
     	}else{
-
+            $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","ohjelmakartta"),"info" => array("logi"));
+            $this->session->set('results',array());
+            function search($array,$key,$search){
+                $data = array_search($search,$array);
+                if($data === false){
+                }else{
+                    array_push($_SESSION['results'],$key);
+                }
+            }
+            array_walk($pages,"search",$page);
+            $resultsi = $this->session->get('results',array(0=>false));
+            if($resultsi[0] == "tvadm"){
+                $active = 0;
+            }elseif($resultsi[0] == "info"){
+                $active = 1;
+            }
         	$this->view->header->js .= "
             \n<script type=\"text/javascript\">
                 $(function(){
-                    $(\"#links li\").button({
+                    $(\"#links li.btn\").button({
                         icons:{
                             primary: \"ui-icon-triangle-1-e\"
                         }
                     });
+                    $(\"#links a.head-links\").click(function(event){
+                        event.preventDefault();
+                    });
+                    $(\"#accord\").accordion({active:".$active.",autoHeight: false});
+
                 });
+
+                function toglaa(id){
+                    var elem = $('#'+id)[0];
+                    if(elem.css('display') == 'none'){
+                        $('#'+id).show('blind','medium');
+                    }else{
+                        $('#'+id).hide('blind','medium');
+                    }
+                }
+
             </script>
             ";
 
     	    //<linkkipalkki>
-			$this->view->content->links = "\n<ul>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/scroller','Scroller')."</li><br/>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/rulla','Rulla')."</li><br/>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/dia','Diat')."</li><br/>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/streams','Streamit')."</li><br/>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/frontends','Frontendit')."</li><br/>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/ohjelmakartta','Ohjelmakartta')."</li><br/>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/face/logi','Lokikirja')."</li><br/>";
-            $this->view->content->links .= "\n</ul><br /><ul>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('admin/logout','Kirjaudu ulos')."</li><br/>";
-    	    $this->view->content->links .= "\n<li>".html::file_anchor('','Info-TV')."</li>";
+			$this->view->content->links = "<div id=\"accord\">\n";
+			$this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\" onclick=\"toglaa('tvadm');\">TV-ylläpito:</a></h3>";
+    	    $this->view->content->links .= "\n<div><ul><li class=\"btn\">".html::file_anchor('admin/face/scroller','Scroller')."</li><br/>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/rulla','Rulla')."</li><br/>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/dia','Diat')."</li><br/>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/streams','Streamit')."</li><br/>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/frontends','Frontendit')."</li><br/>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/ohjelmakartta','Ohjelmakartta')."</li><br/>";
+    	    $this->view->content->links .= "\n</ul></div><h3><a href=\"#\" class=\"head-links\" onclick=\"$('#info').toggle('blind','medium');\">Info:</a></h3><div><ul>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/logi','Lokikirja')."</li><br/>";
+            $this->view->content->links .= "\n</ul></div></div><br/><ul>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/logout','Kirjaudu ulos')."</li><br/>";
+    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('','Info-TV')."</li>";
 			$this->view->content->links .= "\n</ul>";
     	    //</linkkipalkki>
 
