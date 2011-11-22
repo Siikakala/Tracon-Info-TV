@@ -24,7 +24,12 @@ class Controller_Admin extends Controller{
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.pager.js\"></script>";
             $this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
-
+            $this->view->header->js .= "\n<script type=\"text/javascript\">
+                                    $(function() {
+                                        $( 'button, input:submit' ).button();
+                                    });
+                                    </script>
+                                        ";
         	$this->view->header->login = "";//oletuksena nää on tyhjiä
         	$this->view->header->show = "";
             if($this->session->get('logged_in') && $this->request->action() != 'logout'){//mutta jos ollaan kirjauduttu sisään, eikä kirjautumassa ulos
@@ -806,7 +811,6 @@ class Controller_Admin extends Controller{
         else $nayta = "false";
         $this->view->header->js .= "\n<script type=\"text/javascript\">
                                     $(function() {
-                                        $( 'button, input:submit' ).button();
                                         if(".$nayta."){
                                             $(\"#show_stream\").show(\"medium\");
                                         }
