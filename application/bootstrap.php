@@ -160,7 +160,7 @@ Route::set('ajax', 'ajax(/<param1>(/<param2>))')
          'action' => 'ajax'
      ));
 
-Route::set('frontend', 'tv/(<id>)')
+Route::set('frontend', 'tv(/<id>)')
 	->defaults(array(
 		'controller' => 'frontend',
 		'action'     => 'index',
