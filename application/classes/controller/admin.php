@@ -24,64 +24,13 @@ class Controller_Admin extends Controller{
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.pager.js\"></script>";
             $this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
-            if($this->session->get("g-show_tv",false) === false){//2. parametri = mihin defaultataan.
-                $this->get_set();//määritelty alempana, asettaa g_show_tv ja g_show_stream sessiomuuttujat.
-            }
-            if($this->session->get("g-show_tv") == 1) $nayta = "true";
-            else $nayta = "false";
-            $this->view->header->js .= "\n<script type=\"text/javascript\">
-                                        $(function() {
-                                            $( 'button, input:submit' ).button();
-                                            if(".$nayta."){
-                                                $(\"#show_stream\").show(\"medium\");
-                                            }
-                                        });
 
-                                        function check_show(show){
-                                            if(show == 1){
-                                                $(\"#show_stream\").show(\"medium\");
-                                            }else{
-                                                $(\"#show_stream\").hide(\"medium\");
-                                            }
-                                        }
-
-                                        function show_save(){
-                                            var container = $(\"#show_feed\");
-                                            container.hide(0);
-                                            var nayta = $(\"#show_tv\").val();
-                                            var stream = $(\"#show_stream\").val();
-                                            fetch = '".URL::base($this->request)."ajax/tv/'
-                                            $.post(fetch, { \"nayta\": nayta, \"stream\": stream }, function(data){
-                                                if(data.ret == true){
-                                                    container.html(\"Muutettu.\");
-                                                    $(\"#show_stream\").removeClass(\"new\");
-                                                    $(\"#show_tv\").removeClass(\"new\");
-                                                }else{
-                                                    container.html(data.ret);
-                                                }
-                                            },\"json\");
-                                            window.setTimeout(function(){
-                                                container.show('drop', { direction:\"right\", distance: \"-50px\" },600);
-                                                window.setTimeout(function(){
-                                                    container.hide('drop', { direction:\"right\", distance: \"80px\" },1400);
-                                                },598);
-                                            },200);
-                                        }
-                                          </script>
-                                        ";
         	$this->view->header->login = "";//oletuksena nää on tyhjiä
         	$this->view->header->show = "";
             if($this->session->get('logged_in') && $this->request->action() != 'logout'){//mutta jos ollaan kirjauduttu sisään, eikä kirjautumassa ulos
-                if($this->session->get("g-show_tv"))
-                    $show = $this->session->get("g-show_tv");//pistetään valikoihin oikeet arvot
-                else
-                    $show = false;
-                if($this->session->get("g-show_stream"))
-                    $striim = $this->session->get("g-show_stream");
-                else
-                    $striim = false;
+
                 $this->view->header->login = "Kirjautunut käyttäjänä: ".$this->session->get('user')."<br />".html::file_anchor('admin/logout','Kirjaudu ulos');//ja näytetään kirjautunut käyttäjä, uloskirjautumislinkki, ja globaali hallinta.
-                $this->view->header->show = "Näytä:".form::select("show",array("Diashow","Streami"),$show,array("id"=>"show_tv","onchange"=>"check_show(this.value);$(this).addClass(\"new\");$(\"#show_stream\").addClass(\"new\");")).form::select("streams",$this->get_streams(),$striim,array("id"=>"show_stream","onchange"=>"$(this).addClass(\"new\");")).form::button("apply","Vaihda",array("onclick"=>"show_save();"))."<br/><span id=\"show_feed\"></span>";
+
             }
         }
     }
@@ -847,7 +796,68 @@ class Controller_Admin extends Controller{
                 });
             </script>
             ';
-        $this->view->content->text = "<h2>Frontend-hallinta</h2><h4>Globaali hallinta löytyy yläreunasta.</h4><p>Tällä sivulla voit tarvittaessa pakottaa jonkin frontendin näyttämään vaikkapa pelkkää diashowta, esim. infossa.</p>";
+        $this->view->content->text = "<h2>Frontend-hallinta</h2><p>Tällä sivulla voit tarvittaessa pakottaa jonkin frontendin näyttämään vaikkapa pelkkää diashowta, esim. infossa.</p><h4>Globaali hallinta:</h4><br/>";
+        //<globaali hallinta>
+
+        if($this->session->get("g-show_tv",false) === false){//2. parametri = mihin defaultataan.
+            $this->get_set();//määritelty alempana, asettaa g_show_tv ja g_show_stream sessiomuuttujat.
+        }
+        if($this->session->get("g-show_tv") == 1) $nayta = "true";
+        else $nayta = "false";
+        $this->view->header->js .= "\n<script type=\"text/javascript\">
+                                    $(function() {
+                                        $( 'button, input:submit' ).button();
+                                        if(".$nayta."){
+                                            $(\"#show_stream\").show(\"medium\");
+                                        }
+                                    });
+
+                                    function check_show(show){
+                                        if(show == 1){
+                                            $(\"#show_stream\").show(\"medium\");
+                                        }else{
+                                            $(\"#show_stream\").hide(\"medium\");
+                                        }
+                                    }
+
+                                    function show_save(){
+                                        var container = $(\"#show_feed\");
+                                        container.hide(0);
+                                        var nayta = $(\"#show_tv\").val();
+                                        var stream = $(\"#show_stream\").val();
+                                        fetch = '".URL::base($this->request)."ajax/tv/'
+                                        $.post(fetch, { \"nayta\": nayta, \"stream\": stream }, function(data){
+                                            if(data.ret == true){
+                                                container.html(\"Muutettu.\");
+                                                $(\"#show_stream\").removeClass(\"new\");
+                                                $(\"#show_tv\").removeClass(\"new\");
+                                            }else{
+                                                container.html(data.ret);
+                                            }
+                                        },\"json\");
+                                        window.setTimeout(function(){
+                                            container.show('drop', { direction:\"right\", distance: \"-50px\" },600);
+                                            window.setTimeout(function(){
+                                                container.hide('drop', { direction:\"right\", distance: \"80px\" },1400);
+                                            },1000);
+                                        },200);
+                                    }
+                                      </script>
+                                    ";
+        if($this->session->get("g-show_tv"))
+            $show = $this->session->get("g-show_tv");//pistetään valikoihin oikeet arvot
+        else
+            $show = false;
+        if($this->session->get("g-show_stream"))
+            $striim = $this->session->get("g-show_stream");
+        else
+            $striim = false;
+
+        $this->view->content->text .= "Näytä:".form::select("show",array("Diashow","Streami"),$show,array("id"=>"show_tv","onchange"=>"check_show(this.value);$(this).addClass(\"new\");$(\"#show_stream\").addClass(\"new\");"))
+                                      .form::select("streams",$this->get_streams(),$striim,array("id"=>"show_stream","onchange"=>"$(this).addClass(\"new\");"))
+                                      .form::button("apply","Vaihda",array("onclick"=>"show_save();"))."<br/><div id=\"span_cont\" style=\"min-height:20px;\"><div id=\"show_feed\"></div></div><br/><hr><br/>";
+
+        //</globaali hallinta>
         $query = DB::query(Database::SELECT,
                             "SELECT   f_id ".
                             "        ,tunniste ".
