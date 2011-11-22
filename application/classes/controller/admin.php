@@ -106,8 +106,10 @@ class Controller_Admin extends Controller{
                 }
             }
             array_walk($pages,"search",$page);
-            $resultsi = $this->session->get('results',array(0=>false));
-            if($resultsi[0] == "tvadm"){
+            $resultsi = $this->session->get('results',array());
+            if(!isset($resultsi[0])){
+                $active = "false";
+            }elseif($resultsi[0] == "tvadm"){
                 $active = 0;
             }elseif($resultsi[0] == "info"){
                 $active = 1;
@@ -131,17 +133,21 @@ class Controller_Admin extends Controller{
             ";
 
     	    //<linkkipalkki>
-			$this->view->content->links = "<div id=\"accord\">\n";
-			$this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">TV-ylläpito:</a></h3>";
-    	    $this->view->content->links .= "\n<div><ul><li class=\"btn\">".html::file_anchor('admin/face/scroller','Scroller')."</li><br/>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/rulla','Rulla')."</li><br/>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/dia','Diat')."</li><br/>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/streams','Streamit')."</li><br/>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/frontends','Frontendit')."</li><br/>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/ohjelmakartta','Ohjelmakartta')."</li><br/>";
-    	    $this->view->content->links .= "\n</ul></div><h3><a href=\"#\" class=\"head-links\">Info:</a></h3><div><ul>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/logi','Lokikirja')."</li><br/>";
-            $this->view->content->links .= "\n</ul></div></div><br/><ul>";
+			$this->view->content->links = "\n<div id=\"accord\">\n";
+    			$this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">TV-ylläpito:</a></h3>";
+        	    $this->view->content->links .= "\n<div><ul>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/scroller','Scroller')."</li><br/>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/rulla','Rulla')."</li><br/>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/dia','Diat')."</li><br/>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/streams','Streamit')."</li><br/>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/frontends','Frontendit')."</li><br/>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/ohjelmakartta','Ohjelmakartta')."</li><br/>";
+        	    $this->view->content->links .= "\n</ul></div>";
+        	    $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">Info:</a></h3>";
+        	    $this->view->content->links .= "\n<div><ul>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/logi','Lokikirja')."</li><br/>";
+                $this->view->content->links .= "\n</ul></div>";
+            $this->view->content->links .= "\n</div><br/><ul>";
     	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/logout','Kirjaudu ulos')."</li><br/>";
     	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('','Info-TV')."</li>";
 			$this->view->content->links .= "\n</ul>";
