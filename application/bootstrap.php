@@ -166,7 +166,7 @@ Route::set('frontend', 'tv(/<id>)')
 		'action'     => 'index',
 	));
 
-Route::set('frontend', '(<id>)')
+Route::set('to_tv', '(<id>)')
 	->defaults(array(
 		'controller' => 'frontend',
 		'action'     => 'to_tv',
