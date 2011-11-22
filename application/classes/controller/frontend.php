@@ -21,6 +21,9 @@ class Controller_Frontend extends Controller {
 
     }
 
+    public function action_to_tv(){
+        $this->request->redirect("tv");
+    }
 
 	public function action_index()
 	{

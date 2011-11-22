@@ -166,6 +166,12 @@ Route::set('frontend', 'tv(/<id>)')
 		'action'     => 'index',
 	));
 
+Route::set('frontend', '(<id>)')
+	->defaults(array(
+		'controller' => 'frontend',
+		'action'     => 'to_tv',
+	));
+
 
 define("__title","Tracon Info-Manager");
 
