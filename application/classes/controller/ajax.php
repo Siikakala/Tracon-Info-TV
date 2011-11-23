@@ -874,7 +874,7 @@ class Controller_Ajax extends Controller{
                             $randomi .= " ".rand_word();
                         }
                         $kom = $riveja + $i;
-                        $query->parameters(array(":tag"=>$keys[rand(0,5)],":comment"=>"Kommentti $kom: $randomi",":adder"=>"Automagia"))->execute(__db);
+                        $query->parameters(array(":tag"=>$keys[rand(0,4)],":comment"=>"Kommentti $kom: $randomi",":adder"=>"Automagia"))->execute(__db);
                     }
                     break;
             }
