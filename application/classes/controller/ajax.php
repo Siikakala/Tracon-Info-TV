@@ -860,7 +860,7 @@ class Controller_Ajax extends Controller{
                     }
                     $q = DB::query(Database::SELECT,
                                     'SELECT tag FROM logi'
-                                    )->execute();
+                                    )->execute(__db);
                     $riveja = $q->count();
 
                     $query = DB::query(Database::INSERT,
