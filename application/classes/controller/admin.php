@@ -96,6 +96,7 @@ class Controller_Admin extends Controller{
         	$this->view->content->text = '<p>Valitettavasti sinulla ei ole ylläpito-oikeuksia.</p>';
         	$this->view->content->links = "";
     	}else{
+        	//<linkkipalkki>
             $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","ohjelmakartta"),"info" => array("logi"));
             $this->session->set('results',array());
             function search($array,$key,$search){
@@ -132,7 +133,7 @@ class Controller_Admin extends Controller{
             </script>
             ";
 
-    	    //<linkkipalkki>
+
 			$this->view->content->links = "\n<div id=\"accord\">\n";
     			$this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">TV-ylläpito:</a></h3>";
         	    $this->view->content->links .= "\n<div><ul>";
