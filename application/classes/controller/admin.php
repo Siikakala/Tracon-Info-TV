@@ -125,7 +125,7 @@ class Controller_Admin extends Controller{
                     $(\"#links a.head-links\").click(function(event){
                         event.preventDefault();
                     });
-                    $(\"#accord\").accordion({active:".$active.",autoHeight: false});
+                    $(\"#accord\").accordion({active:".$active.",autoHeight: false,icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
 
                 });
 
