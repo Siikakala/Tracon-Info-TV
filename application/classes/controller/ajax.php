@@ -858,6 +858,11 @@ class Controller_Ajax extends Controller{
                     function rand_word(){
                         return substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',15)),0,rand(2,15));
                     }
+                    $q = DB::query(Database::SELECT,
+                                    'SELECT tag FROM logi'
+                                    )->execute();
+                    $riveja = $q->count();
+
                     $query = DB::query(Database::INSERT,
                                         'INSERT INTO logi (tag,comment,adder) '.
                                         'VALUES (:tag,:comment,:adder)'
@@ -868,7 +873,8 @@ class Controller_Ajax extends Controller{
                         for($y=0;$y<=$sanoja;$y++){
                             $randomi .= " ".rand_word();
                         }
-                        $query->parameters(array(":tag"=>$keys[$i%5],":comment"=>"Kommentti $i: $randomi",":adder"=>"Automagia"))->execute(__db);
+                        $kom = $riveja + $i;
+                        $query->parameters(array(":tag"=>$keys[rand(0,5)],":comment"=>"Kommentti $kom: $randomi",":adder"=>"Automagia"))->execute(__db);
                     }
                     break;
             }
@@ -887,5 +893,32 @@ class Controller_Ajax extends Controller{
             print json_encode($return);
     }
 
+    /**
+    * UTF-8-muuntaja on-demand
+    *
+    * @param string $str Muunnettava teksti
+    * @return string Teksti varmasti UTF-8:na
+    */
+	public function utf8($str){
+		if($this->utf8_compliant($str) == 1){
+			$return = $str;
+		}else{
+			$return = utf8_encode($str);
+		}
+		return $return;
+	}
+
+	/**
+	* utf8:n kaveri. Tunnistaa, onko teksti utf-8:ia vai jotain muuta
+	*
+	* @param string $str Tunnistettava teksti
+	* @return True/null, true, jos utf-8, kuolee hiljaa jollei.
+	*/
+    public function utf8_compliant($str) {
+       	if ( strlen($str) == 0 ) {
+           	return TRUE;
+       	}
+       	return (preg_match('/^.{1}/us',$str,$ar) == 1);
+	}
 }
 ?>
