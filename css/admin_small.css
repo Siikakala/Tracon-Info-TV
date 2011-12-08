@@ -90,8 +90,12 @@ a.hover:hover, a.hover:active{
     text-align:left;
 }
 
+#accord li {
+    margin-left:-5px;
+}
+
 #links li a {
-	padding: 5px;
+
 	text-decoration: none;
 }
 

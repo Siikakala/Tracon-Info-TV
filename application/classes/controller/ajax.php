@@ -41,6 +41,11 @@ class Controller_Ajax extends Controller{
                   "kutsut" =>
                       array("populate_logi"),
                   "level"  => 3
+                  ),
+            "public" => array(
+                  "kutsut" =>
+                      array("check"),
+                  "level" => 0
                   )
               );
 
@@ -876,6 +881,20 @@ class Controller_Ajax extends Controller{
                         $kom = $riveja + $i;
                         $query->parameters(array(":tag"=>$keys[rand(0,4)],":comment"=>"Kommentti $kom: $randomi",":adder"=>"Automagia"))->execute(__db);
                     }
+                    break;
+              case "public":
+                    $provider = new Model_Public();
+                    if(date("s")%20 == 0)
+                        $over = true;
+                    else
+                        $over = false;
+                    $return = array(
+                        "ret" => true,
+                        "dia" => $provider->page(),
+                        "fcn" => $provider->fcn(),
+                        "scroller" => $provider->scroller($over),
+                        "page" => $this->session->get("page",0)
+                        );
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
