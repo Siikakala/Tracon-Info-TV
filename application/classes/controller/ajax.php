@@ -882,7 +882,7 @@ class Controller_Ajax extends Controller{
                         $query->parameters(array(":tag"=>$keys[rand(0,4)],":comment"=>"Kommentti $kom: $randomi",":adder"=>"Automagia"))->execute(__db);
                     }
                     break;
-              case "public":
+              case "check":
                     $provider = new Model_Public();
                     if(date("s")%20 == 0)
                         $over = true;
@@ -901,9 +901,7 @@ class Controller_Ajax extends Controller{
         	if($this->session->get("logged_in",false)){
                 $return = array("ret" => "Sinulla ei ole oikeuksia tähän toimintoon.");
             }else{
-            	if(empty($_SERVER['HTTP_REFERER'])) $referer = "";//pitää tehdä vaikeesti koska kohanassa ei oo suoraa tähän funkkaria.
-            	else $referer = $_SERVER['HTTP_REFERER'];
-                $ref = substr_replace(URL::base($this->request), "", $referer);
+                $ref = substr_replace(URL::base($this->request), "", $this->request->referer());
                 $data = "<p>Sessio on vanhentunut. ".html::file_anchor('admin/?return='.$ref,'Kirjaudu uudelleen').", palaat takaisin tälle sivulle.</p>";
                 $return = array("ret" => $data);
             }

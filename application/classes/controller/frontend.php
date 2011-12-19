@@ -41,7 +41,7 @@ class Controller_Frontend extends Controller {
         	var page = "'.$page.'";
         	var page_was = "";
         	var twiit = "";
-            $(document).ready(function() {
+            $(function() {
 
                     update_clock();
                     var container = $("#text");
@@ -50,12 +50,8 @@ class Controller_Frontend extends Controller {
                         check('.$check.');
                     },'.$tm.');
                     window.setTimeout(function(){
-                        check_scroller("true",1);
                         scrolleri();
                     },500);
-                    window.setTimeout(function(){
-                        override();
-                    },20000);
 
                 });
 
@@ -138,13 +134,10 @@ class Controller_Frontend extends Controller {
                 }
 
                 function check(cont){
-                    fetch = \''.URL::base($this->request).'backend/\' + page+ \'/fcn\' //Frontend Client Name
-                    $.getJSON(fetch, function(data) {
-                        $("#client").html(data.ret);
-                    });
 
                     var container = $("#text");
                     var twitter = $("#twitter");
+                    var scroller = $("#rullaaja");
                     var n = container.queue("fx");
                     var y = twitter.queue("fx");
                     var x = $("#text_cont").queue("fx");
@@ -157,77 +150,94 @@ class Controller_Frontend extends Controller {
                     if(x.length > 6){
                         $("#text_cont").clearQueue();
                     }
-                    fetch = \''.URL::base($this->request).'backend/\' + page+ \'/\';
+                    fetch = \''.URL::base($this->request).'ajax/check/\';
                     $.getJSON(fetch, function(data) {
-                        if(data.changed == true){
-                            if(page == twiit){
-                            }else{
-                                container.hide("puff",700);
-                            }
-                            window.setTimeout(function(){
-                                switch(data.part){
-                                    case "text":
-                                        twitter.hide(290);
-                                        $("#text_cont").show(\'blind\',300);
-                                        window.setTimeout(function(){
-                                            container.html(data.palautus);
-                                            $.each(data.pie,function(index,value){
-                                                if(value){
-                                                    drawTimer(value,index);
-                                                }
-                                            });
-                                            window.setTimeout(function(){
-                                                container.show(\'clip\',300);
-                                            },100);
-                                        },300);
+                        if(data.ret == true){
+                            $.each(data,function(index,value){
+                                switch(index){
+                                    case "ret":
                                         break;
-                                    case "twitter":
-                                        twiit = page;
-                                        container.hide("puff",300);
-                                        window.setTimeout(function(){
-                                            $("#text_cont").hide(\'blind\',300);
-                                        },200);
-                                        window.setTimeout(function(){
-                                            twitter.show(300);
-                                        },810);
-                                        container.html("");
+                                    case "dia":
+                                        if(value.changed == true){
+                                            if(page == twiit){
+                                            }else{
+                                                container.hide("puff",700);
+                                            }
+                                            switch(value.part){
+                                                case "text":
+                                                    twitter.hide(290);
+                                                    $("#text_cont").show(\'blind\',300);
+                                                    window.setTimeout(function(){
+                                                        container.html(value.palautus);
+                                                        $.each(data.pie,function(index2,value2){
+                                                            if(value2){
+                                                                drawTimer(value2,index2);
+                                                            }
+                                                        });
+                                                        window.setTimeout(function(){
+                                                            container.show(\'clip\',300);
+                                                        },100);
+                                                    },300);
+                                                    break;
+                                                case "twitter":
+                                                    twiit = page;
+                                                    container.hide("puff",300);
+                                                    window.setTimeout(function(){
+                                                        $("#text_cont").hide(\'blind\',300);
+                                                    },200);
+                                                    window.setTimeout(function(){
+                                                        twitter.show(300);
+                                                    },810);
+                                                    container.html("");
+                                                    break;
+                                                case "video":
+                                                    twitter.hide(300);
+                                                    window.setTimeout(function(){
+                                                        container.show(0);
+                                                        $("#text_cont").show(0);
+                                                        window.setTimeout(function(){
+                                                            container.html(value.palautus);
+                                                            flowplayer("player", "'.URL::base($this->request).'flowplayer/flowplayer.swf", {
+                                                                clip : {
+                                                                    autoPlay: true,
+                                                                    autoBuffering: true,
+                                                                    live:true,
+                                                                    provider:\'influxis\'
+                                                                },
+                                                                plugins:{
+                                                                    influxis:{
+                                                                        url:\''.URL::base($this->request).'flowplayer/flowplayer.rtmp-3.2.3.swf\',
+                                                                        netConnectionUrl:value.video
+                                                                    },
+                                                                    controls: null
+                                                                }
+                                                            });
+                                                        },100);
+                                                    },310);
+                                                    break;
+                                            }
+                                        }
                                         break;
-                                    case "video":
-                                        twitter.hide(300);
-                                        window.setTimeout(function(){
-                                            container.show(0);
-                                            $("#text_cont").show(0);
-                                            window.setTimeout(function(){
-                                                container.html(data.palautus);
-                                                flowplayer("player", "'.URL::base($this->request).'flowplayer/flowplayer.swf", {
-                                                    clip : {
-                                                        autoPlay: true,
-                                                        autoBuffering: true,
-                                                        live:true,
-                                                        provider:\'influxis\'
-                                                    },
-                                                    plugins:{
-                                                        influxis:{
-                                                            url:\''.URL::base($this->request).'flowplayer/flowplayer.rtmp-3.2.3.swf\',
-                                                            netConnectionUrl:data.video
-                                                        },
-                                                        controls: null
-                                                    }
-                                                });
-                                            },100);
-                                        },310);
+                                    case "fcn":
+                                        $("#client").html(value.name);
+                                        break;
+                                    case "scroller":
+                                        if(value.changed == true){
+                                            scroller.html(value.palautus);
+                                        }
+                                        break;
+                                    case "page":
+                                        page_was = page;
+                                        page = value;
                                         break;
                                 }
-                            },600);
+                            });
                         }
-                        page_was = page;
-                        page = data.page;
-
                     });
                     if(cont == 1){
                         window.setTimeout(function(){
                             check(1);
-                        },2000);
+                        },1500);
                     }
                 }
         </script>

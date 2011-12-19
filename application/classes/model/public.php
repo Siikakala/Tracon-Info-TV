@@ -2,17 +2,23 @@
 
 class Model_Public extends Model_Database {
 
+     public function before(){
+         parent::before();
+         $session = Session::instance();
+     }
+
      public function page(){
+         $session = Session::instance();
         $return = "";
 
-        if($this->session->get("global",1) == 1){//2. parametri = mihin defaultataan. Käytetäänkö globaalia hallintaa vai yksilöityä
+        if($session->get("global",1) == 1){//2. parametri = mihin defaultataan. Käytetäänkö globaalia hallintaa vai yksilöityä
             $query = DB::query(Database::SELECT,//joo, on tyhmää tehdä kahta integeriä varten oma table, ja pistää ne vielä omiks riveikseen. "It seemed like good idea at the time"
                                 "SELECT  opt ".
                                 "       ,value ".
                                 "FROM    config"
                                 )->execute(__db);
             foreach($query as $row){
-                $this->session->set($row['opt'],$row['value']);//survotaan sessioon. Tuolta tulee siis show_tv ja show_stream.
+                $session->set($row['opt'],$row['value']);//survotaan sessioon. Tuolta tulee siis show_tv ja show_stream.
             }
         }else{//yksilöityä.
             $query = DB::query(Database::SELECT,
@@ -20,20 +26,20 @@ class Model_Public extends Model_Database {
                                 "        ,show_stream ".
                                 "        ,dia ".
                                 "FROM     frontends ".
-                                "WHERE    uuid = '".$this->session->get("uid",false)."' ".
+                                "WHERE    uuid = '".$session->get("uid",false)."' ".
                                 "LIMIT    1"
                                 )->execute(__db);
             $result = $query->as_array();
-            $this->session->set("show_tv",$result[0]['show_tv']);
-            $this->session->set("show_stream",$result[0]['show_stream']);
-            $this->session->set("dia",$result[0]['dia']);
+            $session->set("show_tv",$result[0]['show_tv']);
+            $session->set("show_stream",$result[0]['show_stream']);
+            $session->set("dia",$result[0]['dia']);
         }
 
-        switch($this->session->get("show_tv",0)){
+        switch($session->get("show_tv",0)){
             case 1://stream
-                $old = $this->session->get("old_stream",false);//onko streami vaihtunut?
-                $stream = $this->session->get("show_stream");
-                $this->session->set("old_stream",$stream);
+                $old = $session->get("old_stream",false);//onko streami vaihtunut?
+                $stream = $session->get("show_stream");
+                $session->set("old_stream",$stream);
 
                 if($old == $stream){//nothing has changed.
                     $return = array("changed" => false);
@@ -50,13 +56,13 @@ class Model_Public extends Model_Database {
                 }
                 break;
             case 2://staattinen dia
-                $old_d = $this->session->get("old_dia",false);//vastaava kuin streameilla.
-                $dia = $this->session->get("dia");
-                $this->session->set("old_dia",$dia);
+                $old_d = $session->get("old_dia",false);//vastaava kuin streameilla.
+                $dia = $session->get("dia");
+                $session->set("old_dia",$dia);
                 if($old_d == $dia){
                     $return = array("changed" => false);
                 }else{
-                    if($this->session->get("dia") != 0){ //dia-id 0 = twitter-feed
+                    if($session->get("dia") != 0){ //dia-id 0 = twitter-feed
                         $query2 = DB::query(Database::SELECT,
                                             "SELECT    data ".
                                             "FROM      diat ".
@@ -78,8 +84,8 @@ class Model_Public extends Model_Database {
                 }
                 break;
             default://diashow
-                if(!$this->session->get("timestamp"))
-                    $this->session->set("timestamp",time()); //fail-safe aikaleima.
+                if(!$session->get("timestamp"))
+                    $session->set("timestamp",time()); //fail-safe aikaleima.
 
                 $query = DB::query(Database::SELECT,//montakos niitä näytettäviä dioja oli diashowssa..?
                                     "SELECT pos ".
@@ -87,10 +93,10 @@ class Model_Public extends Model_Database {
                                     "WHERE  hidden = 0"
                                     )->execute(__db);
                 $max = $query->count();
-                if($this->session->get("time")){//jos timelimit on olemassa
-                    $timestamp = $this->session->get("timestamp") + $this->session->get("time");
+                if($session->get("time")){//jos timelimit on olemassa
+                    $timestamp = $session->get("timestamp") + $session->get("time");
                     if(time() > $timestamp){//onko diaa näytetty jo tarpeeksi kauan?
-                        $new_page = $this->session->get("page",0) + 1;
+                        $new_page = $session->get("page",0) + 1;
                         if($max){
                             if($new_page > $max){
                                 $new_page = 0;
@@ -98,7 +104,7 @@ class Model_Public extends Model_Database {
                         }else{
                             $new_page = 0;
                         }
-                        $this->session->set("page",$new_page);
+                        $session->set("page",$new_page);
                         $return = $this->get_diadata();
                     }else{
                         $return = array("changed" => false);
@@ -111,6 +117,7 @@ class Model_Public extends Model_Database {
      }
 
      public function get_diadata(){
+        $session = Session::instance();
         $query1 = DB::query(Database::SELECT,//kaivetaas diashow-data kannasta.
                             "SELECT    type ".
                             "         ,`time` ".
@@ -124,7 +131,7 @@ class Model_Public extends Model_Database {
         else
             $result1 = false;
 
-        $kohta = $this->session->get("page",0);
+        $kohta = $session->get("page",0);
 
         switch($result1[$kohta]["type"]){
             case 1://dia
@@ -141,13 +148,13 @@ class Model_Public extends Model_Database {
                 //allaoleva on aivan kaamea putkitus mutta: kannasta saatu data varmistetaan utf-8:ksi, jonka jälkeen parsitaan vielä ohjelmakarttatagit.
                 $parsed = $this->parse_ohjelmatags($this->utf8($result2[0]["data"]));//[0] = parsittu teksti [1] = näytetäänkö progresspie
                 $return = array("changed" => true, "part" => "text", "palautus" => $parsed[0], "pie" => $parsed[1]);
-                $this->session->set("timestamp",time());//koska dia on vaihdettu
-                $this->session->set("time",$result1[$kohta]["time"]);//kauanko näytetään.
+                $session->set("timestamp",time());//koska dia on vaihdettu
+                $session->set("time",$result1[$kohta]["time"]);//kauanko näytetään.
                 break;
             case 2://twitter
                 $return = array("changed" => true, "part" => "twitter", "palautus" => "");
-                $this->session->set("timestamp",time());
-                $this->session->set("time",$result1[$kohta]["time"]);
+                $session->set("timestamp",time());
+                $session->set("time",$result1[$kohta]["time"]);
                 break;
         }//switch
         return $return;
@@ -157,13 +164,13 @@ class Model_Public extends Model_Database {
     * Tämä action vastaa clientin tunnistamisesta.
     */
     public function fcn(){ //Frontend Client Name
-
+        $session = Session::instance();
         Cookie::$salt = "Suola on perseessäs";//Koska kohana haluaa kekseilleen suolan.
 
     	if(Cookie::get("uid",false) == false){//jos keksiä ei ole.
             $uuid = md5(uniqid(rand(), true));//generoidaan uusi uuid.
             Cookie::set("uid",$uuid,2419200);//keksin parasta ennen-päiväykseen neljä viikkoa.
-            $this->session->set("uid",$uuid);
+            $session->set("uid",$uuid);
             $query = DB::query(Database::INSERT,
                                 "INSERT INTO frontends ".
                                 "           (tunniste ".
@@ -175,8 +182,8 @@ class Model_Public extends Model_Database {
                                 "           ,NOW() ".
                                 "           )"
                               )->execute(__db);
-        }elseif(!$this->session->get("uid",false)){//jos uuid-dataa ei ole sessiossa, mutta keksi löytyy.
-            $this->session->set("uid",Cookie::get("uid"));
+        }elseif(!$session->get("uid",false)){//jos uuid-dataa ei ole sessiossa, mutta keksi löytyy.
+            $session->set("uid",Cookie::get("uid"));
             $query = DB::query(Database::SELECT,
                                 "SELECT   tunniste ".
                                 "        ,use_global ".
@@ -199,27 +206,27 @@ class Model_Public extends Model_Database {
                                   )->execute(__db);
             }else{
                 $result = $query->as_array();
-                $this->session->set("global",$result[0]['use_global']);
-                $this->session->set("client",$result[0]['tunniste']);
+                $session->set("global",$result[0]['use_global']);
+                $session->set("client",$result[0]['tunniste']);
             }
         }else{//jos keksi ja sessiodata on kunnossa.
             $query = DB::query(Database::UPDATE,//ilmiannetaan frontendin aktiivisuus
                                 "UPDATE frontends ".
                                 "SET    last_active = NOW() ".
-                                "WHERE  uuid = '".$this->session->get("uid")."'"
+                                "WHERE  uuid = '".$session->get("uid")."'"
                                 )->execute(__db);
             $query2 = DB::query(Database::SELECT,//varmistetaan tuorein data.
                                 "SELECT  use_global ".
                                 "       ,tunniste ".
                                 "FROM    frontends ".
-                                "WHERE   uuid = '".$this->session->get("uid")."'"
+                                "WHERE   uuid = '".$session->get("uid")."'"
                                 )->execute(__db);
             $result = $query2->as_array();
-            $this->session->set("global",$result[0]['use_global']);
-            $this->session->set("client",$result[0]['tunniste']);
+            $session->set("global",$result[0]['use_global']);
+            $session->set("client",$result[0]['tunniste']);
         }
 
-        $client_name = $this->session->get("client","Undefined");
+        $client_name = $session->get("client","Undefined");
 
         $ret = array("name"=>$client_name);
         return $ret;
@@ -227,9 +234,9 @@ class Model_Public extends Model_Database {
 
     public function scroller($override = false){//scrollerin päivitys.
         $scroll = false;//oletuksena scroller ei ole muuttunut
-
-        if(!$this->session->get("scrollstamp")){//jos edellisen päivityksen aikaleimaa ei löydy..
-            $this->session->set("scrollstamp",time());//asetetaan aikaleima,
+        $session = Session::instance();
+        if(!$session->get("scrollstamp")){//jos edellisen päivityksen aikaleimaa ei löydy..
+            $session->set("scrollstamp",time());//asetetaan aikaleima,
             $override = true;//ja pakotetaan päivitys.
         }
 
@@ -244,7 +251,7 @@ class Model_Public extends Model_Database {
 
         if($result1){
             $stamp = strtotime($result1[0]["max"]);//unix-timestampiksi muunnos
-            if($stamp > $this->session->get("scrollstamp") || $override){//jos kannasta löytyy tuoreampaa dataa kuin viimeisin päivitys TAI jos kyseessä on pakotettu päivitys
+            if($stamp > $session->get("scrollstamp") || $override){//jos kannasta löytyy tuoreampaa dataa kuin viimeisin päivitys TAI jos kyseessä on pakotettu päivitys
                 $scrolli[0] = __title;//"Tracon Info-TV"
                 $query2 = DB::query(Database::SELECT,//haetaan kaikki piilottamattomat scrollerinpalat.
                                     "SELECT   text ".
@@ -265,7 +272,7 @@ class Model_Public extends Model_Database {
             $return = array("changed" => true,"palautus"=>$scroll);
         else
             $return = array("changed"=>false);
-        $this->session->set("scrollstamp",time());//muistetaan vielä asettaa se päivitysaika sessiomuuttujaan.
+        $session->set("scrollstamp",time());//muistetaan vielä asettaa se päivitysaika sessiomuuttujaan.
         return $return;
     }
 
