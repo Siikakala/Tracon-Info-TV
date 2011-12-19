@@ -890,10 +890,10 @@ class Controller_Ajax extends Controller{
                         $over = false;
                     $return = array(
                         "ret" => true,
+                        "page" => $this->session->get("page",0),
                         "dia" => $provider->page(),
                         "fcn" => $provider->fcn(),
-                        "scroller" => $provider->scroller($over),
-                        "page" => $this->session->get("page",0)
+                        "scroller" => $provider->scroller($over)
                         );
                     break;
             }

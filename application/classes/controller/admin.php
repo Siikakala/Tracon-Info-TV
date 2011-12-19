@@ -178,7 +178,8 @@ class Controller_Admin extends Controller{
                     $this->logi($param1);
                     break;
                 default:
-               		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>";
+               		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>
+                                                   <p>Debug-dataa:<br /><pre>".print_r($_SESSION,true)."</pre></p>";
                		break;
 
     	    }

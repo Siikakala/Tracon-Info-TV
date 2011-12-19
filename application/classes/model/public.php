@@ -93,6 +93,7 @@ class Model_Public extends Model_Database {
                                     "WHERE  hidden = 0"
                                     )->execute(__db);
                 $max = $query->count();
+                $max--;
                 if($session->get("time")){//jos timelimit on olemassa
                     $timestamp = $session->get("timestamp") + $session->get("time");
                     if(time() > $timestamp){//onko diaa näytetty jo tarpeeksi kauan?
@@ -132,7 +133,6 @@ class Model_Public extends Model_Database {
             $result1 = false;
 
         $kohta = $session->get("page",0);
-
         switch($result1[$kohta]["type"]){
             case 1://dia
                 $query2 = DB::query(Database::SELECT,
