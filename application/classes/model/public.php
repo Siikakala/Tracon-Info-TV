@@ -84,9 +84,6 @@ class Model_Public extends Model_Database {
                 }
                 break;
             default://diashow
-                if(!$session->get("timestamp"))
-                    $session->set("timestamp",time()); //fail-safe aikaleima.
-
                 $query = DB::query(Database::SELECT,//montakos niitä näytettäviä dioja oli diashowssa..?
                                     "SELECT pos ".
                                     "FROM   rulla ".
@@ -110,6 +107,11 @@ class Model_Public extends Model_Database {
                     }else{
                         $return = array("changed" => false);
                     }
+                }else{
+                    $session->set("timestamp",time());
+                    $session->set("time",1);
+                    $session->set("page",0);
+                    $return = array("changed" => false);
                 }
 
                 break;

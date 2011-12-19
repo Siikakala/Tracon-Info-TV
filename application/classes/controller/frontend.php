@@ -30,11 +30,11 @@ class Controller_Frontend extends Controller {
     	$page = $this->request->param("id");
     	if($page){//jos requestetaan tietty sivu, näytetään sit pelkkää sitä! :D
             $check = "0";
-            $tm = 1000;
+            $tm = 50;
         }else{
             $page = "0001";
             $check = "1";
-            $tm = 5000;
+            $tm = 500;
         }
     	$this->view->js .= '
     	<script type="text/javascript">
