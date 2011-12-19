@@ -92,18 +92,6 @@ class Controller_Frontend extends Controller {
                     },1000);
                 }
 
-                function override(){
-                    check_scroller("true",0);
-                    window.setTimeout(function(){
-                        override();
-                    },20000);
-                }
-
-                function sleep(delay){
-                    var start = new Date().getTime();
-                    while (new Date().getTime() < start + delay);
-                }
-
                 function drawTimer(percent,index){
        				$(\'#\'+index+\'.timer\').html(\'<div id="\'+index+\'" class="percent"></div><div id="slice-\'+index+\'"\'+(percent > 50?\' class="gt50"\':\'\')+\'><div id="pie-\'+index+\'" class="pie"></div>\'+(percent > 50?\'<div id="fillpie-\'+index+\'" class="pie fill"></div>\':\'\')+\'</div>\');
     				var deg = 360/100*percent;
@@ -115,23 +103,6 @@ class Controller_Frontend extends Controller {
     				});
     				$(\'#\'+index+\'.percent\').html(Math.round(percent)+\'%\');
     			}
-
-                function check_scroller(override,spawn){
-                    if(!override)
-                        var override = false;
-                    var container = $("#rullaaja");
-                    fetch = \''.URL::base($this->request).'backend/\' + page+ \'/check_scroller/\' + override + \'/\';
-                    $.getJSON(fetch, function(data) {
-                        if(data.changed == true){
-                            container.html(data.palautus);
-                        }
-                    });
-                    if(spawn == 1){
-                        window.setTimeout(function(){
-                            check_scroller(0,1);
-                        },5000);
-                    }
-                }
 
                 function check(cont){
 
