@@ -159,10 +159,8 @@ class Controller_Frontend extends Controller {
                                         break;
                                     case "dia":
                                         if(value.changed == true){
-                                            if(page == twiit){
-                                            }else{
-                                                container.hide("puff",700);
-                                            }
+                                            container.hide("puff",700);
+
                                             window.setTimeout(function(){
                                                 switch(value.part){
                                                     case "text":
@@ -170,7 +168,7 @@ class Controller_Frontend extends Controller {
                                                         $("#text_cont").show(\'blind\',300);
                                                         window.setTimeout(function(){
                                                             container.html(value.palautus);
-                                                            $.each(data.pie,function(index2,value2){
+                                                            $.each(value.pie,function(index2,value2){
                                                                 if(value2){
                                                                     drawTimer(value2,index2);
                                                                 }
@@ -217,7 +215,7 @@ class Controller_Frontend extends Controller {
                                                         },310);
                                                         break;
                                                 }
-                                            },600);
+                                            },702);
                                         }
                                         break;
                                     case "fcn":
