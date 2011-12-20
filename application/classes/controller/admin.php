@@ -152,6 +152,12 @@ class Controller_Admin extends Controller{
             	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/tuotanto','Tuotantosuunnit.')."</li><br/>";
             	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/ohjelma','Ohjelma')."</li><br/>";
                 $this->view->content->links .= "\n</ul></div>";
+                if($this->session->get("level",0) >= 3){
+                    $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">BOFH:</a></h3>";
+            	    $this->view->content->links .= "\n<div><ul>";
+                	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/clients','Clientit')."</li><br/>";
+                    $this->view->content->links .= "\n</ul></div>";
+                }
             $this->view->content->links .= "\n</div><br/><ul>";
             $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/dashboard','Dashboard')."</li><br/><br/>";
     	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/logout','Kirjaudu ulos')."</li><br/>";
