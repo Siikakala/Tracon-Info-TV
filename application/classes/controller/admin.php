@@ -149,7 +149,8 @@ class Controller_Admin extends Controller{
             	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/logi','Lokikirja')."</li><br/>";
             	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/lipunmyynti','Lipunmyynti')."</li><br/>";
             	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/tiedotteet','Tiedotteet')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/tuotanto','Tuotantosuunnitelma')."</li><br/>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/tuotanto','Tuotantosuunnit.')."</li><br/>";
+            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/ohjelma','Ohjelma')."</li><br/>";
                 $this->view->content->links .= "\n</ul></div>";
             $this->view->content->links .= "\n</div><br/><ul>";
             $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/dashboard','Dashboard')."</li><br/><br/>";
