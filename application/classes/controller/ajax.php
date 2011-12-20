@@ -683,7 +683,8 @@ class Controller_Ajax extends Controller{
                     break;
                 case "ohjelma"://prosessoi ohjelmdakarttatiedosto.
                     $post = $_POST;
-
+                    // /^O::(.{6,12})::(.{0,20})::(\d+)::(\d+)::(.{0,80})::(.{0,80})::(.{0,15})$(.{0,2000})$/misU
+                    // ^ ei välttämättä toimi täysin. Rubularin mukaan ei matchaan multi-line kuvauksiin, parin muun testerin mukaan ei matchaa kuvaukseen.
                     $ohjelma_data = array();
                     $salinimet = array();
                     //<siviskoodi>
