@@ -156,6 +156,7 @@ class Controller_Admin extends Controller{
                     $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">BOFH:</a></h3>";
             	    $this->view->content->links .= "\n<div><ul>";
                 	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/clients','Clientit')."</li><br/>";
+                	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/users','Käyttäjät')."</li><br/>";
                     $this->view->content->links .= "\n</ul></div>";
                 }
             $this->view->content->links .= "\n</div><br/><ul>";
