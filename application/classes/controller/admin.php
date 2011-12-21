@@ -97,7 +97,7 @@ class Controller_Admin extends Controller{
         	$this->view->content->links = "";
     	}else{
         	//<linkkipalkki>
-            $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","ohjelmakartta"),"info" => array("logi"));
+            $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","ohjelmakartta"),"info" => array("logi","lipunmyynti","tiedotteet","tuotanto","ohjelma"),"bofh" => array("clients","users"));
             $this->session->set('results',array());
             function search($array,$key,$search){
                 $data = array_search($search,$array);
@@ -114,6 +114,8 @@ class Controller_Admin extends Controller{
                 $active = 0;
             }elseif($resultsi[0] == "info"){
                 $active = 1;
+            }elseif($resultsi[0] == "bofh"){
+                $active = 2;
             }
         	$this->view->header->js .= "
             \n<script type=\"text/javascript\">
