@@ -118,7 +118,7 @@ class Controller_Admin extends Controller{
         	$this->view->header->js .= "
             \n<script type=\"text/javascript\">
                 $(function(){
-                    $(\"#links li.btn\").button({
+                    $(\"#links .btn\").button({
                         icons:{
                             primary: \"ui-icon-triangle-1-e\"
                         }
@@ -137,32 +137,32 @@ class Controller_Admin extends Controller{
 			$this->view->content->links = "\n<div id=\"accord\">\n";
     			$this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">TV-ylläpito:</a></h3>";
         	    $this->view->content->links .= "\n<div><ul>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/scroller','Scroller')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/rulla','Rulla')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/dia','Diat')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/streams','Streamit')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/frontends','Frontendit')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/ohjelmakartta','Ohjelmakartta')."</li><br/>";
+            	    $this->view->content->links .= "\n".form::button("scroller","Scroller",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/scroller'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("rulla","Rulla",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/rulla'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("dia","Diat",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/dia'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("streams","Streamit",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/streams'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("frontends","Frontendit",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/frontends'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("ohjelmakartta","Ohjelmakartta",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/ohjelmakartta'", "class" => "btn"))."<br/>";
         	    $this->view->content->links .= "\n</ul></div>";
         	    $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">Info:</a></h3>";
         	    $this->view->content->links .= "\n<div><ul>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/logi','Lokikirja')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/lipunmyynti','Lipunmyynti')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/tiedotteet','Tiedotteet')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/tuotanto','Tuotantosuunnit.')."</li><br/>";
-            	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/ohjelma','Ohjelma')."</li><br/>";
+            	    $this->view->content->links .= "\n".form::button("logi","Lokikirja",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/logi'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("lipunmyynti","Lipunmyynti",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/lipunmyynti'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("tiedotteet","Tiedotteet",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/tiedotteet'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("tuotanto","Tuotantosuunnit.",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/tuotanto'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("ohjelma","Ohjelma",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/ohjelma'", "class" => "btn"))."<br/>";
                 $this->view->content->links .= "\n</ul></div>";
                 if($this->session->get("level",0) >= 3){
                     $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">BOFH:</a></h3>";
             	    $this->view->content->links .= "\n<div><ul>";
-                	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/clients','Clientit')."</li><br/>";
-                	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/users','Käyttäjät')."</li><br/>";
+                	    $this->view->content->links .= "\n".form::button("clients","Clientit",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/clients'", "class" => "btn"))."<br/>";
+                	    $this->view->content->links .= "\n".form::button("users","Käyttäjät",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/users'", "class" => "btn"))."<br/>";
                     $this->view->content->links .= "\n</ul></div>";
                 }
             $this->view->content->links .= "\n</div><br/><ul>";
-            $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/face/dashboard','Dashboard')."</li><br/><br/>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('admin/logout','Kirjaudu ulos')."</li><br/>";
-    	    $this->view->content->links .= "\n<li class=\"btn\">".html::file_anchor('','Info-TV')."</li>";
+            $this->view->content->links .= "\n".form::button("dashboard","Dashboard",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/dashboard'", "class" => "btn"))."<br/><br/>";
+            $this->view->content->links .= "\n".form::button("logout","Kirjaudu ulos",array("onclick"=>"parent.location='".url::base($this->request)."admin/logout'", "class" => "btn"))."<br/>";
+            $this->view->content->links .= "\n".form::button("infotv","Info-TV",array("onclick"=>"parent.location='".url::base($this->request)."'", "class" => "btn"))."<br/>";
 			$this->view->content->links .= "\n</ul>";
     	    //</linkkipalkki>
 

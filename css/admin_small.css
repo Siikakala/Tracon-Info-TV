@@ -83,14 +83,14 @@ a.hover:hover, a.hover:active{
 	margin-left: 0;
 }
 
-#links li {
+#links .btn {
 	font-weight: bold;
 	margin-bottom: 2px;
     width: 130px;
     text-align:left;
 }
 
-#accord li {
+#accord .btn {
     margin-left:-5px;
 }
 
