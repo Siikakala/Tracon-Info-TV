@@ -63,7 +63,8 @@ I18n::lang('en-us');
  */
 if (isset($_SERVER['KOHANA_ENV']))
 {
-	Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
+	//Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
+	Kohana::$environment = constant('Kohana::PRODUCTION');
 }
 if (Kohana::$environment === Kohana::PRODUCTION)
 {
@@ -104,7 +105,7 @@ if (Kohana::$environment === Kohana::PRODUCTION)
  * - boolean  caching     enable or disable internal caching                 FALSE
  */
 Kohana::init(array(
-	'base_url'   => Kohana::$environment === Kohana::DEVELOPMENT ? '/tracon_info-tv/' : '/',
+	'base_url'   => Kohana::$environment === Kohana::DEVELOPMENT ? '/tracon_info-tv/' : '/tracon_info-tv/',
 	'index_file' => false,
 	'errors'     => Kohana::$environment === Kohana::DEVELOPMENT,
 	'profile'    => Kohana::$environment === Kohana::PRODUCTION,
@@ -171,6 +172,12 @@ Route::set('frontpage', '(<id>)')
 		'controller' => 'frontend',
 		'action'     => 'to_tv',
 	));
+
+
+Route::set('error', 'error/<action>(/<message>)', array('action' => '[0-9]++', 'message' => '.+'))
+->defaults(array(
+    'controller' => 'errors'
+));
 
 
 define("__title","Höylä");
