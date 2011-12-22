@@ -1266,12 +1266,12 @@ class Controller_Admin extends Controller{
     public function tinymce($css){
         $data = "
                 <!-- TinyMCE -->
-                <script type=\"text/javascript\" src=\"".URL::base($this->request)."tiny_mce/jquery.tinymce.js\"></script>
+                <script type=\"text/javascript\" src=\"".URL::base($this->request)."tiny_mce/3.4.7/jquery.tinymce.js\"></script>
                 <script type=\"text/javascript\"><!--
                 function tinymce_setup(){
                     $(function(){
                     	$('textarea.tinymce').tinymce({
-                        	script_url : \"".URL::base($this->request)."tiny_mce/tiny_mce.js\",
+                        	script_url : \"".URL::base($this->request)."tiny_mce/3.4.7/tiny_mce.js\",
 
                     		// General options
                     		theme : \"advanced\",
