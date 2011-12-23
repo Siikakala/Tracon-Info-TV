@@ -194,7 +194,7 @@ class Model_Public extends Model_Database {
                                 )->execute(__db);
             if($query->count() < 0){//keksi elää pidempään kuin data kannassa.
                 //eiolee.
-                $uuid = md5(uniqid(rand(), true));//generoidaan uusi uuid.
+                $uuid = Cookie::get("uid");
                 $query = DB::query(Database::INSERT,
                                     "INSERT INTO frontends ".
                                     "           (tunniste ".
