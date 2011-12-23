@@ -107,7 +107,7 @@ Kohana::init(array(
 	'base_url'   => Kohana::$environment === Kohana::DEVELOPMENT ? '/tracon_info-tv/' : '/',
 	'index_file' => false,
 	'errors'     => true,
-	'profile'    => Kohana::$environment === Kohana::PRODUCTION,
+	'profile'    => Kohana::$environment === Kohana::DEVELOPMENT,
 	'caching'    => Kohana::$environment === Kohana::PRODUCTION
 ));
 
