@@ -1,11 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-
-class Kohana_Exception extends Kohana_Kohana_Exception {
-
+/**
+ * Custom exception handler for typical 404/500 error
+ *
+ * @author Lysender
+ *
+ */
+class Kohana_Exception extends Kohana_Kohana_Exception
+{
     public static function handler(Exception $e)
     {
-        if (Kohana::DEVELOPMENT === Kohana::$environment)
+        // Throw errors when in development mode
+        if (Kohana::$environment === Kohana::DEVELOPMENT)
         {
             parent::handler($e);
         }
@@ -15,22 +21,22 @@ class Kohana_Exception extends Kohana_Kohana_Exception {
             {
                 Kohana::$log->add(Log::ERROR, parent::text($e));
 
-                $attributes = array
-                (
-                    'action'  => 500,
-                    'message' => rawurlencode($e->getMessage())
+                $attributes = array(
+                    'action'    => 500,
+                    'origuri'   => rawurlencode(Arr::get($_SERVER, 'REQUEST_URI')),
+                    'message'   => rawurlencode($e->getMessage())
                 );
 
-                if ($e instanceof HTTP_Exception)
+                if ($e instanceof Http_Exception)
                 {
                     $attributes['action'] = $e->getCode();
                 }
 
-                // Error sub-request.
+                // Error sub request
                 echo Request::factory(Route::get('error')->uri($attributes))
-                ->execute()
-                ->send_headers()
-                ->body();
+                    ->execute()
+                    ->send_headers()
+                    ->body();
             }
             catch (Exception $e)
             {
@@ -46,5 +52,4 @@ class Kohana_Exception extends Kohana_Kohana_Exception {
         }
     }
 }
-
 ?>

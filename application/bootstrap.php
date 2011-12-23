@@ -63,8 +63,7 @@ I18n::lang('en-us');
  */
 if (isset($_SERVER['KOHANA_ENV']))
 {
-	//Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
-	Kohana::$environment = constant('Kohana::PRODUCTION');
+	Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
 }
 if (Kohana::$environment === Kohana::PRODUCTION)
 {
@@ -105,9 +104,9 @@ if (Kohana::$environment === Kohana::PRODUCTION)
  * - boolean  caching     enable or disable internal caching                 FALSE
  */
 Kohana::init(array(
-	'base_url'   => Kohana::$environment === Kohana::DEVELOPMENT ? '/tracon_info-tv/' : '/tracon_info-tv/',
+	'base_url'   => Kohana::$environment === Kohana::DEVELOPMENT ? '/tracon_info-tv/' : '/',
 	'index_file' => false,
-	'errors'     => Kohana::$environment === Kohana::DEVELOPMENT,
+	'errors'     => true,
 	'profile'    => Kohana::$environment === Kohana::PRODUCTION,
 	'caching'    => Kohana::$environment === Kohana::PRODUCTION
 ));
@@ -141,7 +140,7 @@ Kohana::modules(array(
  * defaults for the URI.
  */
 
-Route::set('backend', '<controller>(/<page>(/<action>(/<param1>)))',
+Route::set('backend', '<controller>(/<action>(/<param1>))',
      array(
          'controller' => 'backend'
      ))->defaults(array(
@@ -174,9 +173,13 @@ Route::set('frontpage', '(<id>)')
 	));
 
 
-Route::set('error', 'error/<action>(/<message>)', array('action' => '[0-9]++', 'message' => '.+'))
+/**
+ * Error router
+ */
+Route::set('error', 'error/<action>/<origuri>/<message>', array('action' => '[0-9]++', 'origuri' => '.+', 'message' => '.+'))
 ->defaults(array(
-    'controller' => 'errors'
+    'controller' => 'errors',
+    'action'     => 'index'
 ));
 
 

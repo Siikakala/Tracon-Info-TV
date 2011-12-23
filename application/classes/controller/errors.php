@@ -1,53 +1,88 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Errors extends Controller {
+class Controller_Errors extends Controller
+{
+    /**
+     * @var string
+     */
+    protected $_requested_page;
 
+    /**
+     * @var string
+     */
+    protected $_message;
+
+    protected $template = "errors/";
+
+    public function __construct(Request $request, Response $response) {
+        parent::__construct($request, $response);
+
+        // Assign the request to the controller
+        $this->request = $request;
+        // Assign a response to the controller
+        $this->response = $response;
+    }
+
+    /**
+     * Pre determine error display logic
+     */
     public function before()
     {
         parent::before();
 
-        $this->template->page = URL::site(rawurldecode(Request::$initial->uri()));
-
-        // Internal request only!
+        // Sub requests only!
         if (Request::$initial !== Request::$current)
         {
             if ($message = rawurldecode($this->request->param('message')))
             {
-                $this->template->message = $message;
+                $this->_message = $message;
+            }
+
+            if ($requested_page = rawurldecode($this->request->param('origuri')))
+            {
+                $this->_requested_page = $requested_page;
             }
         }
         else
         {
+            // This one was directly requested, don't allow
             $this->request->action(404);
+
+            // Set the requested page accordingly
+            $this->_requested_page = Arr::get($_SERVER, 'REQUEST_URI');
         }
 
         $this->response->status((int) $this->request->action());
+
+        //mail("siikakala@tracon.fi","Error ".$this->response->status()." sivulla ".$this->_requested_page,"Katso logi.");
     }
 
+    /**
+     * Serves HTTP 404 error page
+     */
     public function action_404()
     {
-        $this->template->title = '404 Not Found';
 
-        // Here we check to see if a 404 came from our website. This allows the
-        // webmaster to find broken links and update them in a shorter amount of time.
-        if (isset ($_SERVER['HTTP_REFERER']) AND strstr($_SERVER['HTTP_REFERER'], $_SERVER['SERVER_NAME']) !== FALSE)
-        {
-            // Set a local flag so we can display different messages in our template.
-            $this->template->local = TRUE;
-        }
-
-        // HTTP Status code.
-        $this->response->status(404);
+        $this->view = View::factory('errors/404')
+            ->set('error_message', $this->_message)
+            ->set('requested_page', $this->_requested_page)
+            ->set('image', url::base($this->request)."imgs/errors/".$this->response->status().".jpg");
     }
 
-    public function action_503()
-    {
-        $this->template->title = 'Maintenance Mode';
-    }
-
+    /**
+     * Serves HTTP 500 error page
+     */
     public function action_500()
     {
-        $this->template->title = 'Internal Server Error';
+
+        $this->view = View::factory('errors/500')
+            ->set('error_message', $this->_message)
+            ->set('requested_page', $this->_requested_page)
+            ->set('image', url::base($this->request)."imgs/errors/".$this->response->status().".jpg");
+    }
+
+    public function after(){
+        echo $this->view;
     }
 }
 ?>

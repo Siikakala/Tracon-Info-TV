@@ -12,6 +12,10 @@ class Controller_Backend extends Controller {
         session_destroy();
     }
 
+    public function action_fail(){
+        throw new Kohana_Exception('Testierrori');
+    }
+
     public function action_check(){//nojaa vahvasti sessioihin.
         $page = $this->request->param("page");//kaivetaan sivuparametri routesta
      	if(!$this->session->get("lastpage"))//missä oltiin aikasemmin
