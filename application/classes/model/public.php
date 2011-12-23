@@ -254,7 +254,6 @@ class Model_Public extends Model_Database {
         if($result1){
             $stamp = strtotime($result1[0]["max"]);//unix-timestampiksi muunnos
             if($stamp > $session->get("scrollstamp") || $override){//jos kannasta löytyy tuoreampaa dataa kuin viimeisin päivitys TAI jos kyseessä on pakotettu päivitys
-                $scrolli[0] = __title;//"Tracon Info-TV"
                 $query2 = DB::query(Database::SELECT,//haetaan kaikki piilottamattomat scrollerinpalat.
                                     "SELECT   text ".
                                     "FROM     scroller ".
@@ -268,7 +267,7 @@ class Model_Public extends Model_Database {
                 $scroll = implode(" &raquo; ",$scrolli);
             }//else = mikään ei muuttunut -> palauttaa falsen
         }else
-            $scroll = __title;//jos scroller olisi muuten tyhjä, näytetään ainakin "Tracon Info-TV"
+            $scroll = "Info-TV";//jos scroller olisi muuten tyhjä, näytetään ainakin "Tracon Info-TV"
 
         if($scroll)
             $return = array("changed" => true,"palautus"=>$scroll);

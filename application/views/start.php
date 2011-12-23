@@ -18,8 +18,7 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 		</div>
 	<div id="main">
 		<div id="header">
-			<p id="login"><?php print $login; ?></p>
-			<h1><div id="marquee" class="marquee" width="690"><div class="scrollingtext"><span id="rullaaja"><?php print __title; ?></span></div></div></h1>
+			<h1><div id="marquee" class="marquee" width="690"><div class="scrollingtext"><span id="rullaaja">Info-TV</span></div></div></h1>
     		<div id="kello"></div>
         </div>
         <div id="text_cont">

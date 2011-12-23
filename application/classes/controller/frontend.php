@@ -213,7 +213,6 @@ class Controller_Frontend extends Controller {
                 }
         </script>
     	';
-        $this->view->login = "";
     	$this->view->text = "Tervetuloa seuraamaan Tracon VI:n inforuutua.<br><br>Odota hetki, synkronoidutaan inforuutujärjestelmään.";
 		$this->response->body($this->view->render());
 	}
