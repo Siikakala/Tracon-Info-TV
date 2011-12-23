@@ -13,6 +13,7 @@ class Controller_Frontend extends Controller {
     	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery-ui-1.8.16.custom.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.validate.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
+        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.framerate.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.Scroller-1.0.src.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."flowplayer/flowplayer-3.2.6.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/widget.js\"></script>";
@@ -38,6 +39,15 @@ class Controller_Frontend extends Controller {
         }
     	$this->view->js .= '
     	<script type="text/javascript">
+        	jQuery.fx.interval = 5;
+        	window.onfocus = function () {
+              $.fx.off = false;
+            };
+
+            window.onblur = function () {
+              $.fx.off = true;
+            };
+            $().framerate({framerate: 200, logframes: false});
         	var page = "'.$page.'";
         	var page_was = "";
         	var twiit = "";
@@ -60,7 +70,7 @@ class Controller_Frontend extends Controller {
                     var paikka = parseInt(container.css("left"));
                     var leveys = container.width();
                     var ulkona = paikka + leveys;
-                    container.animate({"left": "-=100px"},600,"linear");
+                    container.animate({"left": "-=10px"},60,"linear");
                     if(ulkona < 0){
                         container.stop(true);
                         window.setTimeout(function(){
@@ -68,11 +78,11 @@ class Controller_Frontend extends Controller {
                         },50);
                     }
                     window.setTimeout(function(){
-                        if(container.queue("fx").lenght > 30){
-                            container.clearQueue();
+                        if(container.queue("fx").lenght > 1){
+                            container.clearQueue("fx");
                         }
                         scrolleri();
-                    },598);
+                    },59);
                 }
 
                 function update_clock(){

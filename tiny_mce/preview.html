@@ -6,22 +6,13 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="shortcut icon" href="/tracon_info-tv/favicon.gif" />
+	<link rel="shortcut icon" href="/favicon.gif" />
 	<title>Tracon VI Info-TV</title>
-	<link type="text/css" href="tracon_info-tv/css/admin.css" rel="stylesheet" />
+	<link type="text/css" href="/css/admin.css" rel="stylesheet" />
 	<script language="javascript" src="/tiny_mce/3.4.7/tiny_mce_popup.js"></script>
-    <script type="text/javascript" src="/js/embed.js"></script>
+    <script type="text/javascript" src="/js/embed.3.4.7.js"></script>
     <script type="text/javascript">
-    tinyMCEPopup.onInit.add(function(ed) {
-    	var dom = tinyMCEPopup.dom;
-
-    	// Load editor content_css
-    	tinymce.each(ed.settings.content_css.split(','), function(u) {
-    		dom.loadCSS(ed.documentBaseURI.toAbsolute(u));
-    	});
-
-    	// Place contents inside div container
-    	dom.setHTML('text', ed.getContent());
+        document.write('<base href="' + tinyMCEPopup.getWindowArg("base") + '">');
     });
     </script>
 </head>
@@ -37,7 +28,9 @@
 		</div>
 		<div id="text_cont">
     		<div id="text">
-
+                <script type="text/javascript">
+                	document.write(tinyMCEPopup.editor.getContent());
+                </script>
        		</div>
        	</div>
 
