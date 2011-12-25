@@ -191,6 +191,9 @@ class Controller_Admin extends Controller{
                 case "logi":
                     $this->logi($param1);
                     break;
+                case "dashboard":
+                    $this->dashboard($param1);
+                    break;
                 default:
                		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>
                                                    <p>Debug-dataa:<br /><pre>".print_r($_SESSION,true)."</pre></p>";
@@ -1211,6 +1214,10 @@ class Controller_Admin extends Controller{
             $this->view->content->text .= "</tbody></table>";
         }
         $this->view->content->text .= "</div>";
+    }
+
+    public function dashboard(){
+        $this->view->content->text = "<div style=\"padding:5px;margin:0;height:315px;width:430px;\"><iframe src=\"".url::base($this->request)."\" style=\"-moz-transform: scale(0.4, 0.4); -webkit-transform: scale(0.4, 0.4); width:1050px; height:750px;padding:0;margin:-220px -312px;\" ></iframe></div>";
     }
 
 
