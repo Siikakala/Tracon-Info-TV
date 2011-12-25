@@ -229,6 +229,20 @@ fieldset {
 	border: none;
 }
 
+.loota {
+    float:left;
+    flow-wrap:wrap;
+    wrap-type:around;
+    wrap-mode:all;
+    overflow:hidden;
+    clear:right;
+    margin: 10px;
+    border:1px solid black;
+    min-height: 200px;
+    min-width: 300px;
+    max-width: 600px;
+}
+
 label.manual {
     float: left;
 	display: block;

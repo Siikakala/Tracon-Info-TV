@@ -9,7 +9,7 @@ class Controller_Frontend extends Controller {
     	$this->session = Session::instance();
     	//$halp = new Halp();
     	$this->view = new View('start');
-        $this->view->js  = "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery-1.6.2.min.js\"></script>";
+        $this->view->js  = "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery-1.7.min.js\"></script>";
     	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery-ui-1.8.16.custom.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.validate.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
@@ -72,7 +72,7 @@ class Controller_Frontend extends Controller {
                     var ulkona = paikka + leveys;
                     container.animate({"left": "-=10px"},60,"linear");
                     if(ulkona < 0){
-                        container.stop(true);
+                        container.stop(true, true);
                         window.setTimeout(function(){
                             container.css("left","700px");
                         },50);

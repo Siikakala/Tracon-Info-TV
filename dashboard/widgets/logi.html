@@ -1,0 +1,27 @@
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#docdialog').dialog({
+      autoOpen: false,
+      height: 750,
+      width: 600,
+      modal: true
+    });
+
+    $('.loadDoc').live('click',function() {
+      $('#docdialog').dialog('open');
+      return false;
+    });
+
+    $('#docdialogtabs').tabs();
+    function refresh(){
+        var container = $("#table");
+        fetch = '../../ajax/todo_refresh/'
+        $.getJSON(fetch,function(data) {
+            container.html(data.ret);
+        });
+    };
+  });
+
+</script>
+
+<div id="table"></div>

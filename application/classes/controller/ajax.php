@@ -824,9 +824,10 @@ class Controller_Ajax extends Controller{
                                        '        ,adder '.
                                        '        ,stamp '.
                                        'FROM     logi '.
-                                       'ORDER BY stamp DESC'
+                                       'ORDER BY stamp DESC '.
+                                       'LIMIT    20'
                                        )->execute(__db);
-                    $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+                    $text = "<table class=\"stats\" style=\"color:black\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     foreach($query as $row){
                         $text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";

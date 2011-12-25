@@ -1,0 +1,22 @@
+{
+"result" :
+  {
+  "layout": "layout1",
+  "data" : [
+    {
+      "title" : "Info-TV",
+      "id" : "tv",
+      "column" : "first",
+      "open" : true,
+      "url" : "../../dashboard/widgets/tv.html"
+    },
+    {
+      "title" : "Info-logi",
+      "id" : "logi",
+      "column" : "second",
+      "open" : true,
+      "url" : "../../dashboard/widgets/logi.html"
+    }
+  ]
+  }
+}

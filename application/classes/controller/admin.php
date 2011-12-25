@@ -20,14 +20,24 @@ class Controller_Admin extends Controller{
         	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.min.js"></script>';
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.16.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.uitablefilter.js\"></script>";
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.min.js\"></script>";
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.tablesorter.pager.js\"></script>";
-            $this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
+            //$this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\">
                                     $(function() {
                                         $( 'button, input:submit' ).button();
                                     });
+
+                                    function normalize(href){
+                                        if($(\"#main\").width() != 960){
+                                            $('#main').animate({width:'960px'},300,'easeInOutCubic');
+                                            setTimeout(function () {
+                                                window.location = href;
+                                            }, 310);
+                                        }else{
+                                            window.location = href;
+                                        }
+                                        console.log(href);
+                                    }
                                     </script>
                                         ";
         	$this->view->header->login = "";//oletuksena nää on tyhjiä
@@ -128,6 +138,9 @@ class Controller_Admin extends Controller{
                     $(\"#links a.head-links\").click(function(event){
                         event.preventDefault();
                     });
+                    $(\"#links .btn\").click(function(){
+                        normalize($(this).attr(\"value\"));
+                    });
                     $(\"#accord\").accordion({active:".$active.",autoHeight: false,icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
 
                 });
@@ -139,32 +152,32 @@ class Controller_Admin extends Controller{
 			$this->view->content->links = "\n<div id=\"accord\">\n";
     			$this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">TV-ylläpito:</a></h3>";
         	    $this->view->content->links .= "\n<div><ul>";
-            	    $this->view->content->links .= "\n".form::button("scroller","Scroller",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/scroller'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("rulla","Rulla",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/rulla'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("dia","Diat",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/dia'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("streams","Streamit",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/streams'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("frontends","Frontendit",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/frontends'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("ohjelmakartta","Ohjelmakartta",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/ohjelmakartta'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("scroller","Scroller",array("value"=>URL::site('/',true)."admin/face/scroller", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("rulla","Rulla",array("value"=>url::base($this->request)."admin/face/rulla", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("dia","Diat",array("value"=>url::base($this->request)."admin/face/dia", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("streams","Streamit",array("value"=>url::base($this->request)."admin/face/streams", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("frontends","Frontendit",array("value"=>url::base($this->request)."admin/face/frontends", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("ohjelmakartta","Ohjelmakartta",array("value"=>url::base($this->request)."admin/face/ohjelmakartta", "class" => "btn"))."<br/>";
         	    $this->view->content->links .= "\n</ul></div>";
         	    $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">Info:</a></h3>";
         	    $this->view->content->links .= "\n<div><ul>";
-            	    $this->view->content->links .= "\n".form::button("logi","Lokikirja",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/logi'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("lipunmyynti","Lipunmyynti",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/lipunmyynti'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("tiedotteet","Tiedotteet",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/tiedotteet'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("tuotanto","Tuotantosuunnit.",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/tuotanto'", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("ohjelma","Ohjelma",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/ohjelma'", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("logi","Lokikirja",array("value"=>url::base($this->request)."admin/face/logi", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("lipunmyynti","Lipunmyynti",array("value"=>url::base($this->request)."admin/face/lipunmyynti", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("tiedotteet","Tiedotteet",array("value"=>url::base($this->request)."admin/face/tiedotteet", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("tuotanto","Tuotantosuunnit.",array("value"=>url::base($this->request)."admin/face/tuotanto", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("ohjelma","Ohjelma",array("value"=>url::base($this->request)."admin/face/ohjelma", "class" => "btn"))."<br/>";
                 $this->view->content->links .= "\n</ul></div>";
                 if($this->session->get("level",0) >= 3){
                     $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">BOFH:</a></h3>";
             	    $this->view->content->links .= "\n<div><ul>";
-                	    $this->view->content->links .= "\n".form::button("clients","Clientit",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/clients'", "class" => "btn"))."<br/>";
-                	    $this->view->content->links .= "\n".form::button("users","Käyttäjät",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/users'", "class" => "btn"))."<br/>";
+                	    $this->view->content->links .= "\n".form::button("clients","Clientit",array("value"=>url::base($this->request)."admin/face/clients", "class" => "btn"))."<br/>";
+                	    $this->view->content->links .= "\n".form::button("users","Käyttäjät",array("value"=>url::base($this->request)."admin/face/users", "class" => "btn"))."<br/>";
                     $this->view->content->links .= "\n</ul></div>";
                 }
             $this->view->content->links .= "\n</div><br/><ul>";
-            $this->view->content->links .= "\n".form::button("dashboard","Dashboard",array("onclick"=>"parent.location='".url::base($this->request)."admin/face/dashboard'", "class" => "btn"))."<br/><br/>";
-            $this->view->content->links .= "\n".form::button("logout","Kirjaudu ulos",array("onclick"=>"parent.location='".url::base($this->request)."admin/logout'", "class" => "btn"))."<br/>";
-            $this->view->content->links .= "\n".form::button("infotv","Info-TV",array("onclick"=>"parent.location='".url::base($this->request)."'", "class" => "btn"))."<br/>";
+            $this->view->content->links .= "\n".form::button("dashboard","Dashboard",array("value"=>url::base($this->request)."admin/face/dashboard", "class" => "btn"))."<br/><br/>";
+            $this->view->content->links .= "\n".form::button("logout","Kirjaudu ulos",array("value"=>url::base($this->request)."admin/logout", "class" => "btn"))."<br/>";
+            $this->view->content->links .= "\n".form::button("infotv","Info-TV",array("value"=>url::base($this->request), "class" => "btn"))."<br/>";
 			$this->view->content->links .= "\n</ul>";
     	    //</linkkipalkki>
 
@@ -172,27 +185,35 @@ class Controller_Admin extends Controller{
     	    switch($page){//linkkien käsittely
     	        case "scroller":
         	        $this->scroller($param1);
+        	        $this->view->header->title .= " &raquo; Scroller";
         	        break;
     	        case "rulla":
             		$this->rulla($param1);
+            		$this->view->header->title .= " &raquo; Rulla";
             		break;
             	case "dia":
             		$this->dia($param1);
+            		$this->view->header->title .= " &raquo; Dia";
             		break;
             	case "streams":
                 	$this->streams($param1);
+                	$this->view->header->title .= " &raquo; Streamit";
                 	break;
                 case "frontends":
                 	$this->frontends($param1);
+                	$this->view->header->title .= " &raquo; Frontendit";
                 	break;
                 case "ohjelmakartta":
                 	$this->ohjelmakartta($param1);
+                	$this->view->header->title .= " &raquo; Ohjelmakartta";
                 	break;
                 case "logi":
                     $this->logi($param1);
+                    $this->view->header->title .= " &raquo; Lokikirja";
                     break;
                 case "dashboard":
                     $this->dashboard($param1);
+                    $this->view->header->title .= " &raquo; Dashboard";
                     break;
                 default:
                		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>
@@ -1138,20 +1159,6 @@ class Controller_Admin extends Controller{
                     })
                 });
 
-                function refresh(){
-                    var container = $("#table");
-                    fetch = \''.URL::base($this->request).'ajax/todo_refresh/\'
-                    $.getJSON(fetch,function(data) {
-                        container.html(data.ret);
-                    });
-                    window.setTimeout(function(){
-                        var theTable = $(\'table.stats\');
-                        var arvo = $("#filter").val();
-                        $.uiTableFilter( theTable, arvo );
-                    },80);
-                    return false;
-                };
-
                 function search(){
                     var container = $("#table");
                     var search = $("#filter").val();
@@ -1172,7 +1179,7 @@ class Controller_Admin extends Controller{
                             $( "form" )[ 0 ].reset();
                     },"json");
                     container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
-                    refresh();
+                    search();
 
                     window.setTimeout(function(){
                         container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
@@ -1217,7 +1224,78 @@ class Controller_Admin extends Controller{
     }
 
     public function dashboard(){
-        $this->view->content->text = "<div style=\"padding:5px;margin:0;height:315px;width:430px;\"><iframe src=\"".url::base($this->request)."\" style=\"-moz-transform: scale(0.4, 0.4); -webkit-transform: scale(0.4, 0.4); width:1050px; height:750px;padding:0;margin:-220px -312px;\" ></iframe></div>";
+        $this->view->header->css .= html::style('css/dashboardui.css');
+        $this->view->header->js .= '
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    var resize = $(window).width() - 100;
+                    window.setTimeout(function(){
+                        if($(window).width() > 1060){
+                            $(\'#main\').animate({width:resize+\'px\'},2000,\'easeInOutCubic\');
+                        }
+                    },300);
+                    ref();
+
+                    $(\'#text\').append(\'<div id="templates"></div>\');
+                    $("#templates").hide();
+                    $("#templates").load("'.url::site("/",true).'dashboard/templates.html", initDashboard);
+
+
+                    function initDashboard() {
+                        var dashboard = $("#dashboard").dashboard({
+                            layoutClass:\'layout\',
+                            json_data : {
+                              url: "'.url::site("/",true).'dashboard/jsonfeed/mywidgets.json"
+                            },
+                            addWidgetSettings: {
+                              widgetDirectoryUrl:"'.url::site("/",true).'dashboard/jsonfeed/widgetcategories.json"
+                            },
+                            layouts :
+                              [
+                                {   title: "Layout1",
+                                    id: "layout1",
+                                    image: "layouts/layout5.png",
+                                    html: \'<div class="layout layout-aa"><div class="column first column-first"></div><div class="column second column-second"></div></div>\',
+                                    classname: \'layout-aa\'
+                                }
+                              ]
+                        });
+                        dashboard.element.live(\'dashboardAddWidget\',function(e, obj){
+                            var widget = obj.widget;
+
+                            dashboard.addWidget({
+                              "id":startId++,
+                              "title":widget.title,
+                              "url":widget.url,
+                              "metadata":widget.metadata
+                            }, dashboard.element.find(\'.column:first\'));
+                        });
+                        dashboard.init();
+                    }
+                });
+
+                function ref(){
+                    refresh();
+                    window.setTimeout(function(){
+                        ref();
+                    },5000);
+                };
+
+                function refresh(){
+                    var container = $("#table");
+                    fetch = \''.URL::base($this->request).'ajax/todo_refresh/\'
+                    $.getJSON(fetch,function(data) {
+                        container.html(data.ret);
+                    });
+                };
+            </script>
+            ';
+        $this->view->content->text = "<a class=\"openaddwidgetdialog headerlink\" href=\"#\">Lisää Widgetti</a><div id=\"dashboard\" class=\"dashboard\">
+            <div class=\"layout\">
+              <div class=\"column first column-first\"></div>
+              <div class=\"column second column-second\"></div>
+              <div class=\"column third column-third\"></div>
+            </div></div>";
     }
 
 
