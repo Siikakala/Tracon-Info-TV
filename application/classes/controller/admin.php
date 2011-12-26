@@ -1244,6 +1244,7 @@ class Controller_Admin extends Controller{
                     function initDashboard() {
                         var dashboard = $("#dashboard").dashboard({
                             layoutClass:\'layout\',
+                            debuglevel:5,
                             json_data : {
                               url: "'.url::site("/",true).'dashboard/jsonfeed/mywidgets.json"
                             },

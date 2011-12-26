@@ -759,7 +759,7 @@
       url = dashboard.widgetCategories[$(obj.category).attr("id")];
 
       dashboard.log('Getting JSON feed : ' + url,1);
-      $.getJSON(url, {"cache":true}, function(json) {
+      $.getJSON(url, {"cache":false}, function(json) {
         // load the widgets from the category
         if (json.result.data == 0) dashboard.log('Empty data returned',3);
 
@@ -844,7 +844,7 @@
 
   // Public static properties of dashboard.  Default settings.
   $.fn.dashboard.defaults = {
-    debuglevel:3,
+    debuglevel:5,
     json_data: {},
     loadingHtml: '<div class="loading"><img alt="Loading, please wait" src="../../dashboard/loading.gif" /><p>Loading...</p></div>',
     emptyColumnHtml: 'Drag your widgets here',

@@ -11,7 +11,7 @@
       "url" : "../../dashboard/widgets/tv.html"
     },
     {
-      "title" : "Info-logi",
+      "title" : "Lokikirja",
       "id" : "logi",
       "column" : "second",
       "open" : true,
