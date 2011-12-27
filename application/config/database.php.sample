@@ -6,32 +6,36 @@ return array
 	'dev' => array
 	(
 		'type'       => 'mysql',
+		'driver'     => 'improved',
 		'connection' => array(
    			'hostname'   => 'localhost',
+   			'port'       => '',
 			'database'   => '',//development database
 			'username'   => '',//..username
 			'password'   => '',//..and password
-			'persistent' => TRUE,
+			'persistent' => FALSE,
 		),
 		'table_prefix' => '',
 		'charset'      => '',
 		'caching'      => TRUE,
-		'profiling'    => TRUE,
+		'profiling'    => FALSE,
     ),
     'prod' => array
 	(
 		'type'       => 'mysql',
+		'driver'     => 'improved',
 		'connection' => array(
    			'hostname'   => 'localhost',
+   			'port'       => '',
 			'database'   => '',//production database
 			'username'   => '',//username
 			'password'   => '',//and password
-			'persistent' => TRUE,
+			'persistent' => FALSE,
 		),
 		'table_prefix' => '',
 		'charset'      => '',
 		'caching'      => TRUE,
-		'profiling'    => TRUE,
+		'profiling'    => FALSE,
     )
 
 );
