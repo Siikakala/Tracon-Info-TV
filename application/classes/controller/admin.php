@@ -215,6 +215,10 @@ class Controller_Admin extends Controller{
                     $this->dashboard($param1);
                     $this->view->header->title .= " &raquo; Dashboard";
                     break;
+                case "users":
+                    $this->users($param1);
+                    $this->view->header->title .= " &raquo; Käyttäjät";
+                    break;
                 default:
                		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>
                                                    <p>Debug-dataa:<br /><pre>".print_r($_SESSION,true)."</pre></p>";
@@ -1297,6 +1301,19 @@ class Controller_Admin extends Controller{
               <div class=\"column second column-second\"></div>
               <div class=\"column third column-third\"></div>
             </div></div>";
+    }
+
+    public function users(){
+        $builder = DB_ORM::select('user');
+        $sql = $builder->statement();
+        $results = $builder->query();
+        $rows = $results->as_array();
+        $this->view->content->text = "<table><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th></tr>";
+        //$this->view->content->text .= "<pre>".print_r($rows,true)."</pre>";
+        if($results->is_loaded())foreach($results as $row){
+            $this->view->content->text .= "<tr><td>".$row['kayttis']."</td><td>".$row['level']."</td></tr>";
+        }
+
     }
 
 
