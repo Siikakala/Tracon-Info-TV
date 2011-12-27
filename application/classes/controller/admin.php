@@ -1309,7 +1309,6 @@ class Controller_Admin extends Controller{
     public function users(){
         $users = Jelly::query('user')->select();
         $this->view->content->text = "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th></tr>";
-        //$this->view->content->text .= "<pre>".print_r($rows,true)."</pre>";
         foreach($users as $user){
             $this->view->content->text .= "<tr><td>".$user->u_id."</td><td>".$user->kayttis."</td><td>".$user->level."</td></tr>";
         }
