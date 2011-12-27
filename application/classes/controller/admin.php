@@ -1304,16 +1304,13 @@ class Controller_Admin extends Controller{
     }
 
     public function users(){
-        $builder = DB_ORM::select('user');
-        $sql = $builder->statement();
-        $results = $builder->query();
-        $rows = $results->as_array();
-        $this->view->content->text = "<table><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th></tr>";
+        $users = Jelly::query('user')->select();
+        $this->view->content->text = "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th></tr>";
         //$this->view->content->text .= "<pre>".print_r($rows,true)."</pre>";
-        if($results->is_loaded())foreach($results as $row){
-            $this->view->content->text .= "<tr><td>".$row['kayttis']."</td><td>".$row['level']."</td></tr>";
+        foreach($users as $user){
+            $this->view->content->text .= "<tr><td>".$user->u_id."</td><td>".$user->kayttis."</td><td>".$user->level."</td></tr>";
         }
-
+        $this->view->content->text .= "</table>";
     }
 
 

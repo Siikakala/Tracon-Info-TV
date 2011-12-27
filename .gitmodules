@@ -13,6 +13,6 @@
 [submodule "modules/auth"]
 	path = modules/auth
 	url = git://github.com/kohana/auth.git
-[submodule "modules/leap"]
-	path = modules/leap
-	url = git://github.com/spadefoot/kohana-orm-leap.git
+[submodule "modules/jelly"]
+	path = modules/jelly
+	url = git://github.com/creatoro/jelly.git

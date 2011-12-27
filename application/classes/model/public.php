@@ -84,6 +84,8 @@ class Model_Public extends Model_Database {
                 }
                 break;
             default://diashow
+                $session->set("old_stream",-1);
+                $session->set("old_dia",-1);
                 $query = DB::query(Database::SELECT,//montakos niitä näytettäviä dioja oli diashowssa..?
                                     "SELECT pos ".
                                     "FROM   rulla ".

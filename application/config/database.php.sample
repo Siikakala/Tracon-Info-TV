@@ -6,10 +6,8 @@ return array
 	'dev' => array
 	(
 		'type'       => 'mysql',
-		'driver'     => 'improved',
 		'connection' => array(
    			'hostname'   => 'localhost',
-   			'port'       => '',
 			'database'   => '',//development database
 			'username'   => '',//..username
 			'password'   => '',//..and password
@@ -23,10 +21,8 @@ return array
     'prod' => array
 	(
 		'type'       => 'mysql',
-		'driver'     => 'improved',
 		'connection' => array(
    			'hostname'   => 'localhost',
-   			'port'       => '',
 			'database'   => '',//production database
 			'username'   => '',//username
 			'password'   => '',//and password

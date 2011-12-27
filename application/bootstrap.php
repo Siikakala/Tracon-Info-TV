@@ -130,7 +130,7 @@ Kohana::modules(array(
 	 //'codebench'  => MODPATH.'codebench',  // Benchmarking tool
 	 'database'   => MODPATH.'database',   // Database access
 	 'image'      => MODPATH.'image',      // Image manipulation
-	 'leap'        => MODPATH.'leap',        // Object Relationship Mapping
+	 'jelly'        => MODPATH.'jelly',        // Object Relationship Mapping
 	// 'unittest'   => MODPATH.'unittest',   // Unit testing
 	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
 	));

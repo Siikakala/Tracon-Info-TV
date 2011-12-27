@@ -632,7 +632,17 @@ class Controller_Ajax extends Controller{
                         $diat = false;
 
                     if($result){
-                        $streams = $this->get_streams();
+                        $query = DB::query(Database::SELECT,
+                                            "SELECT    stream_id ".
+                                            "         ,tunniste ".
+                                            "FROM      streamit ".
+                                            "ORDER BY  jarjestys "
+                                            )->execute(__db);
+                        $ret = array();
+                        foreach($query as $row){
+                            $ret[$row['stream_id']] = $row['tunniste'];
+                        }
+                        $streams = $ret;
                         $text = form::open(null, array("onsubmit" => "return false;", "id" => "form"));
                         $text .= "<table id=\"frontendit\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Frontend</th><th class=\"ui-state-default\">Näytä</th><th class=\"ui-state-default\">Käytä globaalia?</th></tr></thead><tbody>";
                         foreach($result as $row => $data){
