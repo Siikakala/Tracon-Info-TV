@@ -1179,8 +1179,11 @@ class Controller_Admin extends Controller{
                     fetch = \''.URL::base($this->request).'ajax/todo_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         container.html(data.ret);
-                        if(data.ok)
+                        if(data.ok){
+                            var adder = $("#adder").val();
                             $( "form" )[ 0 ].reset();
+                            $("#adder").val(adder);
+                        }
                     },"json");
                     container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
                     search();
@@ -1213,7 +1216,7 @@ class Controller_Admin extends Controller{
                            'ORDER BY stamp DESC'
                            )->execute(__db);
         $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
-        $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,2,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',null,array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
+        $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,2,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',$this->session->get('user'),array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
         $this->view->content->text .= "<div id=\"filter_cont\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter"))."</div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
         <div id=\"table\">\n";
 
