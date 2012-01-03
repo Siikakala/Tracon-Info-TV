@@ -1206,24 +1206,16 @@ class Controller_Admin extends Controller{
                 });
             </script>
             ';
-
-        $query = DB::query(Database::SELECT,
-                           'SELECT   tag '.
-                           '        ,comment '.
-                           '        ,adder '.
-                           '        ,stamp '.
-                           'FROM     logi '.
-                           'ORDER BY stamp DESC'
-                           )->execute(__db);
+        $rows = Jelly::query('logi')->order_by('stamp','DESC')->select();
         $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
         $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,2,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',$this->session->get('user'),array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
         $this->view->content->text .= "<div id=\"filter_cont\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter"))."</div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
         <div id=\"table\">\n";
 
-        if($query->count() > 0){
+        if($rows->count() > 0){
             $this->view->content->text .= "<table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
-            foreach($query as $row){
-                $this->view->content->text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>\n";
+            foreach($rows as $row){
+                $this->view->content->text .= "<tr class=\"type-".$row->tag."\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>\n";
             }
             $this->view->content->text .= "</tbody></table>";
         }

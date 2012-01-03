@@ -807,23 +807,12 @@ class Controller_Ajax extends Controller{
                           $ret = "Lisääjä on pakko ilmoittaa.";
                       $return = array("ret" => $ret,"ok"=>false);
                   }else{
-                      $query = DB::query(Database::INSERT,
-                                          'INSERT INTO logi '.
-                                          '           (tag '.
-                                          '           ,comment '.
-                                          '           ,adder '.
-                                          '            ) '.
-                                          'VALUES     ( '.
-                                          '            :tag '.
-                                          '           ,:comment '.
-                                          '           ,:adder '.
-                                          '            )'
-                                          );
-                      $query->parameters(array(":tag"     => $post['tag']
-                                              ,":comment" => $post['comment']
-                                              ,":adder"   => $post['adder']
-                                              ));
-                      $result = $query->execute(__db);
+                      Jelly::factory('logi')
+                                  ->set(array(
+                                      "tag"     => $post['tag'],
+                                      "comment" => $post['comment'],
+                                      "adder"   => $post['adder']
+                                  ))->save();
                       $return = array("ret"=>"Rivi lisätty onnistuneesti.","ok"=>true);
                   }
                   break;
@@ -848,23 +837,17 @@ class Controller_Ajax extends Controller{
               case "todo_search":
                     $param = $_POST['search'];
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
-                    $query = DB::query(Database::SELECT,
-                                       'SELECT   tag '.
-                                       '        ,comment '.
-                                       '        ,adder '.
-                                       '        ,stamp '.
-                                       'FROM     logi '.
-                                       'WHERE    tag REGEXP :search '.
-                                       '     OR  comment REGEXP :search '.
-                                       '     OR  adder REGEXP :search '.
-                                       '     OR  stamp REGEXP :search '.
-                                       'ORDER BY stamp DESC'
-                                       );
-                    $result = $query->param(":search",".*".$param.".*")->execute(__db);
+                    $rows = Jelly::query('logi')
+                                    ->or_where('tag','REGEXP','.*'.$param.'.*')
+                                    ->or_where('comment','REGEXP','.*'.$param.'.*')
+                                    ->or_where('adder','REGEXP','.*'.$param.'.*')
+                                    ->or_where('stamp','REGEXP','.*'.$param.'.*')
+                                    ->order_by('stamp','DESC')
+                                    ->select();
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
 
-                    foreach($result as $row){
-                        $text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                    foreach($rows as $row){
+                        $text .= "<tr class=\"type-".$row->tag."\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>";
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
