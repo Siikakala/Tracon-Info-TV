@@ -88,50 +88,20 @@ class Controller_Ajax extends Controller{
                             if(!isset($datat["hidden"]))//checkkaamattomat checkboxit ei tuu mukaan ollenkaan.
                                 $datat["hidden"] = false;
                             if($row >= 0 && $row < 500){//vanha rivi
-                                $query = DB::query(Database::UPDATE,
-                                                    "UPDATE  scroller ".
-                                                    "SET     pos = :pos ".
-                                                    "       ,text = :text ".
-                                                    "       ,hidden = :hidden ".
-                                                    "WHERE   scroll_id = :row"
-                                                    );
-                                $query->parameters(array(":pos"    => $datat["pos"],
-                                                         ":text"   => $datat["text"],
-                                                         ":hidden" => $datat["hidden"],
-                                                         ":row"    => $row
-                                                         ));
-                                $result = $query->execute(__db);
+                                $row = Jelly::query('scroller',$row)->select();
+                                $row->pos    = $datat["pos"];
+                                $row->text   = $datat["text"];
+                                $row->hidden = $datat["hidden"];
+                                $row->save();
                             }elseif($row >= 500){//uusi rivi
-                                $query = DB::query(Database::INSERT,
-                                                    "INSERT INTO scroller ".
-                                                    "           (pos ".
-                                                    "           ,text ".
-                                                    "           ,hidden ".
-                                                    "           ) ".
-                                                    "VALUES     (:pos ".
-                                                    "           ,:text ".
-                                                    "           ,:hidden ".
-                                                    "           )"
-                                                    );
-                                $query->parameters(array(":pos"    => $datat["pos"],
-                                                         ":text"   => $datat["text"],
-                                                         ":hidden" => $datat["hidden"]
-                                                         ));
-                                $result = $query->execute(__db);
+                                Jelly::factory('scroller')->set($datat)->save();
                             }
                         }
                     }
                     $return = array("ret"=>"Scroller päivitetty.$err Odota hetki, päivitetään listaus...");
                     break;
                 case "scroller_load":
-                	$query = DB::query(Database::SELECT,
-                                        "SELECT    scroll_id as \"id\"".
-                                        "         ,pos ".
-                                        "         ,text ".
-                                        "         ,hidden ".
-                                        "FROM      scroller ".
-                                        "ORDER BY  pos"
-                                        )->execute(__db);
+                	$query = Jelly::query('scroller')->order_by('pos','ASC')->select();
                     if($query->count() > 0)
                         $result = $query->as_array();
                     else
@@ -140,7 +110,7 @@ class Controller_Ajax extends Controller{
                     $text .= "<table id=\"scroller\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Kohta</th><th class=\"ui-state-default\">Teksti</th><th class=\"ui-state-default\">Piilotettu?</th></tr></thead><tbody>";
 
                     if($result) foreach($result as $row=>$data){
-                        $text .= "<tr class=\"".$data["id"]."\"><td>".form::input('pos-'.$data["id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data["id"],$data["text"],array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["id"].")\" >X</a></td></tr>";
+                        $text .= "<tr class=\"".$data["scroll_id"]."\"><td>".form::input('pos-'.$data["scroll_id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data["scroll_id"],$data["text"],array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["scroll_id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["scroll_id"].")\" >X</a></td></tr>";
                     }
                     $text .= "</tbody></table>".form::close();
                     $return = array("data" => $text);
@@ -149,11 +119,7 @@ class Controller_Ajax extends Controller{
                     if(!$param2){
                         $ret = false;
                     }else{
-                        $query = DB::query(Database::DELETE,
-                                            "DELETE FROM scroller ".
-                                            "WHERE       scroll_id = :id"
-                                            );
-                        $query->param(":id",$param2)->execute(__db);
+                        Jelly::query('scroller',$param2)->select()->delete();
                         $ret = true;
                     }
                     $return = array("ret" => $ret);
@@ -161,38 +127,29 @@ class Controller_Ajax extends Controller{
                 case "rulla_row"://rivin generointi vaatii sen verran että on helpompaa hakee data ajaxilla.
                 	$id = $param2;
                 	$text = "";
-                    $query = DB::query(Database::SELECT,
-                                        "SELECT    pos ".
-                                        "FROM      rulla ".
-                                        "WHERE     pos = (SELECT MAX(pos) FROM rulla)"
-                                        )->execute(__db);
+                	$query = Jelly::query('rulla')->order_by('pos','DESC')->limit(1)->select();
                     if($query->count() > 0)
-                        $result = $query->as_array();
+                        $result = $query->as_array(array(NULL,'pos'));
                     else
                         $result = false;
 
-                	$query2 = DB::query(Database::SELECT,
-                                        "SELECT    dia_id as \"id\"".
-                                        "         ,tunniste ".
-                                        "FROM      diat ".
-                                        "ORDER BY  dia_id"
-                                        )->execute(__db);
+                	$query2 = Jelly::query('diat')->order_by('dia_id')->select();
                     if($query2->count() > 0)
-                        $result2 = $query2->as_array();
+                        $result2 = $query2;
                     else
                         $result2 = false;
 
                     $vaihtehdot = array();
                     $vaihtoehdot[0] = "twitter";
-                    if($result2) foreach($result2 as $row => $data){
-                        $vaihtoehdot[$data['id']] = $this->utf8($data['tunniste']);
+                    if($result2) foreach($result2 as $row){
+                        $vaihtoehdot[$row->dia_id] = $this->utf8($row->tunniste);
                     }else
                         $vaihtoehdot = false;
 
                     if(!$result){
                         $pos = $id - 499;
                     }else{
-                        $pos = $id - 499 + $result[0]["pos"];
+                        $pos = $id - 499 + $result["pos"];
                     }
                     $text = "<tr class=\"new\" new=\"$id\"><td>".form::input('pos-'.$id,$pos,array("size"=>"1"))."</td><td>".form::select('text-'.$id,$vaihtoehdot,1)."</td><td>".form::select('time-'.$id,Date::seconds(1,1,121),10)."</td><td>".form::checkbox('hidden-'.$id,1,false)."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del\" >X</a></td></tr>";
                     $return = array("ret" => $text);
@@ -217,94 +174,51 @@ class Controller_Ajax extends Controller{
                                     $type = 2;
                                 else
                                     $type = 1;
-                                $query = DB::query(Database::UPDATE,
-                                                    "UPDATE  rulla ".
-                                                    "SET     pos = :pos ".
-                                                    "       ,selector = :text ".
-                                                    "       ,time = :time".
-                                                    "       ,hidden = :hidden ".
-                                                    "       ,type = $type ".
-                                                    "WHERE   rul_id = :row"
-                                                    );
-                                $query->parameters(array(":pos"    => $datat["pos"],
-                                                         ":text"   => $datat["text"],
-                                                         ":time"   => $datat["time"],
-                                                         ":hidden" => $datat["hidden"],
-                                                         ":row"    => $row
-                                                         ));
-                                $result = $query->execute(__db);
+                                $d = Jelly::query('rulla',$row)->select();
+                                $d->pos    = $datat["pos"];
+                                $d->text   = $datat["text"];
+                                $d->time   = $datat["time"];
+                                $d->hidden = $datat["hidden"];
+                                $d->type   = $type;
+                                $d->save();
                             }elseif($row >= 500){
                                 if($datat["text"] == 0)
-                                    $type = 2;
+                                    $datat["type"] = 2;
                                 else
-                                    $type = 1;
-                                $query = DB::query(Database::INSERT,
-                                                    "INSERT INTO rulla ".
-                                                    "           (pos ".
-                                                    "           ,selector ".
-                                                    "           ,time".
-                                                    "           ,type".
-                                                    "           ,hidden".
-                                                    "           ) ".
-                                                    "VALUES     (:pos ".
-                                                    "           ,:text ".
-                                                    "           ,:time".
-                                                    "           ,$type".
-                                                    "           ,:hidden".
-                                                    "           )"
-                                                    );
-                                $query->parameters(array(":pos"    => $datat["pos"],
-                                                         ":text"   => $datat["text"],
-                                                         ":time"   => $datat["time"],
-                                                         ":hidden" => $datat["hidden"]
-                                                         ));
-                                $result = $query->execute(__db);
+                                    $datat["type"] = 1;
+                                Jelly::factory('rulla')->set($datat)->save();
                             }
                         }
                     }
                     $return = array("ret"=>"Diashow päivitetty.$err Odota hetki, päivitetään listaus...");
                     break;
                 case "rulla_load":
-                	$query = DB::query(Database::SELECT,
-                                        "SELECT    rul_id as \"id\"".
-                                        "         ,pos ".
-                                        "         ,type ".
-                                        "         ,time ".
-                                        "         ,selector ".
-                                        "         ,hidden ".
-                                        "FROM      rulla ".
-                                        "ORDER BY  pos"
-                                        )->execute(__db);
+                	$query = Jelly::query('rulla')->order_by('pos')->select();
                     if($query->count() > 0)
-                        $result = $query->as_array();
+                        $result = $query;
                     else
                         $result = false;
 
-                	$query2 = DB::query(Database::SELECT,
-                                        "SELECT    dia_id as \"id\"".
-                                        "         ,tunniste ".
-                                        "FROM      diat ".
-                                        "ORDER BY  dia_id"
-                                        )->execute(__db);
+                	$query2 = Jelly::query('diat')->order_by('dia_id')->select();
                     if($query2->count() > 0)
-                        $result2 = $query2->as_array();
+                        $result2 = $query2;
                     else
                         $result2 = false;
 
                     $vaihtehdot = array();
                     $vaihtoehdot[0] = "twitter";
-                    if($result2) foreach($result2 as $row => $data){
-                        $vaihtoehdot[$data['id']] = $this->utf8($data['tunniste']);
+                    if($result2) foreach($result2 as $row){
+                        $vaihtoehdot[$row->dia_id] = $this->utf8($row->tunniste);
                     }else
                         $vaihtoehdot = false;
                     $text = form::open(null, array("onsubmit" => "return false;", "id" => "form"))."<table id=\"rulla\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Kohta</th><th class=\"ui-state-default\">Dia</th><th class=\"ui-state-default\">Aika (~s)</th><th class=\"ui-state-default\">Piilotettu?</th></tr></thead><tbody>";
 
-                    if($result) foreach($result as $row=>$data){
-                        if($data['type'] == 2)//jos twitter.
+                    if($result) foreach($result as $row){
+                        if($row->type == 2)//jos twitter.
                             $selector = 0;//joka on aina ensimmäinen vaihtoehdoista.
                         else
-                            $selector = $data['selector'];
-                        $text .= "<tr class=\"".$data["id"]."\"><td>".form::input('pos-'.$data["id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('text-'.$data["id"],$vaihtoehdot,$selector,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('time-'.$data["id"],Date::seconds(1,1,121),$data["time"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["id"].")\" >X</a></td></tr>";
+                            $selector = $row->selector;
+                        $text .= "<tr class=\"".$row->rul_id."\"><td>".form::input('pos-'.$row->rul_id,$row->pos,array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('text-'.$row->rul_id,$vaihtoehdot,$selector,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('time-'.$row->rul_id,Date::seconds(1,1,121),$row->time,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$row->rul_id,1,(boolean)$row->hidden,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$row->rul_id.")\" >X</a></td></tr>";
                     }
                     $text .= "</tbody></table>".form::close();
                     $return = array("data"=>$text);
@@ -313,11 +227,7 @@ class Controller_Ajax extends Controller{
                     if(!$param2){
                         $ret = false;
                     }else{
-                        $query = DB::query(Database::DELETE,
-                                            "DELETE FROM rulla ".
-                                            "WHERE       rul_id = :id"
-                                            );
-                        $query->param(":id",$param2)->execute(__db);
+                        Jelly::query('rulla',$param2)->select()->delete();
                         $ret = true;
                     }
                     $return = array("ret" => $ret);
@@ -352,18 +262,10 @@ class Controller_Ajax extends Controller{
                     if(!$param2){
                         $ret = false;
                     }else{
-                        $query = DB::query(Database::SELECT,
-                                            "SELECT   data ".
-                                            "        ,tunniste ".
-                                            "FROM     diat ".
-                                            "WHERE    dia_id = :id"
-                                            );
-                        $query->param(":id",$param2);
-                        $result = $query->execute(__db);
+                        $result = Jelly::query('diat',$param2)->select();
                         if($result->count() > 0){
-                            $data = $result->as_array();
-                            $ret = "<br/>".form::textarea("loota-".$param2,$this->utf8($data[0]['data']),array("id"=>"loota","class"=>"tinymce"));
-                            $tunniste = $this->utf8($data[0]['tunniste']);
+                            $ret = "<br/>".form::textarea("loota-".$param2,$this->utf8($result->data),array("id"=>"loota","class"=>"tinymce"));
+                            $tunniste = $this->utf8($result->tunniste);
                         }else{
                             $ret = false;
                             $tunniste = false;
@@ -376,34 +278,19 @@ class Controller_Ajax extends Controller{
                     if($post['id'] == 0){//uus
                         $tunniste = $post['ident'];
                         $data = $post['cont'];
-                        $query = DB::query(Database::INSERT,
-                                            "INSERT INTO diat ".
-                                            "                 (tunniste ".
-                                            "                 ,data ".
-                                            "                 ) ".
-                                            "VALUES           (:tunniste ".
-                                            "                 ,:data ".
-                                            "                 )"
-                                            );
-                        $query->parameters(array(":tunniste" => $tunniste,
-                                                 ":data"     => $data
-                                                 ));
-                        $result = $query->execute(__db);
+                        Jelly::factory('diat')
+                                ->set(array(
+                                    "tunniste" => $tunniste,
+                                    "data"     => $data
+                                ))->save();
                         $ret = true;
                     }elseif(!empty($post['id'])){//vanha
                         $tunniste = $post['ident'];
                         $data = $post['cont'];
-                        $query = DB::query(Database::UPDATE,
-                                            "UPDATE diat ".
-                                            "SET    tunniste = :tunniste ".
-                                            "      ,data = :data ".
-                                            "WHERE  dia_id = :id"
-                                            );
-                        $query->parameters(array(":tunniste" => $tunniste,
-                                                 ":data"     => $data,
-                                                 ":id"       => $post['id']
-                                                 ));
-                        $result = $query->execute(__db);
+                        $row = Jelly::query('diat',$post['id'])->select();
+                        $row->tunniste = $tunniste;
+                        $row->data     = $data;
+                        $row->save();
                         $ret = true;
                     }else{
                         //data ei tullu perille :|
@@ -415,29 +302,14 @@ class Controller_Ajax extends Controller{
                     if(!$param2){
                         $ret = false;
                     }else{
-                        $q = DB::query(Database::SELECT,
-                                        "SELECT rul_id ".
-                                        "FROM   rulla ".
-                                        "WHERE  selector = :id"
-                                        );
-                        $r = $q->param(":id",$param2)->execute(__db);
-                        $q2 = DB::query(Database::SELECT,
-                                        "SELECT tunniste ".
-                                        "FROM   frontends ".
-                                        "WHERE  dia = :id"
-                                        );
-                        $r2 = $q2->param(":id",$param2)->execute(__db);
+                        $r = Jelly::query('rulla')->where('selector','=',$param2)->select();
+                        $r2 = Jelly::query('frontends')->where('dia','=',$param2)->select();
                         if($r->count() > 0){
                             $ret = "Diaa käytetään vielä diashowssa. Poista dia sieltä ensin.";
                         }elseif($r2->count() > 0){
-                            $d = $r2->as_array();
-                            $ret = "Diaa näytetään tällä hetkellä frontendissä ".$d[0]['tunniste'].". Poista dia sieltä ensin.";
+                            $ret = "Diaa näytetään tällä hetkellä frontendissä ".$r2->tunniste.". Poista dia sieltä ensin.";
                         }else{
-                            $query = DB::query(Database::DELETE,
-                                                "DELETE FROM diat ".
-                                                "WHERE       dia_id = :id"
-                                                );
-                            $query->param(":id",$param2)->execute(__db);
+                            Jelly::query('diat',$param2)->select()->delete();
                             $ret = true;
                         }
                     }
@@ -460,25 +332,16 @@ class Controller_Ajax extends Controller{
                         $r = $q->param(":id",$param2)->execute(__db);
 
                         //Yksittäinen frontend, joka ei käytä globaalia
-                        $q2 = DB::query(Database::SELECT,
-                                        "SELECT f_id ".
-                                        "FROM   frontends ".
-                                        "WHERE  show_stream = :id ".
-                                        "       AND ".
-                                        "       use_global = 0".
-                                        "       AND ".
-                                        "       show_tv = 1"
-                                        );
-                        $r2 = $q2->param(":id",$param2)->execute(__db);
+                        $q2 = Jelly::query('frontends')
+                                    ->where('show_stream','=',$param2)
+                                    ->where('use_global','=','0')
+                                    ->where('show_tv','=','1')
+                                    ->select();
 
-                        if($r->count() > 0 || $r2->count() > 0){
+                        if($r->count() > 0 || $q2->count() > 0){
                             $ret = "Streamia näytetään parhaillaan. Vaihda toiseen streamiin tai diashowhun ensin.";
                         }else{
-                            $query = DB::query(Database::DELETE,
-                                                "DELETE FROM streamit ".
-                                                "WHERE       stream_id = :id"
-                                                );
-                            $query->param(":id",$param2)->execute(__db);
+                            Jelly::query('streamit',$param2)->select()->delete();
                             $ret = true;
                         }
                     }
@@ -501,36 +364,13 @@ class Controller_Ajax extends Controller{
                             if(empty($datat['jarkka']))
                                 $datat['jarkka'] = $row+200;
                             if($row >= 0 && $row < 500){
-                                $query = DB::query(Database::UPDATE,
-                                                    "UPDATE  streamit ".
-                                                    "SET     tunniste = :ident ".
-                                                    "       ,url = :url ".
-                                                    "       ,jarjestys = :jarkka ".
-                                                    "WHERE   stream_id = :row"
-                                                    );
-                                $query->parameters(array(":ident"  => $datat["ident"],
-                                                         ":url"    => $datat["url"],
-                                                         ":jarkka" => $datat["jarkka"],
-                                                         ":row"    => $row
-                                                         ));
-                                $result = $query->execute(__db);
+                                $d = Jelly::query('streamit',$row)->select();
+                                $d->ident     = $datat["ident"];
+                                $d->url       = $datat["url"];
+                                $d->jarjestys = $datat["jarkka"];
+                                $d->save();
                             }elseif($row >= 500){
-                                $query = DB::query(Database::INSERT,
-                                                    "INSERT INTO streamit ".
-                                                    "           (tunniste ".
-                                                    "           ,url ".
-                                                    "           ,jarjestys ".
-                                                    "           ) ".
-                                                    "VALUES     (:ident ".
-                                                    "           ,:url ".
-                                                    "           ,:jarkka ".
-                                                    "           )"
-                                                    );
-                                $query->parameters(array(":ident"  => $datat["ident"],
-                                                         ":url"    => $datat["url"],
-                                                         ":jarkka" => $datat["jarkka"]
-                                                         ));
-                                $result = $query->execute(__db);
+                                Jelly::factory('streamit')->set($datat)->save();
                             }
                         }
                     }
@@ -538,27 +378,18 @@ class Controller_Ajax extends Controller{
                     break;
                 case "stream_load":
                     $text = "";
-                    $query = DB::query(Database::SELECT,
-                                        "SELECT    stream_id ".
-                                        "         ,tunniste ".
-                                        "         ,url ".
-                                        "         ,jarjestys ".
-                                        "FROM      streamit ".
-                                        "ORDER BY  jarjestys"
-                                        )->execute(__db);
+                    $query = Jelly::query('streamit')->order_by('jarjestys')->select();
                     if($query->count() > 0){
-                        $result = $query->as_array();
-                        $count = $query->count() + 1;//...tätä ei edes käytetä enää -_-;
+                        $result = $query;
                     }else{
                         $result = false;
-                        $count = 0;
                     }
 
                     $text .= form::open(null, array("onsubmit" => "return false;", "id" => "form"));
                     $text .= "<table id=\"streamit\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Streamin tunniste</th><th class=\"ui-state-default\">URL</th><th class=\"ui-state-default\">Järjestysnro</th></tr></thead><tbody>";
 
-                    if($result) foreach($result as $row => $data){
-                        $text .= "<tr class=\"".$data['stream_id']."\"><td>".form::input("ident-".$data['stream_id'],$data['tunniste'],array("class" => "tunniste","size" => "15","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("url-".$data['stream_id'],$data['url'],array("id" => $data['stream_id'],"class" => "url","size" => "35","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("jarkka-".$data['stream_id'],$data['jarjestys'],array("size" => "1", "onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["stream_id"].")\">X</a></td><td style=\"border:0px; border-bottom-style: none; padding: 0px;\"><a href=\"javascript:;\" onclick=\"load(".$data['stream_id'].");\">&nbsp;Esikatsele</a></td></tr>";
+                    if($result) foreach($result as $row){
+                        $text .= "<tr class=\"".$row->stream_id."\"><td>".form::input("ident-".$row->stream_id,$row->tunniste,array("class" => "tunniste","size" => "15","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("url-".$row->stream_id,$row->url,array("id" => $row->stream_id,"class" => "url","size" => "35","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("jarkka-".$row->stream_id,$row->jarjestys,array("size" => "1", "onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$row->stream_id.")\">X</a></td><td style=\"border:0px; border-bottom-style: none; padding: 0px;\"><a href=\"javascript:;\" onclick=\"load(".$row->stream_id.");\">&nbsp;Esikatsele</a></td></tr>";
                     }
 
                     $text .= "</tbody></table>".form::close();
@@ -579,84 +410,55 @@ class Controller_Ajax extends Controller{
                         if(empty($datat["ident"])){
                             $err .= "Jokin frontendin tunniste jäi täyttämättä. Kyseisen frontendin tietoja <strong>EI</strong> ole tallennettu.";
                         }else{
-                            $query = DB::query(Database::UPDATE,
-                                                "UPDATE  frontends ".
-                                                "SET     tunniste = :ident ".
-                                                "       ,show_tv = :tv ".
-                                                "       ,show_stream = :stream ".
-                                                "       ,dia = :dia ".
-                                                "       ,use_global = :global ".
-                                                "WHERE   f_id = :row"
-                                                );
-                            $query->parameters(array(":ident"  => $datat["ident"],
-                                                     ":tv"     => $datat["show_tv"],
-                                                     ":stream" => $datat["show_stream"],
-                                                     ":dia"    => $datat["dia"],
-                                                     ":global" => $datat["use_global"],
-                                                     ":row"    => $row
-                                                     ));
-                            $result = $query->execute(__db);
+                            $d = Jelly::query('frontends',$row)->select();
+                            $d->tunniste    = $datat["ident"];
+                            $d->show_tv     = $datat["show_tv"];
+                            $d->show_stream = $datat["show_stream"];
+                            $d->dia         = $datat["dia"];
+                            $d->use_global  = $datat["use_global"];
+                            $d->save();
                         }
                     }
                     $return = array("ret"=>"Frontendit päivitetty.$err Odota hetki, päivitetään listaus...");
                     break;
                 case "frontend_load":
-                    $query = DB::query(Database::SELECT,
-                                        "SELECT   f_id ".
-                                        "        ,tunniste ".
-                                        "        ,show_tv ".
-                                        "        ,show_stream ".
-                                        "        ,dia ".
-                                        "        ,use_global ".
-                                        "FROM     frontends ".
-                                        "WHERE    last_active > DATE_SUB(NOW(),INTERVAL 5 MINUTE)"
-                                        )->execute(__db);
+                    $query = Jelly::query('frontends')->where('last_active','>',DB::expr('DATE_SUB(NOW(),INTERVAL 5 MINUTE)'))->select();
                     if($query->count() > 0){
-                        $result = $query->as_array();
+                        $result = $query;
                     }else{
                         $result = false;
                     }
 
-                    $query4 = DB::query(Database::SELECT,
-                                        "SELECT    dia_id ".
-                                        "         ,tunniste ".
-                                        "FROM      diat ".
-                                        "ORDER BY  dia_id"
-                                        )->execute(__db);
+                    $query4 = Jelly::query('diat')->order_by('dia_id')->select();
                     $diat[0] = "twitter";
                     if($query4->count() > 0)
-                        foreach($query4 as $row => $data){
-                            $diat[$data['dia_id']] = $this->utf8($data['tunniste']);
+                        foreach($query4 as $row){
+                            $diat[$row->dia_id] = $this->utf8($row->tunniste);
                         }
                     else
                         $diat = false;
 
                     if($result){
-                        $query = DB::query(Database::SELECT,
-                                            "SELECT    stream_id ".
-                                            "         ,tunniste ".
-                                            "FROM      streamit ".
-                                            "ORDER BY  jarjestys "
-                                            )->execute(__db);
+                        $query = Jelly::query('streamit')->order_by('jarjestys')->select();
                         $ret = array();
                         foreach($query as $row){
-                            $ret[$row['stream_id']] = $row['tunniste'];
+                            $ret[$row->stream_id] = $row->tunniste;
                         }
                         $streams = $ret;
                         $text = form::open(null, array("onsubmit" => "return false;", "id" => "form"));
                         $text .= "<table id=\"frontendit\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Frontend</th><th class=\"ui-state-default\">Näytä</th><th class=\"ui-state-default\">Käytä globaalia?</th></tr></thead><tbody>";
-                        foreach($result as $row => $data){
-                            if($data['show_tv'] == 1){
+                        foreach($result as $row){
+                            if($row->show_tv == 1){
                                 $nayta_stream = "inline";
                                 $nayta_dia = "none";
-                            }elseif($data['show_tv'] == 2){
+                            }elseif($row->show_tv == 2){
                                 $nayta_stream = "none";
                                 $nayta_dia = "inline";
                             }else{
                                 $nayta_stream = "none";
                                 $nayta_dia = "none";
                             }
-                            $text .= "<tr class=\"".$data['f_id']."\"><td>".form::input("ident-".$data['f_id'],$data['tunniste'],array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$data['f_id'],array("Diashow","Streami","Yksittäinen dia"),$data['show_tv'],array("id"=>$data['f_id']."-tv","onchange"=>"check(this.value,\"".$data['f_id']."\");$(this).addClass(\"new\");$(\"#".$data['f_id']."-stream\").addClass(\"new\");$(\"#".$data['f_id']."-dia\").addClass(\"new\");")).form::select("show_stream-".$data['f_id'],$streams,$data['show_stream'],array("id"=>$data['f_id']."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$data['f_id'],$diat,$data['dia'],array("id"=>$data['f_id']."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;"))."</td><td>".form::checkbox("use_global-".$data['f_id'],1,(boolean)$data['use_global'],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
+                            $text .= "<tr class=\"".$row->f_id."\"><td>".form::input("ident-".$row->f_id,$row->tunniste,array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$row->f_id,array("Diashow","Streami","Yksittäinen dia"),$row->show_tv,array("id"=>$row->f_id."-tv","onchange"=>"check(this.value,\"".$row->f_id."\");$(this).addClass(\"new\");$(\"#".$row->f_id."-stream\").addClass(\"new\");$(\"#".$row->f_id."-dia\").addClass(\"new\");")).form::select("show_stream-".$row->f_id,$streams,$row->show_stream,array("id"=>$row->f_id."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$row->f_id,$diat,$row->dia,array("id"=>$row->f_id."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;"))."</td><td>".form::checkbox("use_global-".$row->f_id,1,(boolean)$row->use_global,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
                         }
                         $text .= "</tbody></table>".form::close();
                     }else{
@@ -817,19 +619,11 @@ class Controller_Ajax extends Controller{
                   }
                   break;
               case "todo_refresh":
-                    $query = DB::query(Database::SELECT,
-                                       'SELECT   tag '.
-                                       '        ,comment '.
-                                       '        ,adder '.
-                                       '        ,stamp '.
-                                       'FROM     logi '.
-                                       'ORDER BY stamp DESC '.
-                                       'LIMIT    20'
-                                       )->execute(__db);
+                    $query = Jelly::query('logi')->order_by('stamp','DESC')->limit(20)->select();
                     $text = "<table class=\"stats\" style=\"color:black\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     foreach($query as $row){
-                        $text .= "<tr class=\"type-".$row['tag']."\"><td>".date("d.m. H:i",strtotime($row['stamp']))."</td><td>".$types[$row['tag']]."</td><td>".$row['comment']."</td><td>".$row['adder']."</td></tr>";
+                        $text .= "<tr class=\"type-".$row->tag."\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>";
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
