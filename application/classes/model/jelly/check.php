@@ -22,7 +22,7 @@ class Model_Jelly_Check extends Jelly_Meta
                 $parts[] = $o->column." ".$o->type." ".$o->other;
             }
             $sql2 = implode(", ",$parts);
-            $sql .= $sql.")";
+            $sql .= $sql2.")";
             $query = DB::query(Database::UPDATE,$sql)->execute(__db);
             $return = "fixed";
         }else{
