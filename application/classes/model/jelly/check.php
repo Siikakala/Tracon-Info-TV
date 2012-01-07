@@ -38,6 +38,7 @@ class Model_Jelly_Check extends Jelly_Meta
         $fields = $meta->fields();
         $checked = array();
         $types = array();
+        $drop = array_diff_key($cols,$fields);
         $failed = false;
         foreach($fields as $key=>$value){
             $checked[$key] = array_key_exists($value->column,$cols);
@@ -48,6 +49,8 @@ class Model_Jelly_Check extends Jelly_Meta
                 $failed = true;
                 $types[$key] = "MODIFY";
                 $checked[$key] = false;
+            }elseif(count($drop) > 0){
+                $failed = true;
             }
         }
         $fails = array();
@@ -56,7 +59,10 @@ class Model_Jelly_Check extends Jelly_Meta
             $sql = "ALTER TABLE ".$table." ";
             $parts = array();
             foreach($fails as $key=>$field){
-                $parts[] = $types[$field]." ".$fields[$field]->column." ".$fields[$field]->type." NOT NULL ".$fields[$field]->other." ";
+                $parts[] = $types[$field]." ".$fields[$field]->column." ".$fields[$field]->type." NOT NULL ".$fields[$field]->other;
+            }
+            foreach($drop as $field=>$value){
+                $parts[] = "DROP ".$field;
             }
             $sql2 = implode(", ",$parts);
             $sql .= $sql2;

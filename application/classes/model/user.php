@@ -15,7 +15,7 @@ class Model_User extends Jelly_Model
         $meta->fields(array(
             'u_id'     => Jelly::field('primary',array(
                             "column" => "u_id",
-                            "type"   => "int",
+                            "type"   => "int unsigned",
                             "other"  => "PRIMARY KEY AUTO_INCREMENT"
                         )),
             'kayttis'  => Jelly::field('string',array(
