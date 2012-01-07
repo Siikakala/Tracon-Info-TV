@@ -13,12 +13,34 @@ class Model_Logi extends Jelly_Model
 
         // Fields defined by the model
         $meta->fields(array(
-            'id'       => Jelly::field('primary'),
-            'tag'      => Jelly::field('string'),
-            'comment'  => Jelly::field('text'),
-            'adder'    => Jelly::field('string'),
-            'stamp'    => Jelly::field('timestamp')
+            'id'       => Jelly::field('primary',array(
+                            "column" => "id",
+                            "type"   => "bigint",
+                            "other"  => "PRIMARY KEY AUTO_INCREMENT"
+                        )),
+            'tag'      => Jelly::field('string',array(
+                            "column" => "tag",
+                            "type"   => "text",
+                            "other"  => ""
+                        )),
+            'comment'  => Jelly::field('text',array(
+                            "column" => "comment",
+                            "type"   => "text",
+                            "other"  => ""
+                        )),
+            'adder'    => Jelly::field('string',array(
+                            "column" => "adder",
+                            "type"   => "tinytext",
+                            "other"  => ""
+                        )),
+            'stamp'    => Jelly::field('timestamp',array(
+                            "column" => "stamp",
+                            "type"   => "timestamp",
+                            "other"  => "ON UPDATE CURRENT_TIMESTAMP"
+                        ))
         ));
+        $check = new Model_Jelly_Check();
+        $test = $check->checks($meta);
     }
 }
 

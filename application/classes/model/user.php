@@ -13,11 +13,30 @@ class Model_User extends Jelly_Model
 
         // Fields defined by the model
         $meta->fields(array(
-            'u_id'      => Jelly::field('primary'),
-            'kayttis'   => Jelly::field('string'),
-            'passu'     => Jelly::field('string'),
-            'level'     => Jelly::field('integer')
+            'u_id'     => Jelly::field('primary',array(
+                            "column" => "u_id",
+                            "type"   => "int",
+                            "other"  => "PRIMARY KEY AUTO_INCREMENT"
+                        )),
+            'kayttis'  => Jelly::field('string',array(
+                            "column" => "kayttis",
+                            "type"   => "tinytext",
+                            "other"  => ""
+                        )),
+            'passu'    => Jelly::field('string',array(
+                            "column" => "passu",
+                            "type"   => "tinytext",
+                            "other"  => ""
+                        )),
+            'level'    => Jelly::field('integer',array(
+                            "column" => "level",
+                            "type"   => "int",
+                            "other"  => ""
+                        ))
         ));
+
+        $check = new Model_Jelly_Check();
+        $test = $check->checks($meta);
     }
 }
 
