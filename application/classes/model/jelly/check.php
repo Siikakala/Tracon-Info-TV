@@ -23,6 +23,7 @@ class Model_Jelly_Check extends Jelly_Meta
             }
             $sql2 = implode(", ",$parts);
             $sql .= $sql.")";
+            $query = DB::query(Database::UPDATE,$sql)->execute(__db);
             $return = "fixed";
         }else{
             $return = true;
