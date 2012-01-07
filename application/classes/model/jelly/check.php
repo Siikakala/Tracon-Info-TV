@@ -45,6 +45,7 @@ class Model_Jelly_Check extends Jelly_Meta
                 $failed = true;
                 $types[$key] = "ADD";
             }elseif(strcmp($cols[$key]["data_type"],$value->type) !== 0){
+                $failed = true;
                 $types[$key] = "MODIFY";
                 $checked[$key] = false;
             }
