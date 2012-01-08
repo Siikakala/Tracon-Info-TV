@@ -315,16 +315,9 @@ class Controller_Admin extends Controller{
                     });
             </script>';
 
-    	$query = DB::query(Database::SELECT,
-                            "SELECT    scroll_id as \"id\"".
-                            "         ,pos ".
-                            "         ,text ".
-                            "         ,hidden ".
-                            "FROM      scroller ".
-                            "ORDER BY  pos"
-                            )->execute(__db);
+        $query = Jelly::query('scroller')->select();
         if($query->count() > 0)
-            $result = $query->as_array();
+            $result = true;
         else
             $result = false;
 
@@ -332,8 +325,8 @@ class Controller_Admin extends Controller{
         $this->view->content->text .= form::open(null, array("onsubmit" => "return false;", "id" => "form"));
         $this->view->content->text .= "<table id=\"scroller\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Kohta</th><th class=\"ui-state-default\">Teksti</th><th class=\"ui-state-default\">Piilotettu?</th></tr></thead><tbody>";
 
-        if($result) foreach($result as $row=>$data){
-            $this->view->content->text .= "<tr class=\"".$data["id"]."\"><td>".form::input('pos-'.$data["id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data["id"],$data["text"],array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["id"].")\" >X</a></td></tr>";
+        if($result) foreach($query as $data){
+            $this->view->content->text .= "<tr class=\"".$data->scroll_id."\"><td>".form::input('pos-'.$data->scroll_id,$data->pos,array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data->scroll_id,$data->text,array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data->scroll_id,1,(boolean)$data->hidden,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data->scroll_id.")\" >X</a></td></tr>";
         }
         $this->view->content->text .= "</tbody></table>".form::close()."</div>".form::button("moar","Lisää rivi",array("id"=>"lisarivi","onclick"=>"addrow();"))."<br/><br/><p><strong>MUISTA TALLENTAA MUUTOKSESI!</strong></p><p><strong>HUOM!</strong><ul><li>Numerointi voi hyppiä numeroiden yli, ne näytetään pienimmästä suurimpaan.<li>Tyhjiä rivejä ei huomioida tallennuksessa.<li><strong>Älä käytä kohtaa 0!</strong> Rivi ei tallennu tällöin.</ul></p>".
                                     form::button('submit','Tallenna',array("onclick" => "return save();"))."<div id=\"feed_cont\" style=\"min-height:20px\";><div id=\"feedback\" style=\"display:none;\"></div></div>";
@@ -435,36 +428,23 @@ class Controller_Admin extends Controller{
                         }
                     });
             </script>';
-    	$query = DB::query(Database::SELECT,
-                            "SELECT    rul_id as \"id\"".
-                            "         ,pos ".
-                            "         ,type ".
-                            "         ,time ".
-                            "         ,selector ".
-                            "         ,hidden ".
-                            "FROM      rulla ".
-                            "ORDER BY  pos"
-                            )->execute(__db);
+
+        $query = Jelly::query('rulla')->order_by('pos')->select();
         if($query->count() > 0)
-            $result = $query->as_array();
+            $result = $query;
         else
             $result = false;
 
-    	$query2 = DB::query(Database::SELECT,
-                            "SELECT    dia_id as \"id\"".
-                            "         ,tunniste ".
-                            "FROM      diat ".
-                            "ORDER BY  dia_id"
-                            )->execute(__db);
+    	$query2 = Jelly::query('diat')->order_by('dia_id')->select();
         if($query2->count() > 0)
-            $result2 = $query2->as_array();
+            $result2 = true;
         else
             $result2 = false;
 
         $vaihtehdot = array();
         $vaihtoehdot[0] = "twitter";
-        if($result2)foreach($result2 as $row => $data){
-            $vaihtoehdot[$data['id']] = $this->utf8($data['tunniste']);
+        if($result2)foreach($query2 as $data){
+            $vaihtoehdot[$data->dia_id] = $this->utf8($data->tunniste);
         }else
             $vaihtoehdot = false;
 
@@ -474,12 +454,12 @@ class Controller_Admin extends Controller{
 
 
 
-        if($result) foreach($result as $row=>$data){
-            if($data['type'] == 2)
+        if($result) foreach($result as $data){
+            if($data->type == 2)
                 $selector = 0;
             else
-                $selector = $data['selector'];
-            $this->view->content->text .= "<tr class=\"".$data["id"]."\"><td>".form::input('pos-'.$data["id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('text-'.$data["id"],$vaihtoehdot,$selector,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('time-'.$data["id"],Date::seconds(1,1,121),$data["time"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["id"].")\" >X</a></td></tr>";
+                $selector = $data->selector;
+            $this->view->content->text .= "<tr class=\"".$data->rul_id."\"><td>".form::input('pos-'.$data->rul_id,$data->pos,array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('text-'.$data->rul_id,$vaihtoehdot,$selector,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select('time-'.$data->rul_id,Date::seconds(1,1,121),$data->time,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data->rul_id,1,(boolean)$data->hidden,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data->rul_id.")\" >X</a></td></tr>";
         }
         $this->view->content->text .= "</tbody></table>".form::close()."</div>".form::button("moar","Lisää rivi",array("id"=>"lisarivi","onclick"=>"addrow();"))."<br/><br/><p><strong>MUISTA TALLENTAA MUUTOKSESI!</strong></p><p><strong>HUOM!</strong><ul><li>Numerointi voi hyppiä numeroiden yli, ne näytetään pienimmästä suurimpaan. <li><strong>Älä käytä kohtaa 0!</strong> Rivi ei tallennu tällöin.<li>Twitter-feediä ei voi olla kuin yksi. Ensimmäisen jälkeiset ovat vain tyhjiä dioja.</li><li>Diat näkyvät noin sekunnin pidempään kuin määrität tässä.</li></ul></p>".
                                     form::button('submit','Tallenna',array("onclick" => "return save();"))."<div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\" style=\"display:none;\"></div></div>";
@@ -591,17 +571,11 @@ class Controller_Admin extends Controller{
         ';
         $this->view->content->text = "<h2>Dia-hallinta</h2>";
 
-        $query = DB::query(Database::SELECT,
-                            "SELECT    dia_id ".
-                            "         ,tunniste ".
-                            "         ,data ".
-                            "FROM      diat ".
-                            "ORDER BY  dia_id"
-                            )->execute(__db);
+        $query = Jelly::query('diat')->order_by('dia_id')->select();
         $result[0] = "";
         if($query->count() > 0)
-            foreach($query as $row => $data){
-                $result[$data['dia_id']] = $this->utf8($data['tunniste']);
+            foreach($query as $data){
+                $result[$data->dia_id] = $this->utf8($data->tunniste);
             }
         else
             $result[0] = false;
@@ -726,20 +700,11 @@ class Controller_Admin extends Controller{
             ';
 
         $this->view->content->text = "<h2>Stream-hallinta</h2>";
-        $query = DB::query(Database::SELECT,
-                            "SELECT    stream_id ".
-                            "         ,tunniste ".
-                            "         ,url ".
-                            "         ,jarjestys ".
-                            "FROM      streamit ".
-                            "ORDER BY  jarjestys"
-                            )->execute(__db);
+        $query = Jelly::query('streamit')->order_by('jarjestys')->select();
         if($query->count() > 0){
-            $result = $query->as_array();
-            $count = $query->count() + 1;
+            $result = true;
         }else{
             $result = false;
-            $count = 0;
         }
         $disabled = "";
 
@@ -747,23 +712,18 @@ class Controller_Admin extends Controller{
         $this->view->content->text .= form::open(null, array("onsubmit" => "return false;", "id" => "form"));
         $this->view->content->text .= "<table id=\"streamit\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Streamin tunniste</th><th class=\"ui-state-default\">URL</th><th class=\"ui-state-default\">Järjestysnro</th></tr></thead><tbody>";
 
-        if($result) foreach($result as $row => $data){
-            $this->view->content->text .= "<tr class=\"".$data['stream_id']."\"><td>".form::input("ident-".$data['stream_id'],$data['tunniste'],array($disabled,"class" => "tunniste","size" => "15","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("url-".$data['stream_id'],$data['url'],array($disabled,"id" => $data['stream_id'],"class" => "url","size" => "35","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("jarkka-".$data['stream_id'],$data['jarjestys'],array($disabled,"size" => "1", "onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px; background-color: transparent;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$disabled.$data["stream_id"].")\">X</a></td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\"><a href=\"javascript:;\" onclick=\"load(".$data['stream_id'].");\">&nbsp;Esikatsele</a></td></tr>";
+        if($result) foreach($query as $data){
+            $this->view->content->text .= "<tr class=\"".$data->stream_id."\"><td>".form::input("ident-".$data->stream_id,$data->tunniste,array($disabled,"class" => "tunniste","size" => "15","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("url-".$data->stream_id,$data->url,array($disabled,"id" => $data->stream_id,"class" => "url","size" => "35","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input("jarkka-".$data->stream_id,$data->jarjestys,array($disabled,"size" => "1", "onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px; background-color: transparent;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$disabled.$data->stream_id.")\">X</a></td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\"><a href=\"javascript:;\" onclick=\"load(".$data->stream_id.");\">&nbsp;Esikatsele</a></td></tr>";
         }
 
         $this->view->content->text .= "</tbody></table>".form::close()."</div><p>".form::button("moar","Lisää rivi",array("id"=>"lisarivi","onclick"=>"addrow();")).form::button("saev","Tallenna",array($disabled,"id"=>"saev","onclick" => "save();"))."<div id=\"feedback_container\" style=\"min-height:20px;\"><div id=\"feedback\" style=\"display:none;\"></div></div>Esikatselu:</p><div id=\"stream_content\" style=\"display:none;\"></div>";
     }
 
     private function get_streams(){
-        $query = DB::query(Database::SELECT,
-                            "SELECT    stream_id ".
-                            "         ,tunniste ".
-                            "FROM      streamit ".
-                            "ORDER BY  jarjestys "
-                            )->execute(__db);
+        $query = Jelly::query('streamit')->order_by('jarjestys')->select();
         $ret = array();
         foreach($query as $row){
-            $ret[$row['stream_id']] = $row['tunniste'];
+            $ret[$row->stream_id] = $row->tunniste;
         }
         return $ret;
     }
@@ -912,36 +872,24 @@ class Controller_Admin extends Controller{
                                       .form::button("apply","Vaihda",array("onclick"=>"show_save();"))."<br/><div id=\"span_cont\" style=\"min-height:25px;\"><div id=\"show_feed\"></div></div><hr><br/>";
 
         //</globaali hallinta>
-        $query = DB::query(Database::SELECT,
-                            "SELECT   f_id ".
-                            "        ,tunniste ".
-                            "        ,show_tv ".
-                            "        ,show_stream ".
-                            "        ,dia ".
-                            "        ,use_global ".
-                            "FROM     frontends ".
-                            "WHERE    last_active > DATE_SUB(NOW(),INTERVAL 15 MINUTE)"
-                            )->execute(__db);
+        $query = Jelly::query('frontends')->where('last_active','>',DB::expr('DATE_SUB(NOW(),INTERVAL 5 MINUTE)'))->select();
         if($query->count() > 0){
-            $result = $query->as_array();
+            $result = $query;
         }else{
             $result = false;
         }
 
-        $query4 = DB::query(Database::SELECT,
-                            "SELECT    dia_id ".
-                            "         ,tunniste ".
-                            "FROM      diat ".
-                            "ORDER BY  dia_id"
-                            )->execute(__db);
+        $query4 = Jelly::query('diat')->order_by('dia_id')->select();
         $diat[0] = "twitter";
         if($query4->count() > 0)
-            foreach($query4 as $row => $data){
-                $diat[$data['dia_id']] = $this->utf8($data['tunniste']);
+            foreach($query4 as $data){
+                $diat[$data->dia_id] = $this->utf8($data->tunniste);
             }
         else
             $diat = false;
 
+
+//----------- ÄLÄ KOSKE! Tehottomampi ja huonommin toimiva Jellyllä. ----------------------------------------------------------------------
         //Frontendit, jotka eivät ole ilmoittaneet itsestään yli viiteen minuuttiin, asetetaan käyttämään globaalia asetusta.
         $query2 = DB::query(Database::UPDATE,
                             "UPDATE frontends ".
@@ -954,24 +902,26 @@ class Controller_Admin extends Controller{
                             "DELETE FROM frontends ".
                             "WHERE  last_active < DATE_SUB(NOW(),INTERVAL 1 WEEK)"
                             )->execute(__db);
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 
         $this->view->content->text .= "<div id=\"formidata\">";
         if($result){
             $streams = $this->get_streams();
             $this->view->content->text .= form::open(null, array("onsubmit" => "return false;", "id" => "form"));
             $this->view->content->text .= "<table id=\"frontendit\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Frontend</th><th class=\"ui-state-default\">Näytä</th><th class=\"ui-state-default\">Käytä globaalia?</th></tr></thead><tbody>";
-            foreach($result as $row => $data){
-                if($data['show_tv'] == 1){
+            foreach($result as $data){
+                if($data->show_tv == 1){
                     $nayta_stream = "inline";
                     $nayta_dia = "none";
-                }elseif($data['show_tv'] == 2){
+                }elseif($data->show_tv == 2){
                     $nayta_stream = "none";
                     $nayta_dia = "inline";
                 }else{
                     $nayta_stream = "none";
                     $nayta_dia = "none";
                 }
-                $this->view->content->text .= "<tr class=\"".$data['f_id']."\"><td>".form::input("ident-".$data['f_id'],$data['tunniste'],array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$data['f_id'],array("Diashow","Streami","Yksittäinen dia"),$data['show_tv'],array("id"=>$data['f_id']."-tv","onchange"=>"check(this.value,\"".$data['f_id']."\");$(this).addClass(\"new\");$(\"#".$data['f_id']."-stream\").addClass(\"new\");$(\"#".$data['f_id']."-dia\").addClass(\"new\");")).form::select("show_stream-".$data['f_id'],$streams,$data['show_stream'],array("id"=>$data['f_id']."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$data['f_id'],$diat,$data['dia'],array("id"=>$data['f_id']."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;"))."</td><td>".form::checkbox("use_global-".$data['f_id'],1,(boolean)$data['use_global'],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
+                $this->view->content->text .= "<tr class=\"".$data->f_id."\"><td>".form::input("ident-".$data->f_id,$data->tunniste,array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$data->f_id,array("Diashow","Streami","Yksittäinen dia"),$data->show_tv,array("id"=>$data->f_id."-tv","onchange"=>"check(this.value,\"".$data->f_id."\");$(this).addClass(\"new\");$(\"#".$data->f_id."-stream\").addClass(\"new\");$(\"#".$data->f_id."-dia\").addClass(\"new\");")).form::select("show_stream-".$data->f_id,$streams,$data->show_stream,array("id"=>$data->f_id."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$data->f_id,$diat,$data->dia,array("id"=>$data->f_id."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;"))."</td><td>".form::checkbox("use_global-".$data->f_id,1,(boolean)$data->use_global,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
             }
             $this->view->content->text .= "</tbody></table>".form::close()."</div><p>".form::button("saev","Tallenna",array("id"=>"saev","onclick" => "save();"))."<div id=\"feedback_container\" style=\"min-height:20px;\"><div id=\"feedback\" style=\"display:none;\"></div></div>";
         }else{

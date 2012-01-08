@@ -82,6 +82,9 @@ class Model_Public extends Model_Database {
                             $new_page = 0;
                         }
                         $session->set("page",$new_page);
+                        $y = Jelly::query('frontends')->where('uuid','=',$session->get("uid"))->limit(1)->select();
+                        $y->dia = $new_page;
+                        $y->save();
                         $return = $this->get_diadata();
                     }else{
                         $return = array("changed" => false);
@@ -145,7 +148,11 @@ class Model_Public extends Model_Database {
                     ->set(array(
                             "tunniste"    => "Undefined",
                             "uuid"        => $uuid,
-                            "last_active" => "NOW()"
+                            "last_active" => DB::expr("NOW()"),
+                            "show_tv"     => -1,
+                            "show_stream" => -1,
+                            "dia"         => -1,
+                            "use_global"  => 1
                             ))->save();
         }elseif($session->get("uid",false) == false){//jos uuid-dataa ei ole sessiossa, mutta keksi löytyy.
             $session->set("uid",Cookie::get("uid"));
@@ -157,7 +164,11 @@ class Model_Public extends Model_Database {
                         ->set(array(
                             "tunniste"    => "Undefined",
                             "uuid"        => $uuid,
-                            "last_active" => "NOW()"
+                            "last_active" => DB::expr("NOW()"),
+                            "show_tv"     => -1,
+                            "show_stream" => -1,
+                            "dia"         => -1,
+                            "use_global"  => 1
                             ))->save();
                 $session->set("global",1);
                 $session->set("client","Undefined");
@@ -167,12 +178,15 @@ class Model_Public extends Model_Database {
             }
         }else{//jos keksi ja sessiodata on kunnossa.
             $y = Jelly::query('frontends')->where('uuid','=',$session->get("uid"))->limit(1)->select();
-            $y->last_active = "NOW()";
-            $y->save();
-            if(!$y->loaded())
+            if(!$y->loaded()){
                 Cookie::delete("uid");
-            $session->set("global",$y->use_global);
-            $session->set("client",$y->tunniste);
+            }else{
+                $y->last_active = DB::expr("NOW()");
+                $y->save();
+            }
+            $d = Jelly::query('frontends')->where('uuid','=',$session->get("uid"))->limit(1)->select();
+            $session->set("global",$d->use_global);
+            $session->set("client",$d->tunniste);
         }
 
         $client_name = $session->get("client","Undefined");
