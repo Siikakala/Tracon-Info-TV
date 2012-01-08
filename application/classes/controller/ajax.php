@@ -175,17 +175,18 @@ class Controller_Ajax extends Controller{
                                 else
                                     $type = 1;
                                 $d = Jelly::query('rulla',$row)->select();
-                                $d->pos    = $datat["pos"];
-                                $d->text   = $datat["text"];
-                                $d->time   = $datat["time"];
-                                $d->hidden = $datat["hidden"];
-                                $d->type   = $type;
+                                $d->pos      = $datat["pos"];
+                                $d->selector = $datat["text"];
+                                $d->time     = $datat["time"];
+                                $d->hidden   = $datat["hidden"];
+                                $d->type     = $type;
                                 $d->save();
                             }elseif($row >= 500){
                                 if($datat["text"] == 0)
                                     $datat["type"] = 2;
                                 else
                                     $datat["type"] = 1;
+                                $datat["selector"] = $datat["text"];
                                 Jelly::factory('rulla')->set($datat)->save();
                             }
                         }
@@ -263,7 +264,7 @@ class Controller_Ajax extends Controller{
                         $ret = false;
                     }else{
                         $result = Jelly::query('diat',$param2)->select();
-                        if($result->count() > 0){
+                        if($result->loaded()){
                             $ret = "<br/>".form::textarea("loota-".$param2,$this->utf8($result->data),array("id"=>"loota","class"=>"tinymce"));
                             $tunniste = $this->utf8($result->tunniste);
                         }else{
@@ -365,12 +366,16 @@ class Controller_Ajax extends Controller{
                                 $datat['jarkka'] = $row+200;
                             if($row >= 0 && $row < 500){
                                 $d = Jelly::query('streamit',$row)->select();
-                                $d->ident     = $datat["ident"];
+                                $d->tunniste  = $datat["ident"];
                                 $d->url       = $datat["url"];
                                 $d->jarjestys = $datat["jarkka"];
                                 $d->save();
                             }elseif($row >= 500){
-                                Jelly::factory('streamit')->set($datat)->save();
+                                Jelly::factory('streamit')->set(array(
+                                            "tunniste"  => $datat["ident"],
+                                            "url"       => $datat["url"],
+                                            "jarjestys" => $datat["jarkka"]
+                                            ))->save();
                             }
                         }
                     }
@@ -438,7 +443,7 @@ class Controller_Ajax extends Controller{
                     else
                         $diat = false;
 
-                    if($result){
+                    if($result != false){
                         $query = Jelly::query('streamit')->order_by('jarjestys')->select();
                         $ret = array();
                         foreach($query as $row){

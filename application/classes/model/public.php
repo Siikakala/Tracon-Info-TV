@@ -21,18 +21,10 @@ class Model_Public extends Model_Database {
                 $session->set($row['opt'],$row['value']);//survotaan sessioon. Tuolta tulee siis show_tv ja show_stream.
             }
         }else{//yksilöityä.
-            $query = DB::query(Database::SELECT,
-                                "SELECT   show_tv ".
-                                "        ,show_stream ".
-                                "        ,dia ".
-                                "FROM     frontends ".
-                                "WHERE    uuid = '".$session->get("uid",false)."' ".
-                                "LIMIT    1"
-                                )->execute(__db);
-            $result = $query->as_array();
-            $session->set("show_tv",$result[0]['show_tv']);
-            $session->set("show_stream",$result[0]['show_stream']);
-            $session->set("dia",$result[0]['dia']);
+            $d = Jelly::query('frontends')->where('uuid','=',$session->get("uid",false))->limit(1)->select();
+            $session->set("show_tv",$d->show_tv);
+            $session->set("show_stream",$d->show_stream);
+            $session->set("dia",$d->dia);
         }
 
         switch($session->get("show_tv",0)){
@@ -45,14 +37,8 @@ class Model_Public extends Model_Database {
                     $return = array("changed" => false);
 
                 }else{//Siirrytään streamiin, tai vaihdetaan toiseen streamiin.
-                    $query = DB::query(Database::SELECT,//kaivetaan urli.
-                                        "SELECT    url ".
-                                        "FROM      streamit ".
-                                        "WHERE     stream_id = :id"
-                                        );
-                    $query->param(":id",$stream);
-                    $result = $query->execute(__db)->as_array();
-                    $return = array("changed" => true, "part" => "video", "palautus" => "<a id=\"player\" href=\"".$result[0]['url']."\" style=\"display:block;width:960px;height:490px;\"></a>", "video" => $result[0]['url']);
+                    $d = Jelly::query('streamit',$stream)->select();
+                    $return = array("changed" => true, "part" => "video", "palautus" => "<a id=\"player\" href=\"".$d->url."\" style=\"display:block;width:960px;height:490px;\"></a>", "video" => $d->url);
                 }
                 break;
             case 2://staattinen dia
@@ -63,18 +49,14 @@ class Model_Public extends Model_Database {
                     $return = array("changed" => false);
                 }else{
                     if($session->get("dia") != 0){ //dia-id 0 = twitter-feed
-                        $query2 = DB::query(Database::SELECT,
-                                            "SELECT    data ".
-                                            "FROM      diat ".
-                                            "WHERE     dia_id = ".$dia
-                                            )->execute(__db);
-                        if($query2->count() > 0)
-                            $result2 = $query2->as_array();
+                        $d = Jelly::query('diat',$dia)->select();
+                        if($d->count() > 0)
+                            $result2 = true;
                         else
                             $result2 = false;
 
-                        if($result2 !== false){
-                            $return = array("changed" => true, "part" => "text", "palautus" => $this->utf8($result2[0]["data"]));
+                        if($result2){
+                            $return = array("changed" => true, "part" => "text", "palautus" => $this->utf8($d->data));
                         }else{
                             $return = array("changed" => false);
                         }
@@ -86,12 +68,7 @@ class Model_Public extends Model_Database {
             default://diashow
                 $session->set("old_stream",-1);
                 $session->set("old_dia",-1);
-                $query = DB::query(Database::SELECT,//montakos niitä näytettäviä dioja oli diashowssa..?
-                                    "SELECT pos ".
-                                    "FROM   rulla ".
-                                    "WHERE  hidden = 0"
-                                    )->execute(__db);
-                $max = $query->count();
+                $max = Jelly::query('rulla')->where('hidden','=','0')->count();//montakos niitä näytettäviä dioja oli diashowssa..?
                 $max--;
                 if($session->get("time")){//jos timelimit on olemassa
                     $timestamp = $session->get("timestamp") + $session->get("time");
@@ -123,14 +100,7 @@ class Model_Public extends Model_Database {
 
      public function get_diadata(){
         $session = Session::instance();
-        $query1 = DB::query(Database::SELECT,//kaivetaas diashow-data kannasta.
-                            "SELECT    type ".
-                            "         ,`time` ".
-                            "         ,selector ".
-                            "FROM      rulla ".
-                            "WHERE     hidden = 0 ".
-                            "ORDER BY  pos "
-                            )->execute(__db);
+        $query1 = Jelly::query('rulla')->where('hidden','=','0')->select();
         if($query1->count() > 0)
             $result1 = $query1->as_array();
         else
@@ -139,18 +109,14 @@ class Model_Public extends Model_Database {
         $kohta = $session->get("page",0);
         switch($result1[$kohta]["type"]){
             case 1://dia
-                $query2 = DB::query(Database::SELECT,
-                                    "SELECT  data ".
-                                    "FROM    diat ".
-                                    "WHERE   dia_id = ".$result1[$kohta]["selector"]
-                                    )->execute(__db);
-                if($query2->count() > 0)
-                    $result2 = $query2->as_array();
+                $d = Jelly::query('diat',$result1[$kohta]["selector"])->select();
+                if($d->count() > 0)
+                    $result2 = true;
                 else
                     $result2 = false;
 
                 //allaoleva on aivan kaamea putkitus mutta: kannasta saatu data varmistetaan utf-8:ksi, jonka jälkeen parsitaan vielä ohjelmakarttatagit.
-                $parsed = $this->parse_ohjelmatags($this->utf8($result2[0]["data"]));//[0] = parsittu teksti [1] = näytetäänkö progresspie
+                $parsed = $this->parse_ohjelmatags($this->utf8($d->data));//[0] = parsittu teksti [1] = näytetäänkö progresspie
                 $return = array("changed" => true, "part" => "text", "palautus" => $parsed[0], "pie" => $parsed[1]);
                 $session->set("timestamp",time());//koska dia on vaihdettu
                 $session->set("time",$result1[$kohta]["time"]);//kauanko näytetään.
@@ -175,59 +141,38 @@ class Model_Public extends Model_Database {
             $uuid = md5(uniqid(rand(), true));//generoidaan uusi uuid.
             Cookie::set("uid",$uuid,2419200);//keksin parasta ennen-päiväykseen neljä viikkoa.
             $session->set("uid",$uuid);
-            $query = DB::query(Database::INSERT,
-                                "INSERT INTO frontends ".
-                                "           (tunniste ".
-                                "           ,uuid ".
-                                "           ,last_active ".
-                                "           )".
-                                "VALUES     ('Undefined' ".
-                                "           ,'".$uuid."' ".
-                                "           ,NOW() ".
-                                "           )"
-                              )->execute(__db);
-        }elseif(!$session->get("uid",false)){//jos uuid-dataa ei ole sessiossa, mutta keksi löytyy.
+            Jelly::factory('frontends')
+                    ->set(array(
+                            "tunniste"    => "Undefined",
+                            "uuid"        => $uuid,
+                            "last_active" => "NOW()"
+                            ))->save();
+        }elseif($session->get("uid",false) == false){//jos uuid-dataa ei ole sessiossa, mutta keksi löytyy.
             $session->set("uid",Cookie::get("uid"));
-            $query = DB::query(Database::SELECT,
-                                "SELECT   tunniste ".
-                                "        ,use_global ".
-                                "FROM     frontends ".
-                                "WHERE    uuid = '".Cookie::get("uid")."'"
-                                )->execute(__db);
-            if($query->count() < 0){//keksi elää pidempään kuin data kannassa.
+            $query = Jelly::query('frontends')->where('uuid','=',Cookie::get("uid"))->limit(1)->select();
+            if(!$query->loaded()){//keksi elää pidempään kuin data kannassa.
                 //eiolee.
                 $uuid = Cookie::get("uid");
-                $query = DB::query(Database::INSERT,
-                                    "INSERT INTO frontends ".
-                                    "           (tunniste ".
-                                    "           ,uuid ".
-                                    "           ,last_active ".
-                                    "           )".
-                                    "VALUES     ('Undefined' ".
-                                    "           ,'".$uuid."' ".
-                                    "           ,NOW() ".
-                                    "           )"
-                                  )->execute(__db);
+                Jelly::factory('frontends')
+                        ->set(array(
+                            "tunniste"    => "Undefined",
+                            "uuid"        => $uuid,
+                            "last_active" => "NOW()"
+                            ))->save();
+                $session->set("global",1);
+                $session->set("client","Undefined");
             }else{
-                $result = $query->as_array();
-                $session->set("global",$result[0]['use_global']);
-                $session->set("client",$result[0]['tunniste']);
+                $session->set("global",$query->use_global);
+                $session->set("client",$query->tunniste);
             }
         }else{//jos keksi ja sessiodata on kunnossa.
-            $query = DB::query(Database::UPDATE,//ilmiannetaan frontendin aktiivisuus
-                                "UPDATE frontends ".
-                                "SET    last_active = NOW() ".
-                                "WHERE  uuid = '".$session->get("uid")."'"
-                                )->execute(__db);
-            $query2 = DB::query(Database::SELECT,//varmistetaan tuorein data.
-                                "SELECT  use_global ".
-                                "       ,tunniste ".
-                                "FROM    frontends ".
-                                "WHERE   uuid = '".$session->get("uid")."'"
-                                )->execute(__db);
-            $result = $query2->as_array();
-            $session->set("global",$result[0]['use_global']);
-            $session->set("client",$result[0]['tunniste']);
+            $y = Jelly::query('frontends')->where('uuid','=',$session->get("uid"))->limit(1)->select();
+            $y->last_active = "NOW()";
+            $y->save();
+            if(!$y->loaded())
+                Cookie::delete("uid");
+            $session->set("global",$y->use_global);
+            $session->set("client",$y->tunniste);
         }
 
         $client_name = $session->get("client","Undefined");
@@ -256,15 +201,10 @@ class Model_Public extends Model_Database {
         if($result1){
             $stamp = strtotime($result1[0]["max"]);//unix-timestampiksi muunnos
             if($stamp > $session->get("scrollstamp") || $override){//jos kannasta löytyy tuoreampaa dataa kuin viimeisin päivitys TAI jos kyseessä on pakotettu päivitys
-                $query2 = DB::query(Database::SELECT,//haetaan kaikki piilottamattomat scrollerinpalat.
-                                    "SELECT   text ".
-                                    "FROM     scroller ".
-                                    "WHERE    hidden = 0 ".
-                                    "ORDER BY pos"
-                                    )->execute(__db);
+                $query2 = Jelly::query('scroller')->where('hidden','=','0')->select();
                 if($query2->count() > 0)
                     foreach($query2 as $row){
-                        $scrolli[] = $this->utf8($row['text']);
+                        $scrolli[] = $this->utf8($row->text);
                     }
                 $scroll = implode(" &raquo; ",$scrolli);
             }//else = mikään ei muuttunut -> palauttaa falsen
