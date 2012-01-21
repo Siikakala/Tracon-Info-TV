@@ -636,13 +636,13 @@ class Controller_Ajax extends Controller{
               case "todo_search":
                     $param = $_POST['search'];
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
-                    $rows = Jelly::select('logi')
+                    $rows = Jelly::query('logi')
                                     ->or_where('tag','REGEXP','.*'.$param.'.*')
                                     ->or_where('comment','REGEXP','.*'.$param.'.*')
                                     ->or_where('adder','REGEXP','.*'.$param.'.*')
                                     ->or_where('stamp','REGEXP','.*'.$param.'.*')
                                     ->order_by('stamp','DESC')
-                                    ->execute();
+                                    ->select();
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
 
                     foreach($rows as $row){
