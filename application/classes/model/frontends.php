@@ -31,6 +31,7 @@ class Model_Frontends extends Jelly_Model
             'last_active' => Jelly::field('timestamp',array(
                             "column" => "last_active",
                             "type"   => "timestamp",
+                            "format" => "Y-m-d H:i:s",
                             "other"  => ""
                         )),
             'show_tv'     => Jelly::field('integer',array(

@@ -34,7 +34,7 @@ class Controller_Ajax extends Controller{
                   ),
             "logi-common" => array(
                   "kutsut" =>
-                      array("todo_save","todo_refresh","todo_search"),
+                      array("todo_save","todo_refresh","todo_search","todo_ack","todo_unack"),
                   "level"  => 1
                   ),
             "logi-adv" => array(
@@ -604,21 +604,22 @@ class Controller_Ajax extends Controller{
                   $post = $_POST;
                   trim($post['adder']);
                   trim($post['comment']);
-                  if(empty($post['comment']) or empty($post['adder'])){
+                  if(empty($post['comment'])){
                       $ret = "";
                       if(empty($post['comment']) and empty($post['adder']))
                           $ret = "Molemmat kentät ovat tyhjiä, täytä ne ja lisää rivi sen jälkeen uudelleen.";
                       elseif(empty($post['comment']))
                           $ret = "Viesti puuttuu! Kirjoita se ensin.";
-                      elseif(empty($post['adder']))
-                          $ret = "Lisääjä on pakko ilmoittaa.";
                       $return = array("ret" => $ret,"ok"=>false);
                   }else{
+                      if(empty($post['adder']))
+                          $post['adder'] = $this->session->get("user");
                       Jelly::factory('logi')
                                   ->set(array(
                                       "tag"     => $post['tag'],
                                       "comment" => $post['comment'],
-                                      "adder"   => $post['adder']
+                                      "adder"   => $post['adder'],
+                                      "stamp"   => DB::expr("NOW()")
                                   ))->save();
                       $return = array("ret"=>"Rivi lisätty onnistuneesti.","ok"=>true);
                   }
@@ -646,10 +647,30 @@ class Controller_Ajax extends Controller{
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
 
                     foreach($rows as $row){
-                        $text .= "<tr class=\"type-".$row->tag."\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>";
+                        if(!empty($row->ack)){
+                            $text .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag." type-".$row->tag."-kuitattu\" title=\"Kuittaaja: ".$row->ack." (".date("d.m. H:i",strtotime($row->ack_stamp)).")\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
+                        }else{
+                            $text .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag."\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
+                        }
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
+                    break;
+              case "todo_ack":
+                    $param = $_POST['row'];
+                    $d = Jelly::query('logi',$param)->select();
+                    $d->ack = $this->session->get('user');
+                    $d->ack_stamp = DB::expr("NOW()");
+                    $d->save();
+                    $return = array("ret"=>true);
+                    break;
+              case "todo_unack":
+                    $param = $_POST['row'];
+                    $d = Jelly::query('logi',$param)->select();
+                    $d->ack = "";
+                    $d->ack_stamp = "0000-00-00 00:00:00";
+                    $d->save();
+                    $return = array("ret"=>true);
                     break;
               case "populate_logi":
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");

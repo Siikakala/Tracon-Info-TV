@@ -1151,6 +1151,33 @@ class Controller_Admin extends Controller{
                     },5000);
                 };
 
+                $("td").live("click",function (){
+                    var row = $(this).attr("row");
+                    var tag = $(this).parent().attr("tag");
+                    if($(\'#\'+row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")){
+                        var sure = confirm("Oletko varma että haluat poistaa tämän rivin kuittauksen?")
+                        if(sure){
+                            fetch = \''.URL::base($this->request).'ajax/todo_unack/\'
+                            $.post(fetch, { "row": row }, function(data){
+                                if(data.ret == true){
+                                    $(\'#\'+row).removeClass("type-"+tag+"-kuitattu");
+                                }else{
+                                    alert("Kuittauksen poisto epäonnistui!");
+                                }
+                            },"json");
+                        }
+                    }else{
+                        fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
+                        $.post(fetch, { "row": row }, function(data){
+                            if(data.ret == true){
+                                $(\'#\'+row).addClass("type-"+tag+"-kuitattu");
+                            }else{
+                                alert("Kuittaus epäonnistui!");
+                            }
+                        },"json");
+                    }
+                });
+
                 $("form").submit(function(e) {
                     e.preventDefault();
                 });
@@ -1165,7 +1192,11 @@ class Controller_Admin extends Controller{
         if($rows->count() > 0){
             $this->view->content->text .= "<table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
             foreach($rows as $row){
-                $this->view->content->text .= "<tr class=\"type-".$row->tag."\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>\n";
+                if(!empty($row->ack)){
+                    $this->view->content->text .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag." type-".$row->tag."-kuitattu\" title=\"Kuittaaja: ".$row->ack." (".date("d.m. H:i",strtotime($row->ack_stamp)).")\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
+                }else{
+                    $this->view->content->text .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag."\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
+                }
             }
             $this->view->content->text .= "</tbody></table>";
         }

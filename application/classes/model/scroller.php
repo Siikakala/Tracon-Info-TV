@@ -36,6 +36,7 @@ class Model_Scroller extends Jelly_Model
             'set'       => Jelly::field('timestamp',array(
                             "column" => "set",
                             "type"   => "timestamp",
+                            "format" => "Y-m-d H:i:s",
                             "other"  => "ON UPDATE CURRENT_TIMESTAMP"
                         )),
             'hidden'    => Jelly::field('boolean',array(
