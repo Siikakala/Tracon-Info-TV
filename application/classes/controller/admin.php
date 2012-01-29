@@ -1209,7 +1209,7 @@ class Controller_Admin extends Controller{
 
         if($rows->count() > 0){
             $this->view->content->text .= "
-            <div id=\"dialog-confirm\" title=\"Poista rivi?\">
+            <div id=\"dialog-confirm\" title=\"Poista rivin kuittaus?\">
             	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa tämän rivin kuittauksen?</p>
             </div>
             <table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
