@@ -1152,7 +1152,7 @@ class Controller_Admin extends Controller{
                 };
 
                 $(function() {
-                    $( "#dialog-confirm" ).dialog({
+                    $("#dialog-confirm").dialog({
             			resizable: false,
             			autoOpen: false,
             			height:140,
@@ -1167,10 +1167,10 @@ class Controller_Admin extends Controller{
                                         alert("Kuittauksen poisto epäonnistui!");
                                     }
                                 },"json");
-                                $( this ).dialog( "close" );
+                                $(this).dialog( "close" );
             				},
             				"Peruuta": function() {
-            					$( this ).dialog( "close" );
+            					$(this).dialog( "close" );
             				}
             			}
             		});
@@ -1183,7 +1183,7 @@ class Controller_Admin extends Controller{
                     row = $(this).attr("row");
                     tag = $(this).parent().attr("tag");
                     if($(\'#\'+row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")){
-                        $( "#dialog-confirm" ).dialog(\'open\');
+                        $("#dialog-confirm").dialog(\'open\');
                     }else{
                         fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
                         $.post(fetch, { "row": row }, function(data){
