@@ -1151,21 +1151,39 @@ class Controller_Admin extends Controller{
                     },5000);
                 };
 
+                $(function() {
+                    $( "#dialog-confirm" ).dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:140,
+            			modal: true,
+            			buttons: {
+            				"Poista": function() {
+            					fetch = \''.URL::base($this->request).'ajax/todo_unack/\'
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).removeClass("type-"+tag+"-kuitattu");
+                                    }else{
+                                        alert("Kuittauksen poisto epäonnistui!");
+                                    }
+                                },"json");
+                                $( this ).dialog( "close" );
+            				},
+            				"Peruuta": function() {
+            					$( this ).dialog( "close" );
+            				}
+            			}
+            		});
+            	});
+
+        		var row = 0;
+        		var tag = "";
+
                 $("td").live("click",function (){
-                    var row = $(this).attr("row");
-                    var tag = $(this).parent().attr("tag");
+                    row = $(this).attr("row");
+                    tag = $(this).parent().attr("tag");
                     if($(\'#\'+row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")){
-                        var sure = confirm("Oletko varma että haluat poistaa tämän rivin kuittauksen?")
-                        if(sure){
-                            fetch = \''.URL::base($this->request).'ajax/todo_unack/\'
-                            $.post(fetch, { "row": row }, function(data){
-                                if(data.ret == true){
-                                    $(\'#\'+row).removeClass("type-"+tag+"-kuitattu");
-                                }else{
-                                    alert("Kuittauksen poisto epäonnistui!");
-                                }
-                            },"json");
-                        }
+                        $( "#dialog-confirm" ).dialog(\'open\');
                     }else{
                         fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
                         $.post(fetch, { "row": row }, function(data){
@@ -1190,7 +1208,11 @@ class Controller_Admin extends Controller{
         <div id=\"table\">\n";
 
         if($rows->count() > 0){
-            $this->view->content->text .= "<table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
+            $this->view->content->text .= "
+            <div id=\"dialog-confirm\" title=\"Poista rivi?\">
+            	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa tämän rivin kuittauksen?</p>
+            </div>
+            <table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
             foreach($rows as $row){
                 if(!empty($row->ack)){
                     $this->view->content->text .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag." type-".$row->tag."-kuitattu\" title=\"Kuittaaja: ".$row->ack." (".date("d.m. H:i",strtotime($row->ack_stamp)).")\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
