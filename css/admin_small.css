@@ -166,6 +166,7 @@ table.stats {
 	border: 1px solid #CCC;
 	border-collapse: collapse;
 	margin-bottom: 10px;
+	cursor: default;
 }
 
 table.stats th {
@@ -204,30 +205,35 @@ table.stats tr.type-löytötavara-kuitattu td{
     background-color: #AA6699;
     color: #444;
     text-decoration: line-through;
+    cursor:help
 }
 
 table.stats tr.type-ongelma-kuitattu td{
     background-color: #774444;
     color: #AAAAAA;
     text-decoration: line-through;
+    cursor:help
 }
 
 table.stats tr.type-tiedote-kuitattu td{
     background-color: #447744;
     color: #444;
     text-decoration: line-through;
+    cursor:help
 }
 
 table.stats tr.type-kysely-kuitattu td{
     background-color: #444444;
     color: #999;
     text-decoration: line-through;
+    cursor:help
 }
 
 table.stats tr.type-muu-kuitattu td{
     background-color: #447;
     color: #AAAAAA;
     text-decoration: line-through;
+    cursor:help
 }
 
 /* Tämä tagataan jokaiseen uuteen ja muutettuun riviin rulla- ja scrollerhallinnassa */
