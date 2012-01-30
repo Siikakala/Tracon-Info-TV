@@ -202,6 +202,12 @@ class Model_Public extends Model_Database {
             $session->set("scrollstamp",time());//asetetaan aikaleima,
             $override = true;//ja pakotetaan päivitys.
         }
+        if(!$session->get("override")){//jos edellisen päivityksen aikaleimaa ei löydy..
+            $session->set("override",time());//asetetaan aikaleima,
+            $override = true;//ja pakotetaan päivitys.
+        }elseif(($session->get("override")+20)<time()){
+            $override = true;
+        }
 
         $query1 = DB::query(Database::SELECT,//Koska scrolleria on päivitetty viimeksi?
                             "SELECT MAX(`set`) as \"max\"".

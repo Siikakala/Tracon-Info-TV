@@ -629,7 +629,11 @@ class Controller_Ajax extends Controller{
                     $text = "<table class=\"stats\" style=\"color:black\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     foreach($query as $row){
-                        $text .= "<tr class=\"type-".$row->tag."\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>";
+                        if(!empty($row->ack)){
+                            $text .= "<tr class=\"type-".$row->tag." type-".$row->tag."-kuitattu\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>";
+                        }else{
+                            $text .= "<tr class=\"type-".$row->tag."\"><td>".date("d.m. H:i",strtotime($row->stamp))."</td><td>".$types[$row->tag]."</td><td>".$row->comment."</td><td>".$row->adder."</td></tr>";
+                        }
                     }
                     $text .= "</table>";
                     $return = array("ret"=>$text);
@@ -699,10 +703,6 @@ class Controller_Ajax extends Controller{
                     break;
               case "check":
                     $provider = new Model_Public();
-                    if(date("s")%20 == 0)
-                        $over = true;
-                    else
-                        $over = false;
                     $return = array(
                         "ret" => true,
                         "page" => $this->session->get("page",0),
