@@ -228,6 +228,7 @@ class Model_Public extends Model_Database {
                     }
                 $scroll = implode(" &raquo; ",$scrolli);
                 $session->set("override",time());
+                $session->set("scrollstamp",time());//muistetaan vielä asettaa se päivitysaika sessiomuuttujaan.
             }//else = mikään ei muuttunut -> palauttaa falsen
         }else
             $scroll = "Info-TV";//jos scroller olisi muuten tyhjä, näytetään ainakin "Tracon Info-TV"
@@ -236,7 +237,7 @@ class Model_Public extends Model_Database {
             $return = array("changed" => true,"palautus"=>$scroll);
         else
             $return = array("changed"=>false);
-        $session->set("scrollstamp",time());//muistetaan vielä asettaa se päivitysaika sessiomuuttujaan.
+
         return $return;
     }
 
