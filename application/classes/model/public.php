@@ -228,6 +228,7 @@ class Model_Public extends Model_Database {
                         $scrolli[] = $this->utf8($row->text);
                     }
                 $scroll = implode(" &raquo; ",$scrolli);
+                $session->set("override",time());
             }//else = mikään ei muuttunut -> palauttaa falsen
         }else
             $scroll = "Info-TV";//jos scroller olisi muuten tyhjä, näytetään ainakin "Tracon Info-TV"
