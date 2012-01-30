@@ -243,10 +243,10 @@ class Model_Public extends Model_Database {
 
      public function parse_ohjelmatags($text){
         $text = $this->utf8($text);
-        $days = array(1=>"Maanantai",2=>"Tiistai",3=>"Keskiviikko",4=>"Torstai",5=>"Perjantai",6=>"Lauantai",0=>"Sunnuntai");
+        $days = array(1=>"Maanantai",2=>"Tiistai",3=>"Keskiviikko",4=>"Torstai",5=>"Perjantai",6=>"Lauantai",7=>"Sunnuntai");
         //* //<- poista ensimmäinen kauttaviiva jos haluat määritellä ajankohdan manuaalisesti
-        if(date("w") == 6 or date("w") == 0){//jos on lauantai tai sunnuntai
-            $paiva = $days[date("w")]; //viikonpäivä
+        if(date("N") >= 6){//jos on lauantai tai sunnuntai
+            $paiva = $days[date("N")]; //viikonpäivä
             $nyt = date("G") - constant("ALKUAIKA_".$paiva) + 1 ;//koska muuten kellon tunnin liian vähän. G = 24h-tunnit ilman etunollaa.
             $force_days = false;
         }else{
