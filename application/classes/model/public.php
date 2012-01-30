@@ -207,7 +207,6 @@ class Model_Public extends Model_Database {
             $override = true;//ja pakotetaan päivitys.
         }elseif(($session->get("override")+20)<time()){
             $override = true;
-            $session->set("override",time());
         }
 
         $query1 = DB::query(Database::SELECT,//Koska scrolleria on päivitetty viimeksi?
