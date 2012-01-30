@@ -708,7 +708,7 @@ class Controller_Ajax extends Controller{
                         "page" => $this->session->get("page",0),
                         "dia" => $provider->page(),
                         "fcn" => $provider->fcn(),
-                        "scroller" => $provider->scroller($over)
+                        "scroller" => $provider->scroller()
                         );
                     break;
             }
