@@ -644,8 +644,14 @@ class Controller_Ajax extends Controller{
                     $params = explode(" ",$param1);
                     $ids = array();
                     foreach($params as $key => $param){
-                        if(strtotime($param))
-                            $param = date("Y-m-d H:i:s",strtotime($param));
+                        if(strtotime($param)){
+                            if(strstr($param,":")){
+                                $param = date("H:i",strtotime($param));
+                            }else{
+                                $param = date("Y-m-d",strtotime($param));
+                            }
+                        }
+                        //print $param."\n";
                         $rows = Jelly::query('logi')
                                         ->select_column('id')
                                         ->or_where('tag','REGEXP','.*'.$param.'.*')
@@ -656,30 +662,25 @@ class Controller_Ajax extends Controller{
                                         ->select();
                         $ids[] = $rows->as_array('id');
                     }
-
-
-                    //stackoverflowsta:
+                    //apufunktio, joka palauttaa vain ne avaimet, jotka löytyvät *jokaisesta* arraysta.
                     function custom_intersect($arrays) {
                         $comp = array_shift($arrays);
-                        $values = array();
+                        $values = $comp;
 
-                        // Loop through the other arrays
+                        // Käy loput hakusanat läpi kaventaen hakua koko ajan.
                         if(!empty($arrays))foreach($arrays as $array) {
-                            // Loop through every value in array
-                            foreach($array as $k => $v) {
-                                // If the current ID exists in the compare array
-                                if(isset($comp[$v['id']])) {
-                                    // Increase the amount of matches
-                                    $values[] = $v['id'];
-                                }
-                            }
+                            $data = array_intersect_key($values,$array);
+                            $values = $data;
                         }
 
-                        if(!empty($values))
-                            $result = $values;
-                        else{
+                        $c = count($arrays);
+
+                        if($c >= 1)
+                            $result = array_keys($values);
+                        elseif($c == 1 && $arrays !== false)
                             $result = array_keys($comp);
-                        }
+                        else
+                            $result = "";
 
                         return $result;
                     }
@@ -688,7 +689,10 @@ class Controller_Ajax extends Controller{
                     $id_pre = custom_intersect($ids);
                     $id_list = implode(",",$id_pre);
 
-                    $rows = Jelly::query('logi')->where('id','',DB::expr('IN('.$id_list.')'))->select();
+                    if(!empty($id_list))
+                        $rows = Jelly::query('logi')->where('id','',DB::expr('IN('.$id_list.')'))->order_by('stamp','DESC')->select();
+                    else
+                        $rows = Jelly::query('logi')->order_by('stamp','DESC')->select();
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
 
                     foreach($rows as $row){
