@@ -639,15 +639,56 @@ class Controller_Ajax extends Controller{
                     $return = array("ret"=>$text);
                     break;
               case "todo_search":
-                    $param = $_POST['search'];
+                    $param1 = $_POST['search'];
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
-                    $rows = Jelly::query('logi')
-                                    ->or_where('tag','REGEXP','.*'.$param.'.*')
-                                    ->or_where('comment','REGEXP','.*'.$param.'.*')
-                                    ->or_where('adder','REGEXP','.*'.$param.'.*')
-                                    ->or_where('stamp','REGEXP','.*'.$param.'.*')
-                                    ->order_by('stamp','DESC')
-                                    ->select();
+                    $params = explode(" ",$param1);
+                    $ids = array();
+                    foreach($params as $key => $param){
+                        if(strtotime($param))
+                            $param = date("Y-m-d H:i:s",strtotime($param));
+                        $rows = Jelly::query('logi')
+                                        ->select_column('id')
+                                        ->or_where('tag','REGEXP','.*'.$param.'.*')
+                                        ->or_where('comment','REGEXP','.*'.$param.'.*')
+                                        ->or_where('adder','REGEXP','.*'.$param.'.*')
+                                        ->or_where('stamp','REGEXP','.*'.$param.'.*')
+                                        ->order_by('stamp','DESC')
+                                        ->select();
+                        $ids[] = $rows->as_array('id');
+                    }
+
+
+                    //stackoverflowsta:
+                    function custom_intersect($arrays) {
+                        $comp = array_shift($arrays);
+                        $values = array();
+
+                        // Loop through the other arrays
+                        if(!empty($arrays))foreach($arrays as $array) {
+                            // Loop through every value in array
+                            foreach($array as $k => $v) {
+                                // If the current ID exists in the compare array
+                                if(isset($comp[$v['id']])) {
+                                    // Increase the amount of matches
+                                    $values[] = $v['id'];
+                                }
+                            }
+                        }
+
+                        if(!empty($values))
+                            $result = $values;
+                        else{
+                            $result = array_keys($comp);
+                        }
+
+                        return $result;
+                    }
+
+
+                    $id_pre = custom_intersect($ids);
+                    $id_list = implode(",",$id_pre);
+
+                    $rows = Jelly::query('logi')->where('id','',DB::expr('IN('.$id_list.')'))->select();
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
 
                     foreach($rows as $row){
