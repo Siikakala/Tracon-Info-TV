@@ -662,10 +662,10 @@ class Controller_Ajax extends Controller{
                                         ->select();
                         $ids[] = $rows->as_array('id');
                     }
+
                     //apufunktio, joka palauttaa vain ne avaimet, jotka löytyvät *jokaisesta* arraysta.
                     function custom_intersect($arrays) {
-                        $comp = array_shift($arrays);
-                        $values = $comp;
+                        $values = array_shift($arrays);
 
                         // Käy loput hakusanat läpi kaventaen hakua koko ajan.
                         if(!empty($arrays))foreach($arrays as $array) {
@@ -674,13 +674,13 @@ class Controller_Ajax extends Controller{
                         }
 
                         $c = count($arrays);
-
-                        if($c >= 1)
+                        //print $c;
+                        if($c > 0)
                             $result = array_keys($values);
-                        elseif($c == 1 && $arrays !== false)
-                            $result = array_keys($comp);
+                        elseif($c == 0 && !empty($values))
+                            $result = array_keys($values);
                         else
-                            $result = "";
+                            $result = array();
 
                         return $result;
                     }
@@ -688,9 +688,13 @@ class Controller_Ajax extends Controller{
 
                     $id_pre = custom_intersect($ids);
                     $id_list = implode(",",$id_pre);
-
+//                    var_dump($ids);
+//                    var_dump($id_pre);
+//                    var_dump($id_list);
                     if(!empty($id_list))
                         $rows = Jelly::query('logi')->where('id','',DB::expr('IN('.$id_list.')'))->order_by('stamp','DESC')->select();
+                    elseif(!empty($param1))
+                        $rows = Jelly::query('logi',-1)->select();
                     else
                         $rows = Jelly::query('logi')->order_by('stamp','DESC')->select();
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
