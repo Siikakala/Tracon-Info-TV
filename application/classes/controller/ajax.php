@@ -644,10 +644,12 @@ class Controller_Ajax extends Controller{
                     $params = explode(" ",$param1);
                     $ids = array();
                     foreach($params as $key => $param){
-                        if(strtotime($param)){
+                        if(strtotime($param)||strtotime($param.date("Y"))){
                             if(strstr($param,":")){
                                 $param = date("H:i",strtotime($param));
-                            }else{
+                            }elseif(strstr($param,".")){
+                                $param = date("Y-m-d",strtotime($param));
+                            }elseif(strstr($param,"today")||strstr($param,"yesterday")){
                                 $param = date("Y-m-d",strtotime($param));
                             }
                         }
