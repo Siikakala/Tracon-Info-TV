@@ -13,7 +13,8 @@ class Model_Authi extends Model_Database{
      * @param string $pass Salasana
      */
     public function auth($user,$pass,$ip){
-        $l = Jelly::query('user')->where('kayttis','=',$user)->and_where('passu','=',sha1($pass))->limit(1)->select();
+        $secret = Kohana::$config->load('auth.secret');
+        $l = Jelly::query('user')->where('kayttis','=',$user)->and_where('passu','=',sha1($pass.$secret))->limit(1)->select();
 
         if($l->loaded()){
             $tulos = true;
