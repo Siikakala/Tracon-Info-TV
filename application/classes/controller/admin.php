@@ -1205,13 +1205,17 @@ class Controller_Admin extends Controller{
             		});
             	});
 
+            	$("body").live("click",function(){
+                	$(".contextMenu").hide();
+                });
+
                 $("td").live(
                     "mouseup",function (e){
                         row = $(this).attr("row");
                         switch(e.which){
+                          //left click
                           case 1:
                             tag = $(this).parent().attr("tag");
-                            console.log(row + "<- row -- tag ->" + tag);
                             if($(\'#\'+row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")){
                                 $("#dialog-confirm").dialog(\'open\');
                             }else{
@@ -1225,8 +1229,8 @@ class Controller_Admin extends Controller{
                                 },"json");
                             }
                             break;
+                          //right click
                           case 3:
-                            //alert("kakkosnappi! Rivi: " +row);
                             $("#myMenu").css({ top: e.pageY, left: e.pageX }).show(\'fast\');
                             $("#myMenu").find(\'a\').click(function(){
                                 $(".contextMenu").hide();
