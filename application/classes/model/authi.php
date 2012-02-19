@@ -12,25 +12,20 @@ class Model_Authi extends Model_Database{
      * @param string $user Käyttäjätunnus
      * @param string $pass Salasana
      */
-    public function auth($user,$pass){
-        $query = DB::query(Database::SELECT,
-                            "SELECT level ".
-                            "FROM   kayttajat ".
-                            "WHERE  kayttis = :user ".
-                            "       AND ".
-                            "       passu = :pass"
-                            );
-        $query->parameters(array(":user" => strtolower($user),
-                                 ":pass" => sha1($pass)
-                                ));
-        $result = $query->execute(__db);
-        if($result->count() > 0)
-            $tulos = $result->as_array();
-        else
+    public function auth($user,$pass,$ip){
+        $l = Jelly::query('user')->where('kayttis','=',$user)->and_where('passu','=',sha1($pass))->limit(1)->select();
+
+        if($l->loaded()){
+            $tulos = true;
+            $level = $l->level;
+            $l->last_login = DB::expr("NOW()");
+            $l->ip = $ip;
+            $l->save();
+        }else
             $tulos = false;
 
         if($tulos)
-            $return = $result[0]["level"];
+            $return = $level;
         else
             $return = false;
 

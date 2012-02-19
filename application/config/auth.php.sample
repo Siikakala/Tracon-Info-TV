@@ -1,0 +1,7 @@
+<?php defined('SYSPATH') or die('No direct script access.');
+
+return array(
+    'secret' => '',//A string which is appended to passwords. Make sure it's long and complex enough.
+
+);
+?>

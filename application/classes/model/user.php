@@ -13,26 +13,37 @@ class Model_User extends Jelly_Model
 
         // Fields defined by the model
         $meta->fields(array(
-            'u_id'     => Jelly::field('primary',array(
+            'u_id'       => Jelly::field('primary',array(
                             "column" => "u_id",
                             "type"   => "int unsigned",
                             "other"  => "PRIMARY KEY AUTO_INCREMENT"
                         )),
-            'kayttis'  => Jelly::field('string',array(
+            'kayttis'    => Jelly::field('string',array(
                             "column" => "kayttis",
                             "type"   => "tinytext",
                             "other"  => ""
                         )),
-            'passu'    => Jelly::field('string',array(
+            'passu'      => Jelly::field('string',array(
                             "column" => "passu",
                             "type"   => "tinytext",
                             "other"  => ""
                         )),
-            'level'    => Jelly::field('integer',array(
+            'level'      => Jelly::field('integer',array(
                             "column" => "level",
                             "type"   => "int",
                             "other"  => ""
-                        ))
+                        )),
+            'last_login' => Jelly::field('timestamp',array(
+                            "column" => "last_login",
+                            "type"   => "timestamp",
+                            "format" => "Y-m-d H:i:s",
+                            "other"  => "DEFAULT CURRENT_TIMESTAMP"
+                        )),
+            'ip'        => Jelly::field('string',array(
+                            "column" => "ip",
+                            "type"   => "tinytext",
+                            "other"  => ""
+                        )),
         ));
 
         $check = new Model_Jelly_Check();

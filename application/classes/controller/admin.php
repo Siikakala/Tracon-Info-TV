@@ -77,7 +77,7 @@ class Controller_Admin extends Controller{
 
     public function action_login(){
         $auth = new Model_Authi();
-        $login = $auth->auth($_POST['user'],$_POST['pass']);
+        $login = $auth->auth($_POST['user'],$_POST['pass'],$_SERVER['REMOTE_ADDR']);
         if($login !== false){
             $this->session->set('logged_in',true);//true/false
             $this->session->set('level',$login);//>= 1
@@ -1412,7 +1412,52 @@ class Controller_Admin extends Controller{
             				}
             			}
             		});
-
+                    $("#dialog-pass").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:200,
+            			width: 300,
+            			modal: true,
+            			buttons: {
+            				"Vaihda": function() {
+            					fetch = \''.URL::base($this->request).'ajax/user_del/\';
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).remove();
+                                    }else{
+                                        alert("Käyttäjän poisto epäonnistui!\n\n"+data.ret);
+                                    }
+                                },"json");
+                                $(this).dialog( "close" );
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
+            		$("#dialog-level").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:170,
+            			width: 220,
+            			modal: true,
+            			buttons: {
+            				"Vaihda": function() {
+            					fetch = \''.URL::base($this->request).'ajax/user_del/\';
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).remove();
+                                    }else{
+                                        alert("Käyttäjän poisto epäonnistui!\n\n"+data.ret);
+                                    }
+                                },"json");
+                                $(this).dialog( "close" );
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
                 });
 
 
@@ -1428,16 +1473,16 @@ class Controller_Admin extends Controller{
                             $("#myMenu").css({ top: e.pageY, left: e.pageX }).show(\'fast\');
                             $("#myMenu").find(\'a\').click(function(){
                                 $(".contextMenu").hide();
+                                $(".useri").html(user);
                                 switch($(this).attr(\'href\').substr(1)){
                                     case "pass":
-                                        alert("Tähän tulee passunvaihtoprompti. ID = "+row);
+                                        $("#dialog-pass").dialog(\'open\');
                                         break;
                                     case "del":
-                                        $("#useri").html(user);
                                         $("#dialog-confirm-del").dialog(\'open\');
                                         break;
                                     case "chg":
-                                        alert("Drop-down leveleille. ID = "+row);
+                                        $("#dialog-level").dialog(\'open\');
                                         break;
                                 }
                             });
@@ -1463,13 +1508,30 @@ class Controller_Admin extends Controller{
             </ul>
 
             <div id=\"dialog-confirm-del\" title=\"Poista käyttäjä?\">
-            	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa käyttäjän <span id=\"useri\"></span>?</p>
+            	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:5px 14px 20px 5px; -moz-transform: scale(2, 2); -webkit-transform: scale(2, 2);\"></span>Oletko varma että haluat poistaa käyttäjän <span class=\"useri\"></span>?</p>
+            </div>
+
+            <div id=\"dialog-pass\" title=\"Vaihda salasana.\">
+            	<p><span class=\"ui-icon ui-icon-person\" style=\"float:left; margin:0 7px 20px 0;\"></span>Anna käyttäjän <span class=\"useri\"></span> uusi salasana:</p>
+            	<form action=\"#\"><table><tr><td><label for=\"pass\">Salasana:</label></td><td><input type=\"password\" name=\"pass\"></td></tr><tr><td><label for=\"confirm\">Salasana uudelleen:</label></td><td><input type=\"password\" name=\"confirm\"></td></tr></table></form>
+            	<span id=\"dialog-pass-feedback\" style=\"min-height:10px\"></span>
+            </div>
+
+            <div id=\"dialog-level\" title=\"Vaihda käyttäjätasoa.\">
+            	<p><span class=\"ui-icon ui-icon-person\" style=\"float:left; margin:0 7px 20px 0;\"></span>Valitse käyttäjän <span class=\"useri\"></span> uusi käyttäjätaso:</p>
+            	<form action=\"#\" style=\"margin-left:25px;\">".form::select("level",array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH"),1)."</form>
+            	<span id=\"dialog-level-feedback\" style=\"min-height:10px\"></span>
             </div>
             ";
         $users = Jelly::query('user')->select();
-        $this->view->content->text .= "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th></tr>";
+        $this->view->content->text .= "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th><th>Edellinen kirjautuminen</th><th>Viimeisin IP</th></tr>";
         foreach($users as $user){
-            $this->view->content->text .= "<tr id=\"".$user->u_id."\" usr=\"".$user->kayttis."\"><td row=\"".$user->u_id."\">".$user->u_id."</td><td row=\"".$user->u_id."\">".$user->kayttis."</td><td row=\"".$user->u_id."\">".$user->level."</td></tr>";
+            $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH");
+            if(strcmp("0000-00-00 00:00:00",$user->last_login) === 0)
+                $last = "Ei ole vielä kirjautunut.";
+            else
+                $last = date("d.m.Y H:i",strtotime($user->last_login));
+            $this->view->content->text .= "<tr id=\"".$user->u_id."\" usr=\"".$user->kayttis."\"><td row=\"".$user->u_id."\">".$user->u_id."</td><td row=\"".$user->u_id."\">".$user->kayttis."</td><td row=\"".$user->u_id."\">".$levels[$user->level]."</td><td row=\"".$user->u_id."\">".$last."</td><td row=\"".$user->u_id."\">".$user->ip."</td></tr>";
         }
         $this->view->content->text .= "</table>";
     }
