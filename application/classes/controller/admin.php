@@ -21,7 +21,6 @@ class Controller_Admin extends Controller{
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.16.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.contextMenu.js\"></script>";
             //$this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\">
                                     $(function() {
@@ -1153,7 +1152,6 @@ class Controller_Admin extends Controller{
 
                 function ref(){
                     search();
-                    menuinit();
                     window.setTimeout(function(){
                         ref();
                     },5000);
@@ -1206,32 +1204,6 @@ class Controller_Admin extends Controller{
             			}
             		});
             	});
-
-                function menuinit(){
-                    $("#blah").contextMenu({
-                        menu: \'myMenu\'
-                    },
-                    function(action, el, pos) {
-                        row = $(el).attr("row");
-                        tag = $(el).parent().attr("tag");
-                        console.log(row + "<- row -- tag ->" + tag + "<- tag -- el ->" + $(el).text());
-                        switch(action){
-                            case "check":
-                                fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
-                                $.post(fetch, { "row": row }, function(data){
-                                    if(data.ret == true){
-                                        $(\'#\'+row).addClass("type-"+tag+"-kuitattu");
-                                    }else{
-                                        alert("Kuittaus epäonnistui!");
-                                    }
-                                },"json");
-                                break;
-                            case "del":
-                                $("#dialog-confirm-del").dialog(\'open\');
-                                break;
-                        }
-                    });
-                }
 
                 $("td").live(
                     "mouseup",function (e){
