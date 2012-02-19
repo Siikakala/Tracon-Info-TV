@@ -18,5 +18,5 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 		<div id="header">
 			<p id="login"><?php print $login; ?></p>
 			<p id="show"><?php print $show; ?></p>
-			<h1><?php print __title . " &raquo; " . $title; ?></h1>
+			<h1><?php print __title . $title; ?></h1>
 		</div>

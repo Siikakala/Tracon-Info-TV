@@ -42,6 +42,11 @@ class Controller_Ajax extends Controller{
                       array("populate_logi"),
                   "level"  => 3
                   ),
+            "bofh" => array(
+                  "kutsut" =>
+                      array("user_del"),
+                  "level"  => 3
+                  ),
             "public" => array(
                   "kutsut" =>
                       array("check"),
@@ -770,6 +775,9 @@ class Controller_Ajax extends Controller{
                         "fcn" => $provider->fcn(),
                         "scroller" => $provider->scroller()
                         );
+                    break;
+              case "user_del":
+                    $return = array("ret" => "Et voi poistaa ketään! Muahahaha");
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.

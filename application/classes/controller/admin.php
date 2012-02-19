@@ -14,7 +14,7 @@ class Controller_Admin extends Controller{
         	$this->view->header = new view('admin_header');
         	$this->view->content = new view ('admin_content');
         	$this->view->footer = new view('admin_footer');
-        	$this->view->header->title = "Hallintapaneeli";
+        	$this->view->header->title = "";
         	$this->view->header->css = html::style('css/admin_small.css');
         	$this->view->header->css .= html::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
         	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.min.js"></script>';
@@ -1379,10 +1379,97 @@ class Controller_Admin extends Controller{
     }
 
     public function users(){
+        $this->view->header->js .= '
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $(document).on("contextmenu",function(e){
+                      return false; //tapetaan selaimen oma context menu koko sivulta
+                   });
+
+                });
+                var row = 0;
+
+                $(function(){
+                    $("#dialog-confirm-del").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:140,
+            			modal: true,
+            			buttons: {
+            				"Poista": function() {
+            					fetch = \''.URL::base($this->request).'ajax/user_del/\';
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).remove();
+                                    }else{
+                                        alert("Käyttäjän poisto epäonnistui!\n\n"+data.ret);
+                                    }
+                                },"json");
+                                $(this).dialog( "close" );
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
+
+                });
+
+
+                $("body").live("click",function(){
+                   $(".contextMenu").hide();
+                });
+
+                $("td").live("mouseup",function (e){
+                    row = $(this).attr(\'row\');
+                    var user = $(this).parent().attr(\'usr\');
+                    switch(e.which){
+                        case 3:
+                            $("#myMenu").css({ top: e.pageY, left: e.pageX }).show(\'fast\');
+                            $("#myMenu").find(\'a\').click(function(){
+                                $(".contextMenu").hide();
+                                switch($(this).attr(\'href\').substr(1)){
+                                    case "pass":
+                                        alert("Tähän tulee passunvaihtoprompti. ID = "+row);
+                                        break;
+                                    case "del":
+                                        $("#useri").html(user);
+                                        $("#dialog-confirm-del").dialog(\'open\');
+                                        break;
+                                    case "chg":
+                                        alert("Drop-down leveleille. ID = "+row);
+                                        break;
+                                }
+                            });
+                            break;
+                    }
+
+                });
+            </script>
+            ';
+
+        $this->view->content->text = "";
+        $this->view->header->show .= "
+            <ul id=\"myMenu\" class=\"contextMenu\" style=\"width:180px;\">
+                <li class=\"kuittaa\">
+                    <a href=\"#pass\">Vaihda salasana</a>
+                </li>
+                <li class=\"chg separator\">
+                    <a href=\"#chg\">Muuta käyttäjätasoa</a>
+                </li>
+                <li class=\"del separator\">
+                    <a href=\"#del\">Poista</a>
+                </li>
+            </ul>
+
+            <div id=\"dialog-confirm-del\" title=\"Poista käyttäjä?\">
+            	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa käyttäjän <span id=\"useri\"></span>?</p>
+            </div>
+            ";
         $users = Jelly::query('user')->select();
-        $this->view->content->text = "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th></tr>";
+        $this->view->content->text .= "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th></tr>";
         foreach($users as $user){
-            $this->view->content->text .= "<tr><td>".$user->u_id."</td><td>".$user->kayttis."</td><td>".$user->level."</td></tr>";
+            $this->view->content->text .= "<tr id=\"".$user->u_id."\" usr=\"".$user->kayttis."\"><td row=\"".$user->u_id."\">".$user->u_id."</td><td row=\"".$user->u_id."\">".$user->kayttis."</td><td row=\"".$user->u_id."\">".$user->level."</td></tr>";
         }
         $this->view->content->text .= "</table>";
     }
