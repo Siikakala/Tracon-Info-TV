@@ -34,7 +34,7 @@ class Controller_Ajax extends Controller{
                   ),
             "logi-common" => array(
                   "kutsut" =>
-                      array("todo_save","todo_refresh","todo_search","todo_ack","todo_unack"),
+                      array("todo_save","todo_refresh","todo_search","todo_ack","todo_unack","todo_del"),
                   "level"  => 1
                   ),
             "logi-adv" => array(
@@ -625,7 +625,7 @@ class Controller_Ajax extends Controller{
                   }
                   break;
               case "todo_refresh":
-                    $query = Jelly::query('logi')->order_by('stamp','DESC')->limit(20)->select();
+                    $query = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->limit(20)->select();
                     $text = "<table class=\"stats\" style=\"color:black\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     foreach($query as $row){
@@ -694,11 +694,11 @@ class Controller_Ajax extends Controller{
 //                    var_dump($id_pre);
 //                    var_dump($id_list);
                     if(!empty($id_list))
-                        $rows = Jelly::query('logi')->where('id','',DB::expr('IN('.$id_list.')'))->order_by('stamp','DESC')->select();
+                        $rows = Jelly::query('logi')->where('id','',DB::expr('IN('.$id_list.')'))->and_where('hidden','=','0')->order_by('stamp','DESC')->select();
                     elseif(!empty($param1))
                         $rows = Jelly::query('logi',-1)->select();
                     else
-                        $rows = Jelly::query('logi')->order_by('stamp','DESC')->select();
+                        $rows = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->select();
                     $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
 
                     foreach($rows as $row){
@@ -724,6 +724,15 @@ class Controller_Ajax extends Controller{
                     $d = Jelly::query('logi',$param)->select();
                     $d->ack = "";
                     $d->ack_stamp = "0000-00-00 00:00:00";
+                    $d->save();
+                    $return = array("ret"=>true);
+                    break;
+              case "todo_del":
+                    $param = $_POST['row'];
+                    $d = Jelly::query('logi',$param)->select();
+                    $d->ack = $this->session->get('user');
+                    $d->ack_stamp = DB::expr("NOW()");
+                    $d->hidden = 1;
                     $d->save();
                     $return = array("ret"=>true);
                     break;

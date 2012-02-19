@@ -44,11 +44,15 @@ class Model_Logi extends Jelly_Model
                             "type"   => "tinytext",
                             "other"  => ""
                         )),
-
             'ack_stamp' => Jelly::field('timestamp',array(
                             "column" => "ack_stamp",
                             "type"   => "timestamp",
                             "format" => "Y-m-d H:i:s",
+                            "other"  => "DEFAULT 0"
+                        )),
+            'hidden'    => Jelly::field('boolean',array(
+                            "column" => "hidden",
+                            "type"   => "tinyint",
                             "other"  => "DEFAULT 0"
                         )),
         ));

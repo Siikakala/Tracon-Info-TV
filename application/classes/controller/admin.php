@@ -21,6 +21,7 @@ class Controller_Admin extends Controller{
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.16.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.contextMenu.js\"></script>";
             //$this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\">
                                     $(function() {
@@ -1105,7 +1106,13 @@ class Controller_Admin extends Controller{
             <script type="text/javascript">
                 $(document).ready(function() {
                     ref();
+                    $(document).on("contextmenu",function(e){
+                      return false; //tapetaan selaimen oma context menu koko sivulta
+                   });
                 });
+
+                var row = 0;
+        		var tag = "";
 
                 $(function() {
                     $("#filter_cont").delegate("input","keyup",function(event) {
@@ -1146,6 +1153,7 @@ class Controller_Admin extends Controller{
 
                 function ref(){
                     search();
+                    menuinit();
                     window.setTimeout(function(){
                         ref();
                     },5000);
@@ -1174,44 +1182,137 @@ class Controller_Admin extends Controller{
             				}
             			}
             		});
+
+            		$("#dialog-confirm-del").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:140,
+            			modal: true,
+            			buttons: {
+            				"Poista": function() {
+            					fetch = \''.URL::base($this->request).'ajax/todo_del/\'
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).remove();
+                                    }else{
+                                        alert("Rivin poisto epäonnistui!");
+                                    }
+                                },"json");
+                                $(this).dialog( "close" );
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
             	});
 
-        		var row = 0;
-        		var tag = "";
+                function menuinit(){
+                    $("#blah").contextMenu({
+                        menu: \'myMenu\'
+                    },
+                    function(action, el, pos) {
+                        row = $(el).attr("row");
+                        tag = $(el).parent().attr("tag");
+                        console.log(row + "<- row -- tag ->" + tag + "<- tag -- el ->" + $(el).text());
+                        switch(action){
+                            case "check":
+                                fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).addClass("type-"+tag+"-kuitattu");
+                                    }else{
+                                        alert("Kuittaus epäonnistui!");
+                                    }
+                                },"json");
+                                break;
+                            case "del":
+                                $("#dialog-confirm-del").dialog(\'open\');
+                                break;
+                        }
+                    });
+                }
 
-                $("td").live("click",function (){
-                    row = $(this).attr("row");
-                    tag = $(this).parent().attr("tag");
-                    if($(\'#\'+row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")){
-                        $("#dialog-confirm").dialog(\'open\');
-                    }else{
-                        fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
-                        $.post(fetch, { "row": row }, function(data){
-                            if(data.ret == true){
-                                $(\'#\'+row).addClass("type-"+tag+"-kuitattu");
+                $("td").live(
+                    "mouseup",function (e){
+                        row = $(this).attr("row");
+                        switch(e.which){
+                          case 1:
+                            tag = $(this).parent().attr("tag");
+                            console.log(row + "<- row -- tag ->" + tag);
+                            if($(\'#\'+row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")){
+                                $("#dialog-confirm").dialog(\'open\');
                             }else{
-                                alert("Kuittaus epäonnistui!");
+                                fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).addClass("type-"+tag+"-kuitattu");
+                                    }else{
+                                        alert("Kuittaus epäonnistui!");
+                                    }
+                                },"json");
                             }
-                        },"json");
+                            break;
+                          case 3:
+                            //alert("kakkosnappi! Rivi: " +row);
+                            $("#myMenu").css({ top: e.pageY, left: e.pageX }).show(\'fast\');
+                            $("#myMenu").find(\'a\').click(function(){
+                                $(".contextMenu").hide();
+                                switch($(this).attr(\'href\').substr(1)){
+                                    case "check":
+                                        fetch = \''.URL::base($this->request).'ajax/todo_ack/\'
+                                        $.post(fetch, { "row": row }, function(data){
+                                            if(data.ret == true){
+                                                $(\'#\'+row).addClass("type-"+tag+"-kuitattu");
+                                            }else{
+                                                alert("Kuittaus epäonnistui!");
+                                            }
+                                        },"json");
+                                        break;
+                                    case "del":
+                                        $("#dialog-confirm-del").dialog(\'open\');
+                                        break;
+                                }
+                            });
+                            break;
+                        }
                     }
-                });
+                );
 
                 $("form").submit(function(e) {
                     e.preventDefault();
                 });
             </script>
             ';
-        $rows = Jelly::query('logi')->order_by('stamp','DESC')->select();
+        $rows = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->select();
         $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
         $add = form::open(null, array("onsubmit" => "save(); return false;", "id" => "form"))."Lisää rivi:<br />".form::label('tag',' Tyyppi:').form::select('tag',$types,2,array("id"=>"tag")).form::label('comment',' Viesti:').form::input('comment',null,array("id"=>"com","size"=>"56")).form::label('adder',' Lisääjä:').form::input('adder',$this->session->get('user'),array("id"=>"adder","size"=>"5")).form::submit(null,'Lisää').form::close()."\n";
-        $this->view->content->text .= "<div id=\"filter_cont\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter","size"=>"35","title"=>"OR-haku: hakusana1|hakusana2\n(\"Hae kaikki rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2\")\nAND-haku: hakusana1 hakusana2 \n(\"Hae kaikki rivit, joiden kentistä löytyy kaikki hakusanat\")\nYhdistelmä: hakusana1|hakusana2 hakusana3\n(\"Hae kaikki rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2, mutta myös hakusana3\")"))."</div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
+        $this->view->content->text .= "<div id=\"filter_cont\" style=\"float:right;margin-top:-30px;\">Suodatus/haku: ".form::input('filter',null,array("id"=>"filter","size"=>"35","title"=>"OR-haku: hakusana1|hakusana2\n(\"Hae kaikki rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2\")\nAND-haku: hakusana1 hakusana2 \n(\"Hae kaikki rivit, joiden kentistä löytyy kaikki hakusanat\")\nYhdistelmä: hakusana1|hakusana2 hakusana3\n(\"Hae kaikki rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2, mutta myös hakusana3\")"))."<span class=\"ui-icon ui-icon-circle-close\" style=\"float:right; margin:2px 0 20px 0;\" onclick=\"$('#filter').val('');search();\"></span></div><div id=\"add\">$add</div><div id=\"feed_cont\" style=\"min-height:20px;\"><div id=\"feedback\"></div></div>
         <div id=\"table\">\n";
 
         if($rows->count() > 0){
+            $this->view->header->show .= "
+            <ul id=\"myMenu\" class=\"contextMenu\">
+                <li class=\"kuittaa\">
+                    <a href=\"#check\">Kuittaa</a>
+                </li>
+                <li class=\"del separator\">
+                    <a href=\"#del\">Poista</a>
+                </li>
+            </ul>
+            ";
+
             $this->view->content->text .= "
             <div id=\"dialog-confirm\" title=\"Poista rivin kuittaus?\">
             	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa tämän rivin kuittauksen?</p>
             </div>
+
+            <div id=\"dialog-confirm-del\" title=\"Poista rivi?\">
+            	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa tämän rivin?</p>
+            </div>
+
+
+
             <table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
             foreach($rows as $row){
                 if(!empty($row->ack)){
