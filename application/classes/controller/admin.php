@@ -21,6 +21,7 @@ class Controller_Admin extends Controller{
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.16.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/MD5.js\"></script>";
             //$this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\">
                                     $(function() {
@@ -56,14 +57,14 @@ class Controller_Admin extends Controller{
     */
     public function action_index(){
     	if(!$this->session->get('logged_in')){
-			$this->view->content->text = "<h2>Kirjaudu sisään</h2>";
+        	$this->view->content->text = "<h2>Kirjaudu sisään</h2>";
     	    $this->view->content->text .= form::open('admin/login');
 			$this->view->content->text .= "<table><tr><td>";
 			$this->view->content->text .= form::label('user','Käyttäjätunnus:')."</td><td>";
     	    $this->view->content->text .= form::input('user',null,array('id'=>'user'))."</td></tr><tr><td>";
 			$this->view->content->text .= form::label('pass','Salasana:')."</td><td>";
 			$this->view->content->text .= form::password('pass',null,array('id'=>'pass'))."</td></tr><tr><td></td><td>";
-			$this->view->content->text .= form::submit('submit','Kirjaudu');
+			$this->view->content->text .= form::submit('submit','Kirjaudu',array('onclick'=>'this.form.pass.value = MD5(this.form.pass.value)'));
     	    if(isset($_GET['return'])) $this->view->content->text .= form::hidden('return',$_GET['return']);
 			$this->view->content->text .= "</td></tr></table>";
     	    $this->view->content->text .= form::close();
