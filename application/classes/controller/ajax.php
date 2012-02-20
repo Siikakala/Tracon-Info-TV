@@ -44,7 +44,7 @@ class Controller_Ajax extends Controller{
                   ),
             "bofh" => array(
                   "kutsut" =>
-                      array("user_del"),
+                      array("user_del","user_level","user_pass"),
                   "level"  => 3
                   ),
             "public" => array(
@@ -778,6 +778,18 @@ class Controller_Ajax extends Controller{
                     break;
               case "user_del":
                     $return = array("ret" => "Et voi poistaa ketään! Muahahaha");
+                    break;
+              case "user_level":
+                    $return = array("ret" => "Et voi muutta leveliä!! Muahahaha");
+                    break;
+              case "user_pass":
+                    $pass = $_POST['pass'];
+                    $id = $_POST['row'];
+                    $u = Jelly::query('user',$id)->select();
+                    $secret = Kohana::$config->load('auth.secret');
+                    $u->passu = sha1($pass.$secret);
+                    $u->save();
+                    $return = array("ret" => true);
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.

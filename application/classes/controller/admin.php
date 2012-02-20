@@ -1389,6 +1389,7 @@ class Controller_Admin extends Controller{
 
                 });
                 var row = 0;
+                var passerror = 0;
 
                 $(function(){
                     $("#dialog-confirm-del").dialog({
@@ -1416,22 +1417,27 @@ class Controller_Admin extends Controller{
                     $("#dialog-pass").dialog({
             			resizable: false,
             			autoOpen: false,
-            			height:200,
+            			height:210,
             			width: 300,
             			modal: true,
             			buttons: {
             				"Vaihda": function() {
-            					fetch = \''.URL::base($this->request).'ajax/user_del/\';
-                                $.post(fetch, { "row": row }, function(data){
-                                    if(data.ret == true){
-                                        $(\'#\'+row).remove();
-                                    }else{
-                                        alert("Käyttäjän poisto epäonnistui!\n\n"+data.ret);
-                                    }
-                                },"json");
-                                $(this).dialog( "close" );
+                				if(passerror == 0){
+                    				$("#dialog-pass-feedback").css(\'color\',\'white\');
+                					fetch = \''.URL::base($this->request).'ajax/user_pass/\';
+                                    $.post(fetch, { "row": row, "pass": MD5($("#pass1").val()) }, function(data){
+                                        if(data.ret == true){
+                                            $("#dialog-pass-feedback").html("Salasana vaihdettu");
+                                            $( "form" )[ 0 ].reset();
+                                        }else{
+                                            $("#dialog-pass-feedback").html("Käyttäjän salasanan vaihto epäonnistui!<br/>"+data.ret);
+                                        }
+                                    },"json");
+                                }else{
+                                    $("#dialog-pass-feedback").css(\'color\',\'red\');
+                                }
             				},
-            				"Peruuta": function() {
+            				"Sulje": function() {
             					$(this).dialog( "close" );
             				}
             			}
@@ -1444,12 +1450,12 @@ class Controller_Admin extends Controller{
             			modal: true,
             			buttons: {
             				"Vaihda": function() {
-            					fetch = \''.URL::base($this->request).'ajax/user_del/\';
+            					fetch = \''.URL::base($this->request).'ajax/user_level/\';
                                 $.post(fetch, { "row": row }, function(data){
                                     if(data.ret == true){
                                         $(\'#\'+row).remove();
                                     }else{
-                                        alert("Käyttäjän poisto epäonnistui!\n\n"+data.ret);
+                                        alert("Käyttäjän tason muuttaminen epäonnistui!\n\n"+data.ret);
                                     }
                                 },"json");
                                 $(this).dialog( "close" );
@@ -1477,6 +1483,9 @@ class Controller_Admin extends Controller{
                                 $(".useri").html(user);
                                 switch($(this).attr(\'href\').substr(1)){
                                     case "pass":
+                                        $( "form" )[ 0 ].reset();
+                                        $("#dialog-pass-feedback").html("");
+                                        passerror = 0;
                                         $("#dialog-pass").dialog(\'open\');
                                         break;
                                     case "del":
@@ -1489,7 +1498,16 @@ class Controller_Admin extends Controller{
                             });
                             break;
                     }
+                });
 
+                $("#dialog-pass").live("keyup",function (e){
+                    if($("#pass1").val() != $("#pass2").val()){
+                        $("#dialog-pass-feedback").html("Salasanat eivät täsmää!");
+                        passerror = 1;
+                    }else{
+                        $("#dialog-pass-feedback").html("");
+                        passerror = 0;
+                    }
                 });
             </script>
             ';
@@ -1514,8 +1532,19 @@ class Controller_Admin extends Controller{
 
             <div id=\"dialog-pass\" title=\"Vaihda salasana.\">
             	<p><span class=\"ui-icon ui-icon-person\" style=\"float:left; margin:0 7px 20px 0;\"></span>Anna käyttäjän <span class=\"useri\"></span> uusi salasana:</p>
-            	<form action=\"#\"><table><tr><td><label for=\"pass\">Salasana:</label></td><td><input type=\"password\" name=\"pass\"></td></tr><tr><td><label for=\"confirm\">Salasana uudelleen:</label></td><td><input type=\"password\" name=\"confirm\"></td></tr></table></form>
-            	<span id=\"dialog-pass-feedback\" style=\"min-height:10px\"></span>
+            	<form action=\"#\" id=\"passchange\">
+                    <table>
+                        <tr>
+                            <td><label for=\"pass\">Salasana:</label></td>
+                            <td><input type=\"password\" name=\"pass\" id=\"pass1\"></td>
+                        </tr>
+                        <tr>
+                            <td><label for=\"confirm\">Salasana uudelleen:</label></td>
+                            <td><input type=\"password\" name=\"confirm\" id=\"pass2\"></td>
+                        </tr>
+                    </table>
+                </form>
+            	<span id=\"dialog-pass-feedback\" style=\"min-height:10px; margin-left:25px;\"></span>
             </div>
 
             <div id=\"dialog-level\" title=\"Vaihda käyttäjätasoa.\">
