@@ -1517,6 +1517,7 @@ class Controller_Admin extends Controller{
             ';
 
         $this->view->content->text = "<h2>Käyttäjienhallinta</h2>";
+        $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH");
         $this->view->header->show .= "
             <ul id=\"myMenu\" class=\"contextMenu\" style=\"width:180px;\">
                 <li class=\"kuittaa\">
@@ -1553,14 +1554,13 @@ class Controller_Admin extends Controller{
 
             <div id=\"dialog-level\" title=\"Vaihda käyttäjätasoa.\">
             	<p><span class=\"ui-icon ui-icon-person\" style=\"float:left; margin:0 7px 20px 0;\"></span>Valitse käyttäjän <span class=\"useri\"></span> uusi käyttäjätaso:</p>
-            	<form action=\"#\" style=\"margin-left:25px;\">".form::select("level",array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH"),1,array("id"=>"level"))."</form>
+            	<form action=\"#\" style=\"margin-left:25px;\">".form::select("level",$levels,1,array("id"=>"level"))."</form>
             	<span id=\"dialog-level-feedback\" style=\"min-height:10px\"></span>
             </div>
             ";
         $users = Jelly::query('user')->select();
         $this->view->content->text .= "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th><th>Edellinen kirjautuminen</th><th>Viimeisin IP</th></tr>";
         foreach($users as $user){
-            $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH");
             if(strcmp("0000-00-00 00:00:00",$user->last_login) === 0)
                 $last = "Ei ole vielä kirjautunut.";
             else
