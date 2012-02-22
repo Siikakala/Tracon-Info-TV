@@ -19,7 +19,7 @@ class Model_Jelly_Check extends Jelly_Meta
             $sql = "CREATE TABLE ".$table." (";
             $parts = array();
             foreach($fields as $field=>$o){
-                $parts[] = $o->column." ".$o->type." ".$o->other;
+                $parts[] = $o->column." ".$o->type." NOT NULL ".$o->other;
             }
             $sql2 = implode(", ",$parts);
             $sql .= $sql2.")";
