@@ -2,6 +2,9 @@
 
 return array(
     'secret' => '',//A string which is appended to passwords. Make sure it's long and complex enough.
-
+    'analytics' => array(
+        'dev'  => '',
+        'prod' => ''
+    )
 );
 ?>

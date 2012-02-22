@@ -1451,7 +1451,7 @@ class Controller_Admin extends Controller{
             			buttons: {
             				"Vaihda": function() {
             					fetch = \''.URL::base($this->request).'ajax/user_level/\';
-                                $.post(fetch, { "row": row }, function(data){
+                                $.post(fetch, { "row": row, "level": $("#level").val() }, function(data){
                                     if(data.ret == true){
                                         $(\'#\'+row).remove();
                                     }else{
@@ -1500,7 +1500,7 @@ class Controller_Admin extends Controller{
                     }
                 });
 
-                $("#dialog-pass").live("keyup",function (e){
+                $("#pass2").live("keyup",function (e){
                     if($("#pass1").val() != $("#pass2").val()){
                         $("#dialog-pass-feedback").html("Salasanat eivät täsmää!");
                         passerror = 1;
@@ -1549,7 +1549,7 @@ class Controller_Admin extends Controller{
 
             <div id=\"dialog-level\" title=\"Vaihda käyttäjätasoa.\">
             	<p><span class=\"ui-icon ui-icon-person\" style=\"float:left; margin:0 7px 20px 0;\"></span>Valitse käyttäjän <span class=\"useri\"></span> uusi käyttäjätaso:</p>
-            	<form action=\"#\" style=\"margin-left:25px;\">".form::select("level",array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH"),1)."</form>
+            	<form action=\"#\" style=\"margin-left:25px;\">".form::select("level",array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH"),1,array("id"=>"level"))."</form>
             	<span id=\"dialog-level-feedback\" style=\"min-height:10px\"></span>
             </div>
             ";
