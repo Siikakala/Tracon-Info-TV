@@ -24,7 +24,7 @@ class Model_Ohjelma extends Jelly_Model
                             "format" => "Y-m-d H:i:s",
                             "other"  => "DEFAULT 0"
                         )),
-            'kesto'     => Jelly::field('int',array(
+            'kesto'     => Jelly::field('integer',array(
                             "column" => "kesto",
                             "type"   => "int",
                             "other"  => ""
