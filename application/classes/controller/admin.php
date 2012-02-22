@@ -1307,7 +1307,7 @@ class Controller_Admin extends Controller{
         $this->view->content->text .= "</div>";
     }
 
-    public function dashboard(){
+    private function dashboard(){
         $this->view->header->css .= html::style('css/dashboardui.css');
         $this->view->header->js .= '
             <script type="text/javascript">
@@ -1383,7 +1383,7 @@ class Controller_Admin extends Controller{
             </div></div>";
     }
 
-    public function users(){
+    private function users(){
         $this->view->header->js .= '
             <script type="text/javascript">
                 $(document).ready(function() {
