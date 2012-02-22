@@ -220,6 +220,10 @@ class Controller_Admin extends Controller{
                     $this->users($param1);
                     $this->view->header->title .= " &raquo; Käyttäjät";
                     break;
+                case "ohjelma":
+                    $this->ohjelma($param1);
+                    $this->view->header->title .= " &raquo; Ohjelma";
+                    break;
                 default:
                		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>
                                                    <p>Debug-dataa:<br /><pre>".print_r($_SESSION,true)."</pre></p>";
@@ -1069,7 +1073,7 @@ class Controller_Admin extends Controller{
                 </td>
 
         */
-        $this->view->content->text = "<h2>Ohjelmakarttadatan päivitys</h2>";
+        $this->view->content->text = "<h2>Ohjelmakarttadatan päivitys</h2><h3><span style=\"color:red\">HUOM!!!</span> Tällä työkalulla ei voi enää päivittää ohjelmakarttaa. Tulee poistumaan.</h3>";
 
         $q = DB::query(Database::SELECT,"SELECT `update` FROM `ohjelmadata` ORDER BY `update` DESC LIMIT 1")->execute(__db);
         $r = $q->as_array();
@@ -1512,7 +1516,7 @@ class Controller_Admin extends Controller{
             </script>
             ';
 
-        $this->view->content->text = "";
+        $this->view->content->text = "<h2>Käyttäjienhallinta</h2>";
         $this->view->header->show .= "
             <ul id=\"myMenu\" class=\"contextMenu\" style=\"width:180px;\">
                 <li class=\"kuittaa\">
@@ -1565,6 +1569,20 @@ class Controller_Admin extends Controller{
         }
         $this->view->content->text .= "</table>";
     }
+
+
+    private function ohjelma(){
+        $this->view->content->text = "<h2>Ohjelmakartan hallinta</h2>";
+
+        $data = Jelly::query('ohjelma')->select();
+
+
+    }
+
+
+
+
+
 
 
     public function action_logout(){
