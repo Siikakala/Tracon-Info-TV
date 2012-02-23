@@ -1616,6 +1616,7 @@ class Controller_Admin extends Controller{
 
             		$("#tabit").tabs();
             		$("#salit").buttonset();
+            		$("#ohjelmanumerot").selectable();
             	});
 
             	$("#pituusselect").live("change", function(e){
@@ -1628,14 +1629,14 @@ class Controller_Admin extends Controller{
             	</script>';
         $this->view->content->text = "<h2>Ohjelmakartan hallinta</h2>";
 
-        //$data = Jelly::query('ohjelma')->select();
+        $data = Jelly::query('ohjelma')->select();
         $this->view->content->text .= form::button('add',"Lisää uusi ohjelmanumero",array("onclick"=>"$(\"#dialog-add\").dialog('open');"));
 
         $this->view->footer->dialogs .= "
                             <div id=\"dialog-add\" title=\"Lisää uusi ohjelmanumero\"><table>".
                                     "<tr><td>".form::label('otsikko','Ohjelmanumero:')."</td><td>".form::input('otsikko','',array("size"=>"35"))."</td></tr>".
                                     "<tr><td>".form::label('pitaja','Pitäjä:')."</td><td>".form::input('pitaja','',array("size"=>"35"))."</td></tr>".
-                                    "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',array("Anime","Rope","Kunniavieras","Muu"))."</td></tr>".
+                                    "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',array("Anime","Rope","Kunniavieras","Muu"))."</td></tr>".//lataa oikeesti kannasta, kuten myös pituudet
                                     "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',array("45"=>"45min","105"=>"1h 45min","165"=>"2h 45min","muu"=>"Muu:"),"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span</td></tr>".
                                     "<tr><td>".form::label('kuvaus','Ohjelmakuvaus:')."</td><td>&nbsp;</td></tr><tr><td colspan=\"2\">".form::textarea('kuvaus','',array("cols"=>"80","rows"=>"15"))."</td></tr>".
                                     "</table></div>
@@ -1650,13 +1651,20 @@ class Controller_Admin extends Controller{
                                         </ul>
 
                                         <div id=\"kartta\">
-                                            <div id=\"salit\">Valitse salit: ".form::checkbox("iso","iso",false,array("id"=>"iso")).form::label("iso","Iso sali").form::checkbox("pieni","pieni",false,array("id"=>"pieni")).form::label("pieni","Pieni sali").form::checkbox("studio","studio",false,array("id"=>"studio")).form::label("studio","Studio").form::checkbox("sopraano","sopraano",false,array("id"=>"sopraano")).form::label("sopraano","Sopraano").form::checkbox("rondo","rondo",false,array("id"=>"rondo")).form::label("rondo","Rondo")."</div>
+                                            <div id=\"salit\">Valitse salit: "/*lataa oikeesti kannasta*/.form::checkbox("iso","iso",false,array("id"=>"iso")).form::label("iso","Iso sali").form::checkbox("pieni","pieni",false,array("id"=>"pieni")).form::label("pieni","Pieni sali").form::checkbox("studio","studio",false,array("id"=>"studio")).form::label("studio","Studio").form::checkbox("sopraano","sopraano",false,array("id"=>"sopraano")).form::label("sopraano","Sopraano").form::checkbox("rondo","rondo",false,array("id"=>"rondo")).form::label("rondo","Rondo")."</div>
                                             <br/><p>Tähän tule hieno drag-n-drop hallintajutuke<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>
                                         </div>
 
                                         <div id=\"ohjelmat\">
-                                            <p>Tähän tulee listaus lisätyistä ohjelmista, joita klikkaamalla niitä voi muokata</p>
-                                        </div>
+                                        <ol id=\"ohjelmanumerot\" style=\"list-style-type: none;\">
+                                        ";
+
+        foreach($data as $row){
+            if($row->loaded())
+                $this->view->content->text .= "<li class=\"ui-widget-content ui-corner-all ".$row->kategoria."\" style=\"width:200px;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</li>";
+        }
+
+        $this->view->content->text .= "</ol></div>
 
                                         <div id=\"asetukset\">
                                             <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>

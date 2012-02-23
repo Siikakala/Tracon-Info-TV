@@ -235,7 +235,23 @@ table.stats tr.type-muu-kuitattu td{
     text-decoration: line-through;
     cursor:help
 }
-
+#ohjelmanumerot li{
+    margin: 3px;
+    padding: 2px;
+}
+#ohjelmanumerot .rope{
+    background: red;
+}
+#ohjelmanumerot .anime{
+    background: green;
+}
+#ohjelmanumerot .kunniavieras{
+    background: yellow;
+    color:black;
+}
+#ohjelmanumerot .muu{
+    background: white;
+}
 /* Tämä tagataan jokaiseen uuteen ja muutettuun riviin rulla- ja scrollerhallinnassa */
 .new {
     background-color: #a34000;
