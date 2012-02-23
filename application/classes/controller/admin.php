@@ -15,6 +15,7 @@ class Controller_Admin extends Controller{
         	$this->view->content = new view ('admin_content');
         	$this->view->footer = new view('admin_footer');
         	$this->view->header->title = "";
+        	$this->view->footer->dialogs = "";
         	$this->view->header->css = html::style('css/admin_small.css');
         	$this->view->header->css .= html::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
         	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.min.js"></script>';
@@ -38,6 +39,15 @@ class Controller_Admin extends Controller{
                                             window.location = href;
                                         }
                                         console.log(href);
+                                    }
+
+                                    function widen(){
+                                        var resize = $(window).width() - 100;
+                                        window.setTimeout(function(){
+                                            if($(window).width() > 1060){
+                                                $('#main').animate({width:resize+'px'},2000,'easeInOutCubic');
+                                            }
+                                        },300);
                                     }
                                     </script>
                                         ";
@@ -1272,7 +1282,7 @@ class Controller_Admin extends Controller{
         <div id=\"table\">\n";
 
         if($rows->count() > 0){
-            $this->view->header->show .= "
+            $this->view->footer->dialogs .= "
             <ul id=\"myMenu\" class=\"contextMenu\">
                 <li class=\"kuittaa\">
                     <a href=\"#check\">Kuittaa</a>
@@ -1283,7 +1293,7 @@ class Controller_Admin extends Controller{
             </ul>
             ";
 
-            $this->view->content->text .= "
+            $this->view->footer->dialogs .= "
             <div id=\"dialog-confirm\" title=\"Poista rivin kuittaus?\">
             	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa tämän rivin kuittauksen?</p>
             </div>
@@ -1291,10 +1301,10 @@ class Controller_Admin extends Controller{
             <div id=\"dialog-confirm-del\" title=\"Poista rivi?\">
             	<p><span class=\"ui-icon ui-icon-alert\" style=\"float:left; margin:0 7px 20px 0;\"></span>Oletko varma että haluat poistaa tämän rivin?</p>
             </div>
+            ";
 
 
-
-            <table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
+            $this->view->content->text .= "<table id=\"taulu\" class=\"stats tablesorter\"><thead><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr></thead><tbody>\n";
             foreach($rows as $row){
                 if(!empty($row->ack)){
                     $this->view->content->text .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag." type-".$row->tag."-kuitattu\" title=\"Kuittaaja: ".$row->ack." (".date("d.m. H:i",strtotime($row->ack_stamp)).")\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
@@ -1313,11 +1323,7 @@ class Controller_Admin extends Controller{
             <script type="text/javascript">
                 $(document).ready(function() {
                     var resize = $(window).width() - 100;
-                    window.setTimeout(function(){
-                        if($(window).width() > 1060){
-                            $(\'#main\').animate({width:resize+\'px\'},2000,\'easeInOutCubic\');
-                        }
-                    },300);
+                    widen();
                     ref();
 
                     $(\'#text\').append(\'<div id="templates"></div>\');
@@ -1518,7 +1524,7 @@ class Controller_Admin extends Controller{
 
         $this->view->content->text = "<h2>Käyttäjienhallinta</h2>";
         $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH");
-        $this->view->header->show .= "
+        $this->view->footer->dialogs .= "
             <ul id=\"myMenu\" class=\"contextMenu\" style=\"width:180px;\">
                 <li class=\"kuittaa\">
                     <a href=\"#pass\">Vaihda salasana</a>
@@ -1572,10 +1578,91 @@ class Controller_Admin extends Controller{
 
 
     private function ohjelma(){
+        $this->view->header->js .= '
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $(document).on("contextmenu",function(e){
+                      return false; //tapetaan selaimen oma context menu koko sivulta
+                   });
+                   widen();
+                });
+                var row = 0;
+                var passerror = 0;
+
+                $(function(){
+                    $("#dialog-add").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:450,
+            			width: 550,
+            			modal: true,
+            			buttons: {
+            				"Lisää": function() {
+            					fetch = \''.URL::base($this->request).'ajax/ohjelma_add/\';
+                                $.post(fetch, { "row": row }, function(data){
+                                    if(data.ret == true){
+                                        $(\'#\'+row).remove();
+                                    }else{
+                                        alert("Käyttäjän poisto epäonnistui!\n\n"+data.ret);
+                                    }
+                                },"json");
+                                $(this).dialog( "close" );
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
+
+            		$("#tabit").tabs();
+            		$("#salit").buttonset();
+            	});
+
+            	$("#pituusselect").live("change", function(e){
+                	if($(this).val() == "muu"){
+                    	$("#muupituus").show(\'medium\');
+                	}else{
+                    	$("#muupituus").hide(\'medium\');
+                    }
+            	});
+            	</script>';
         $this->view->content->text = "<h2>Ohjelmakartan hallinta</h2>";
 
-        $data = Jelly::query('ohjelma')->select();
+        //$data = Jelly::query('ohjelma')->select();
+        $this->view->content->text .= form::button('add',"Lisää uusi ohjelmanumero",array("onclick"=>"$(\"#dialog-add\").dialog('open');"));
 
+        $this->view->footer->dialogs .= "
+                            <div id=\"dialog-add\" title=\"Lisää uusi ohjelmanumero\"><table>".
+                                    "<tr><td>".form::label('otsikko','Ohjelmanumero:')."</td><td>".form::input('otsikko','',array("size"=>"35"))."</td></tr>".
+                                    "<tr><td>".form::label('pitaja','Pitäjä:')."</td><td>".form::input('pitaja','',array("size"=>"35"))."</td></tr>".
+                                    "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',array("Anime","Rope","Kunniavieras","Muu"))."</td></tr>".
+                                    "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',array("45"=>"45min","105"=>"1h 45min","165"=>"2h 45min","muu"=>"Muu:"),"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span</td></tr>".
+                                    "<tr><td>".form::label('kuvaus','Ohjelmakuvaus:')."</td><td>&nbsp;</td></tr><tr><td colspan=\"2\">".form::textarea('kuvaus','',array("cols"=>"80","rows"=>"15"))."</td></tr>".
+                                    "</table></div>
+
+                                    ";
+
+        $this->view->content->text .= "<br/><br/><div id=\"tabit\">
+                                        <ul style=\"height:30px\">
+                                            <li><a href=\"#kartta\">Ohjelmakartta</a></li>
+                                            <li><a href=\"#ohjelmat\">Ohjelmien muokkaus</a></li>
+                                            <li><a href=\"#asetukset\">Asetukset</a></li>
+                                        </ul>
+
+                                        <div id=\"kartta\">
+                                            <div id=\"salit\">Valitse salit: ".form::checkbox("iso","iso",false,array("id"=>"iso")).form::label("iso","Iso sali").form::checkbox("pieni","pieni",false,array("id"=>"pieni")).form::label("pieni","Pieni sali").form::checkbox("studio","studio",false,array("id"=>"studio")).form::label("studio","Studio").form::checkbox("sopraano","sopraano",false,array("id"=>"sopraano")).form::label("sopraano","Sopraano").form::checkbox("rondo","rondo",false,array("id"=>"rondo")).form::label("rondo","Rondo")."</div>
+                                            <br/><p>Tähän tule hieno drag-n-drop hallintajutuke<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>
+                                        </div>
+
+                                        <div id=\"ohjelmat\">
+                                            <p>Tähän tulee listaus lisätyistä ohjelmista, joita klikkaamalla niitä voi muokata</p>
+                                        </div>
+
+                                        <div id=\"asetukset\">
+                                            <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>
+                                        </div>
+                                    </div>
+        ";
 
     }
 
