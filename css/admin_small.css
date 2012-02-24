@@ -132,10 +132,13 @@ a {
 a:link, a:visited {
 	color: #F44;
 }
-
+/*rikkoo jqueryui:n
 a:hover, a:active {
 	background-color: #F44;
 	color: white;
+}*/
+#myMenu a:hover{
+    background-color: #F44;
 }
 
 h1 {

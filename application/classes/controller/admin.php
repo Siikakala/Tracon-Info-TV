@@ -1455,23 +1455,52 @@ class Controller_Admin extends Controller{
             		$("#dialog-level").dialog({
             			resizable: false,
             			autoOpen: false,
-            			height:170,
-            			width: 220,
+            			height:200,
+            			width: 250,
             			modal: true,
             			buttons: {
             				"Vaihda": function() {
             					fetch = \''.URL::base($this->request).'ajax/user_level/\';
                                 $.post(fetch, { "row": row, "level": $("#level").val() }, function(data){
                                     if(data.ret == true){
-                                        $(\'#\'+row).remove();
+                                        $("#dialog-level-feedback").html("Käyttäjätaso vaihdettu, uusi taso on "+data.newlevel);
                                     }else{
-                                        alert("Käyttäjän tason muuttaminen epäonnistui!\n\n"+data.ret);
+                                        $("#dialog-level-feedback").html("Käyttäjätason vaihto epäonnistui!<br/>"+data.ret);
                                     }
                                 },"json");
-                                $(this).dialog( "close" );
             				},
-            				"Peruuta": function() {
+            				"Sulje": function() {
             					$(this).dialog( "close" );
+            					location.reload(true);
+            				}
+            			}
+            		});
+            		$("#dialog-newuser").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:260,
+            			width: 300,
+            			modal: true,
+            			buttons: {
+            				"Lisää": function() {
+                				if(passerror == 0){
+                    				$("#dialog-newuser-feedback").css(\'color\',\'white\');
+                					fetch = \''.URL::base($this->request).'ajax/user_new/\';
+                                    $.post(fetch, { "user": $("#user").val(), "pass": MD5($("#u_pass1").val()), "level": $("#u_level").val() }, function(data){
+                                        if(data.ret == true){
+                                            $("#dialog-newuser-feedback").html("Käyttäjä lisätty.");
+                                            $( "form" )[ 0 ].reset();
+                                        }else{
+                                            $("#dialog-pass-feedback").html("Käyttäjän lisääminen epäonnistui!<br/>"+data.ret);
+                                        }
+                                    },"json");
+                                }else{
+                                    $("#dialog-pass-feedback").css(\'color\',\'red\');
+                                }
+            				},
+            				"Sulje": function() {
+            					$(this).dialog( "close" );
+            					location.reload(true);
             				}
             			}
             		});
@@ -1519,6 +1548,15 @@ class Controller_Admin extends Controller{
                         passerror = 0;
                     }
                 });
+                $("#u_pass2").live("keyup",function (e){
+                    if($("#u_pass1").val() != $("#u_pass2").val()){
+                        $("#dialog-newuser-feedback").html("Salasanat eivät täsmää!");
+                        passerror = 1;
+                    }else{
+                        $("#dialog-newuser-feedback").html("");
+                        passerror = 0;
+                    }
+                });
             </script>
             ';
 
@@ -1558,6 +1596,31 @@ class Controller_Admin extends Controller{
             	<span id=\"dialog-pass-feedback\" style=\"min-height:10px; margin-left:25px;\"></span>
             </div>
 
+            <div id=\"dialog-newuser\" title=\"Lisää uusi käyttäjä.\">
+            	<p><span class=\"ui-icon ui-icon-person\" style=\"float:left; margin:0 7px 20px 0;\"></span>Anna uuden käyttäjän tiedot:</p>
+            	<form action=\"#\" id=\"newuser\">
+                    <table>
+                        <tr>
+                            <td><label for=\"user\">Käyttäjätunnus:</label></td>
+                            <td><input type=\"text\" name=\"user\" id=\"user\"></td>
+                        </tr>
+                        <tr>
+                            <td><label for=\"pass\">Salasana:</label></td>
+                            <td><input type=\"password\" name=\"pass\" id=\"u_pass1\"></td>
+                        </tr>
+                        <tr>
+                            <td><label for=\"confirm\">Salasana uudelleen:</label></td>
+                            <td><input type=\"password\" name=\"confirm\" id=\"u_pass2\"></td>
+                        </tr>
+                        <tr>
+                            <td><label for=\"leveli\">Käyttäjätaso:</label></td>
+                            <td>".form::select("leveli",$levels,1,array("id"=>"u_level"))."</td>
+                        </tr>
+                    </table>
+                </form>
+            	<span id=\"dialog-newuser-feedback\" style=\"min-height:10px; margin-left:25px;\"></span>
+            </div>
+
             <div id=\"dialog-level\" title=\"Vaihda käyttäjätasoa.\">
             	<p><span class=\"ui-icon ui-icon-person\" style=\"float:left; margin:0 7px 20px 0;\"></span>Valitse käyttäjän <span class=\"useri\"></span> uusi käyttäjätaso:</p>
             	<form action=\"#\" style=\"margin-left:25px;\">".form::select("level",$levels,1,array("id"=>"level"))."</form>
@@ -1565,13 +1628,29 @@ class Controller_Admin extends Controller{
             </div>
             ";
         $users = Jelly::query('user')->select();
-        $this->view->content->text .= "<table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th><th>Edellinen kirjautuminen</th><th>Viimeisin IP</th></tr>";
+        $this->view->content->text .= form::button('add',"Lisää uusi käyttäjä",array("onclick"=>"$(\"#dialog-newuser\").dialog('open');"))."<br/><br/><table class=\"stats\"><tr><th>ID</th><th>Käyttäjätunnus</th><th>Taso</th><th>Edellinen kirjautuminen</th><th>Viimeisin IP</th></tr>";
+
+        function gethost ($ip) {
+            $host = `host $ip`;
+            $host = explode(' ',$host);
+            $host = end($host);
+            $host = substr($host,0,-2);
+            $chk = explode("(",$host);
+            if(isset($chk[1])) return $ip;
+            else return $host;
+        }
+
         foreach($users as $user){
             if(strcmp("0000-00-00 00:00:00",$user->last_login) === 0)
                 $last = "Ei ole vielä kirjautunut.";
             else
                 $last = date("d.m.Y H:i",strtotime($user->last_login));
-            $this->view->content->text .= "<tr id=\"".$user->u_id."\" usr=\"".$user->kayttis."\"><td row=\"".$user->u_id."\">".$user->u_id."</td><td row=\"".$user->u_id."\">".$user->kayttis."</td><td row=\"".$user->u_id."\">".$levels[$user->level]."</td><td row=\"".$user->u_id."\">".$last."</td><td row=\"".$user->u_id."\">".$user->ip."</td></tr>";
+            $host = gethost($user->ip);
+            if(strcmp($host,$user->ip) != 0 and $host !== false)
+                $show_host = "(".$host.")";
+            else
+                $show_host = "";
+            $this->view->content->text .= "<tr id=\"".$user->u_id."\" usr=\"".$user->kayttis."\"><td row=\"".$user->u_id."\">".$user->u_id."</td><td row=\"".$user->u_id."\">".$user->kayttis."</td><td row=\"".$user->u_id."\">".$levels[$user->level]."</td><td row=\"".$user->u_id."\">".$last."</td><td row=\"".$user->u_id."\">".$user->ip."<br/>".$show_host."</td></tr>";
         }
         $this->view->content->text .= "</table>";
     }
@@ -1614,6 +1693,24 @@ class Controller_Admin extends Controller{
             			}
             		});
 
+            		var dates = $( "#from, #to" ).datepicker({
+            			defaultDate: "+1w",
+            			minDate:-7,
+            			maxDate:"+1Y +6M",
+            			dateFormat:"dd.mm.yy",
+            			changeMonth: true,
+            			numberOfMonths: 1,
+            			onSelect: function( selectedDate ) {
+            				var option = this.id == "from" ? "minDate" : "maxDate",
+            					instance = $( this ).data( "datepicker" ),
+            					date = $.datepicker.parseDate(
+            						instance.settings.dateFormat ||
+            						$.datepicker._defaults.dateFormat,
+            						selectedDate, instance.settings );
+            				dates.not( this ).datepicker( "option", option, date );
+            			}
+            		});
+
             		$("#tabit").tabs();
             		$("#salit").buttonset();
             		$("#ohjelmanumerot").selectable();
@@ -1634,17 +1731,18 @@ class Controller_Admin extends Controller{
 
         $this->view->footer->dialogs .= "
                             <div id=\"dialog-add\" title=\"Lisää uusi ohjelmanumero\"><table>".
-                                    "<tr><td>".form::label('otsikko','Ohjelmanumero:')."</td><td>".form::input('otsikko','',array("size"=>"35"))."</td></tr>".
-                                    "<tr><td>".form::label('pitaja','Pitäjä:')."</td><td>".form::input('pitaja','',array("size"=>"35"))."</td></tr>".
-                                    "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',array("Anime","Rope","Kunniavieras","Muu"))."</td></tr>".//lataa oikeesti kannasta, kuten myös pituudet
-                                    "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',array("45"=>"45min","105"=>"1h 45min","165"=>"2h 45min","muu"=>"Muu:"),"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span</td></tr>".
-                                    "<tr><td>".form::label('kuvaus','Ohjelmakuvaus:')."</td><td>&nbsp;</td></tr><tr><td colspan=\"2\">".form::textarea('kuvaus','',array("cols"=>"80","rows"=>"15"))."</td></tr>".
-                                    "</table></div>
+                                "<tr><td>".form::label('otsikko','Ohjelmanumero:')."</td><td>".form::input('otsikko','',array("size"=>"35"))."</td></tr>".
+                                "<tr><td>".form::label('pitaja','Pitäjä:')."</td><td>".form::input('pitaja','',array("size"=>"35"))."</td></tr>".
+                                "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',array("Anime","Rope","Kunniavieras","Muu"))."</td></tr>".//lataa oikeesti kannasta, kuten myös pituudet
+                                "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',array("45"=>"45min","105"=>"1h 45min","165"=>"2h 45min","muu"=>"Muu:"),"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span</td></tr>".
+                                "<tr><td>".form::label('kuvaus','Ohjelmakuvaus:')."</td><td>&nbsp;</td></tr><tr><td colspan=\"2\">".form::textarea('kuvaus','',array("cols"=>"80","rows"=>"15"))."</td></tr>".
+                                "</table>
+                            </div>
 
                                     ";
 
         $this->view->content->text .= "<br/><br/><div id=\"tabit\">
-                                        <ul style=\"height:30px\">
+                                        <ul style=\"height:29px\">
                                             <li><a href=\"#kartta\">Ohjelmakartta</a></li>
                                             <li><a href=\"#ohjelmat\">Ohjelmien muokkaus</a></li>
                                             <li><a href=\"#asetukset\">Asetukset</a></li>
@@ -1667,6 +1765,8 @@ class Controller_Admin extends Controller{
         $this->view->content->text .= "</ol></div>
 
                                         <div id=\"asetukset\">
+                                            ".form::label('alku','Tapahtuman alkuaika').form::input('alku','',array("id"=>"from","size"=>"8"))."<br/>
+                                            ".form::label('loppu','Tapahtuman päättymisaika').form::input('loppu','',array("id"=>"to","size"=>"8"))."<br/>
                                             <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>
                                         </div>
                                     </div>

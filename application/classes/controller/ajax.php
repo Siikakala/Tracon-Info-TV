@@ -44,7 +44,7 @@ class Controller_Ajax extends Controller{
                   ),
             "bofh" => array(
                   "kutsut" =>
-                      array("user_del","user_level","user_pass"),
+                      array("user_del","user_level","user_pass","user_new"),
                   "level"  => 3
                   ),
             "public" => array(
@@ -777,10 +777,27 @@ class Controller_Ajax extends Controller{
                         );
                     break;
               case "user_del":
-                    $return = array("ret" => "Et voi poistaa ketään! Muahahaha");
+                    $id = $_POST['row'];
+                    $u = Jelly::query('user',$id)->select();
+                    if(strcasecmp($u->kayttis,$this->session->get('user')) == 0){
+                        $return = array("ret" => "Et voi poistaa itseäsi!");
+                    }else{
+                        $u->delete();
+                        $return = array("ret" => true);
+                    }
                     break;
               case "user_level":
-                    $return = array("ret" => "Et voi muutta leveliä!! Muahahaha");
+                    $id = $_POST['row'];
+                    $level = $_POST['level'];
+                    $u = Jelly::query('user',$id)->select();
+                    if(strcasecmp($u->kayttis,$this->session->get('user')) == 0){
+                        $return = array("ret" => "Et voi muuttaa omaa tasoasi!");
+                    }else{
+                        $u->level = $level;
+                        $u->save();
+                        $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH");
+                        $return = array("ret" => true,"newlevel"=>$levels[$level]);
+                    }
                     break;
               case "user_pass":
                     $pass = $_POST['pass'];
@@ -789,6 +806,20 @@ class Controller_Ajax extends Controller{
                     $secret = Kohana::$config->load('auth.secret');
                     $u->passu = sha1($pass.$secret);
                     $u->save();
+                    $return = array("ret" => true);
+                    break;
+              case "user_new":
+                    $user = $_POST['user'];
+                    $pass = $_POST['pass'];
+                    $level = $_POST['level'];
+                    $secret = Kohana::$config->load('auth.secret');
+                    $d = Jelly::factory('user')
+                         ->set(array(
+                            'kayttis'    => $user,
+                            'passu'      => sha1($pass.$secret),
+                            'level'      => $level,
+                            'last_login' => 0
+                         ))->save();
                     $return = array("ret" => true);
                     break;
             }

@@ -37,7 +37,7 @@ class Model_User extends Jelly_Model
                             "column" => "last_login",
                             "type"   => "timestamp",
                             "format" => "Y-m-d H:i:s",
-                            "other"  => "DEFAULT CURRENT_TIMESTAMP"
+                            "other"  => "DEFAULT 0"
                         )),
             'ip'        => Jelly::field('string',array(
                             "column" => "ip",
