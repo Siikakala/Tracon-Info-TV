@@ -1669,6 +1669,7 @@ class Controller_Admin extends Controller{
                 });
                 var row = 0;
                 var passerror = 0;
+                var r = true;
 
                 $(function(){
                     $("#dialog-add").dialog({
@@ -1716,22 +1717,51 @@ class Controller_Admin extends Controller{
             		$("#tabit").tabs();
             		$("#salit").buttonset();
             		//$("#ohjelmanumerot").selectable();
-            		$(".target").droppable();
-                    $(".target").live("drop",function(event,ui){
+            		$(".target").droppable({
+                                        accept: function(event,ui){
+                                            if(event.parent().attr(\'hour\') == "1347094800"){
+                                                return true;
+                                            }else{
+                                                return false;
+                                            }
+                                        }
+                                        });
+                    $(".target").live({
+                                    drop: function(event,ui){
                                 		alert(ui.draggable.text() + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
-                                		ui.draggable.prependTo("#cal-cont");
-                                		var pos = $(this).position();
-                                		var x = pos.top;
-                                		var y = pos.left;
-                                		ui.draggable.css({\'top\': x, \'left\': y,\'position\': \'absolute\'});
+                                		if($(this).parent().attr(\'hour\') == "1347094800"){
+                                    		r = false;
+                                            if(ui.draggable.parent().is("li")){
+                                                ui.draggable.parent().css({\'height\':\'0\'});
+                                            }
+                                    		ui.draggable.prependTo("#cal-cont");
+                                    		var pos = $(this).position();
+                                    		var x = pos.top;
+                                    		var y = pos.left;
+                                    		ui.draggable.css({\'top\': x, \'left\': y,\'position\': \'absolute\'});
+                                    		window.setTimeout(function(){
+                                        		r = true;
+                                    		},20);
+                                    	}else{
+                                        	r = true;
+                                    	}
+                                    },
+
+
                                     });
+
                     $(".drag").draggable({
                                          snap: ".target",
                                          snapMode: "inner",
-                                         revert: "invalid",
+                                         revert: function(){
+                                             if(r == true){
+                                                 return true;
+                                             }else{
+                                                 return false;
+                                             }
+                                         },
                                          zIndex: 4,
-                                         cursor:"crosshair",
-                                         cursorAt:{top: -25, left: 20}
+                                         cursorAt:{top: 3, left: -20}
                                          });
             	});
 
@@ -1745,7 +1775,7 @@ class Controller_Admin extends Controller{
                         $(".timetable thead tr").append(\'<th added="\'+id+\'">\'+sali+\'</th>\');
                         $(".target").droppable();
                         var pos = $(".timetable tbody").find(\'tr[hour|="1347099300"] td[added|="\'+id+\'"]\').position();
-                        $(".timetable tbody").find(\'tr[hour|="1347099300"] td[added|="\'+id+\'"]\').append("Tämä on lisätty javascriptillä.");//tässä oikeasti piirretään ohjelmanumerot, .eachilla.
+                        $(".timetable tbody").find(\'tr[hour|="1347099300"] td[added|="\'+id+\'"]\').html("Tämä on lisätty javascriptillä.");//tässä oikeasti piirretään ohjelmanumerot, .eachilla.
                     }else{
                         $(\'.timetable td[added|="\'+id+\'"]\').remove();
                         $(\'.timetable th[added|="\'+id+\'"]\').remove();
@@ -1804,8 +1834,10 @@ class Controller_Admin extends Controller{
         //<ohjelmanumerot>
         $ohjelmat = "";
         foreach($data as $row){
-            if($row->loaded())
-                $ohjelmat .= "<li class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" style=\"width:185px;z-index:3;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</li>";
+            if($row->loaded())//15min==15px;
+                $le = rand(3,9) * 15;
+                $li = $le +10;
+                $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" style=\"width:185px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</div></li>";
         }
         //</ohjelmanumerot>
 
@@ -1813,7 +1845,7 @@ class Controller_Admin extends Controller{
                                             <div id=\"salit\">Valitse salit: "/*lataa oikeesti kannasta*/.form::checkbox("iso","iso",false,array("id"=>"iso-c")).form::label("iso-c","Iso sali",array("id"=>"iso")).form::checkbox("pieni","pieni",false,array("id"=>"pieni-c")).form::label("pieni-c","Pieni sali",array("id"=>"pieni")).form::checkbox("studio","studio",false,array("id"=>"studio-c")).form::label("studio-c","Studio",array("id"=>"studio")).form::checkbox("sopraano","sopraano",false,array("id"=>"sopraano-c")).form::label("sopraano-c","Sopraano",array("id"=>"sopraano")).form::checkbox("rondo","rondo",false,array("id"=>"rondo-c")).form::label("rondo-c","Rondo",array("id"=>"rondo"))."</div>
                                             <br/>
                                             <div style=\"float:left;\">
-                                                <ol id=\"ohjelmanumerot\" style=\"list-style-type: none;\">
+                                                <ol id=\"ohjelmanumerot\" style=\"list-style-type: none;position:relative\">
                                                     $ohjelmat
                                                 </ol>
                                             </div>
