@@ -42,12 +42,14 @@ class Controller_Admin extends Controller{
                                     }
 
                                     function widen(){
-                                        var resize = $(window).width() - 100;
-                                        window.setTimeout(function(){
-                                            if($(window).width() > 1060){
-                                                $('#main').animate({width:resize+'px'},2000,'easeInOutCubic');
-                                            }
-                                        },300);
+                                        if($(window).width() > 1060){
+                                            var resize = $(window).width() - 100;
+                                            window.setTimeout(function(){
+                                                if($(window).width() > 1060){
+                                                    $('#main').animate({width:resize+'px'},2000,'easeInOutCubic');
+                                                }
+                                            },300);
+                                        }
                                     }
                                     </script>
                                         ";
@@ -1713,14 +1715,48 @@ class Controller_Admin extends Controller{
 
             		$("#tabit").tabs();
             		$("#salit").buttonset();
-            		$("#ohjelmanumerot").selectable();
+            		//$("#ohjelmanumerot").selectable();
+            		$(".target").droppable();
+                    $(".target").live("drop",function(event,ui){
+                                		alert(ui.draggable.text() + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
+                                		ui.draggable.prependTo("#cal-cont");
+                                		var pos = $(this).position();
+                                		var x = pos.top;
+                                		var y = pos.left;
+                                		ui.draggable.css({\'top\': x, \'left\': y,\'position\': \'absolute\'});
+                                    });
+                    $(".drag").draggable({
+                                         snap: ".target",
+                                         snapMode: "inner",
+                                         revert: "invalid",
+                                         zIndex: 4,
+                                         cursor:"crosshair",
+                                         cursorAt:{top: -25, left: 20}
+                                         });
+            	});
+
+            	$("#salit label").live("click",function(){
+                	var id = $(this).attr("id");
+                	var pressed = $(this).attr("aria-pressed");
+                    if(pressed == "false"){
+                    	var sali = $(this).text();
+                    	//tässä välissä haetaan ajaxilla salin ohjelmadata backendiltä.
+                        $(".timetable tbody tr").append(\'<td class="target" added="\'+id+\'">&nbsp;</td>\');//tässä vaiheessa vasta piirretään ruudukko
+                        $(".timetable thead tr").append(\'<th added="\'+id+\'">\'+sali+\'</th>\');
+                        $(".target").droppable();
+                        var pos = $(".timetable tbody").find(\'tr[hour|="1347099300"] td[added|="\'+id+\'"]\').position();
+                        $(".timetable tbody").find(\'tr[hour|="1347099300"] td[added|="\'+id+\'"]\').append("Tämä on lisätty javascriptillä.");//tässä oikeasti piirretään ohjelmanumerot, .eachilla.
+                    }else{
+                        $(\'.timetable td[added|="\'+id+\'"]\').remove();
+                        $(\'.timetable th[added|="\'+id+\'"]\').remove();
+                    }
             	});
 
             	$("#pituusselect").live("change", function(e){
                 	if($(this).val() == "muu"){
-                    	$("#muupituus").show(\'medium\');
+                    	$("#muupituus").show(\'slide\',\'\',\'medium\');
                 	}else{
-                    	$("#muupituus").hide(\'medium\');
+                    	$("#muupituus").hide(\'slide\',\'\',\'medium\');
                     }
             	});
             	</script>';
@@ -1734,7 +1770,7 @@ class Controller_Admin extends Controller{
                                 "<tr><td>".form::label('otsikko','Ohjelmanumero:')."</td><td>".form::input('otsikko','',array("size"=>"35"))."</td></tr>".
                                 "<tr><td>".form::label('pitaja','Pitäjä:')."</td><td>".form::input('pitaja','',array("size"=>"35"))."</td></tr>".
                                 "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',array("Anime","Rope","Kunniavieras","Muu"))."</td></tr>".//lataa oikeesti kannasta, kuten myös pituudet
-                                "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',array("45"=>"45min","105"=>"1h 45min","165"=>"2h 45min","muu"=>"Muu:"),"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span</td></tr>".
+                                "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',array("45"=>"45min","105"=>"1h 45min","165"=>"2h 45min","muu"=>"Muu:"),"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<div id=\"mp-cont\" style=\"height:16px;width:100px;margin-left:80px;margin-top:-19px;\"><span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span></div></td></tr>".
                                 "<tr><td>".form::label('kuvaus','Ohjelmakuvaus:')."</td><td>&nbsp;</td></tr><tr><td colspan=\"2\">".form::textarea('kuvaus','',array("cols"=>"80","rows"=>"15"))."</td></tr>".
                                 "</table>
                             </div>
@@ -1746,27 +1782,66 @@ class Controller_Admin extends Controller{
                                             <li><a href=\"#kartta\">Ohjelmakartta</a></li>
                                             <li><a href=\"#ohjelmat\">Ohjelmien muokkaus</a></li>
                                             <li><a href=\"#asetukset\">Asetukset</a></li>
-                                        </ul>
+                                        </ul>";
 
-                                        <div id=\"kartta\">
-                                            <div id=\"salit\">Valitse salit: "/*lataa oikeesti kannasta*/.form::checkbox("iso","iso",false,array("id"=>"iso")).form::label("iso","Iso sali").form::checkbox("pieni","pieni",false,array("id"=>"pieni")).form::label("pieni","Pieni sali").form::checkbox("studio","studio",false,array("id"=>"studio")).form::label("studio","Studio").form::checkbox("sopraano","sopraano",false,array("id"=>"sopraano")).form::label("sopraano","Sopraano").form::checkbox("rondo","rondo",false,array("id"=>"rondo")).form::label("rondo","Rondo")."</div>
-                                            <br/><p>Tähän tule hieno drag-n-drop hallintajutuke<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>
-                                        </div>
+        //<ohjelmakartan timetable>
+        $span = Date::span(strtotime("8.9.2012 10:00"),strtotime("9.9.2012 18:00"),"hours");
+        $timetable = "<table class=\"timetable\" border=\"1\" z-index=\"1\" cellspacing=\"0\" style=\"top:0px;left:0px;\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";
+        $slots=4;
+        $start = strtotime("8.9.2012 10:00");
+        for($i=1;$i<$span;$i++){
+            $hour = $start + ($i * 3600);
+            $timetable .= "<tr class=\"hourstart-$i\" id=\"$i\" hour=\"$hour\" slot=\"0\"><td style=\"text-align:right;\">".date("d.m. H",$hour).":00</td></tr>";
+            for($y=1;$y<$slots;$y++){
+                $s = $hour + ($y * 15 * 60);
+                $timetable .= "<tr id=\"$i\" hour=\"$s\" slot=\"$y\"><td style=\"text-align:right;\">".date("H:",$hour). $y * 15 ."</td></tr>";
+            }
+        }
+        $timetable .= "</tbody></table>";
+        //</ohjelmakartan timetable>
 
-                                        <div id=\"ohjelmat\">
-                                        <ol id=\"ohjelmanumerot\" style=\"list-style-type: none;\">
-                                        ";
 
+        //<ohjelmanumerot>
+        $ohjelmat = "";
         foreach($data as $row){
             if($row->loaded())
-                $this->view->content->text .= "<li class=\"ui-widget-content ui-corner-all ".$row->kategoria."\" style=\"width:200px;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</li>";
+                $ohjelmat .= "<li class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" style=\"width:185px;z-index:3;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</li>";
         }
+        //</ohjelmanumerot>
 
-        $this->view->content->text .= "</ol></div>
+        $this->view->content->text .= "<div id=\"kartta\" style=\"height:600px;\">
+                                            <div id=\"salit\">Valitse salit: "/*lataa oikeesti kannasta*/.form::checkbox("iso","iso",false,array("id"=>"iso-c")).form::label("iso-c","Iso sali",array("id"=>"iso")).form::checkbox("pieni","pieni",false,array("id"=>"pieni-c")).form::label("pieni-c","Pieni sali",array("id"=>"pieni")).form::checkbox("studio","studio",false,array("id"=>"studio-c")).form::label("studio-c","Studio",array("id"=>"studio")).form::checkbox("sopraano","sopraano",false,array("id"=>"sopraano-c")).form::label("sopraano-c","Sopraano",array("id"=>"sopraano")).form::checkbox("rondo","rondo",false,array("id"=>"rondo-c")).form::label("rondo-c","Rondo",array("id"=>"rondo"))."</div>
+                                            <br/>
+                                            <div style=\"float:left;\">
+                                                <ol id=\"ohjelmanumerot\" style=\"list-style-type: none;\">
+                                                    $ohjelmat
+                                                </ol>
+                                            </div>
+                                            <div style=\"height: 500px; max-width:100%; width:auto; left: 280px; position:absolute; overflow-y:auto\">
+                                                <div style=\"position:relative; width=100%; overflow:hidden;\" id=\"cal-cont\">
+                                                    $timetable
+                                                </div>
+                                            </div>
+                                        </div>";
 
-                                        <div id=\"asetukset\">
-                                            ".form::label('alku','Tapahtuman alkuaika').form::input('alku','',array("id"=>"from","size"=>"8"))."<br/>
-                                            ".form::label('loppu','Tapahtuman päättymisaika').form::input('loppu','',array("id"=>"to","size"=>"8"))."<br/>
+
+
+
+
+        $this->view->content->text .= "<div id=\"ohjelmat\">
+                                        <ol id=\"ohjelmanumerot\" style=\"list-style-type: none;\">
+                                            $ohjelmat
+                                        </ol></div>";
+
+
+
+
+
+         $this->view->content->text .= "<div id=\"asetukset\">
+                                            <table>
+                                                <tr><td>".form::label('alku','Tapahtuman alkuaika')."</td><td>".form::input('alku','',array("id"=>"from","size"=>"8"))." klo ".form::select('alku-klo-h',Date::hours(1,true),8,array("id"=>"alku-klo-h"))." ".form::select('alku-klo-m',Date::minutes(1),0,array("id"=>"alku-klo-m"))."</td></tr>
+                                                <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu','',array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),18,array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),0,array("id"=>"loppu-klo-m"))."</td></tr>
+                                            </table>
                                             <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>
                                         </div>
                                     </div>

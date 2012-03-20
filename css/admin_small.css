@@ -255,6 +255,11 @@ table.stats tr.type-muu-kuitattu td{
 #ohjelmanumerot .muu{
     background: white;
 }
+
+.target{
+    width:200px;
+}
+
 /* Tämä tagataan jokaiseen uuteen ja muutettuun riviin rulla- ja scrollerhallinnassa */
 .new {
     background-color: #a34000;
