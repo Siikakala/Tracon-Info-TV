@@ -25,7 +25,7 @@ class Upload
             'delete_type' => 'DELETE',
             // The php.ini settings upload_max_filesize and post_max_size
             // take precedence over the following max_file_size setting:
-            'max_file_size' => null,
+            'max_file_size' => '1024M',
             'min_file_size' => 1,
             'accept_file_types' => '/.+$/i',
             'max_number_of_files' => null,
