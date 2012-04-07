@@ -18,8 +18,8 @@ class Controller_Admin extends Controller{
         	$this->view->footer->dialogs = "";
         	$this->view->header->css = html::style('css/admin_small.css');
         	$this->view->header->css .= html::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
-        	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.min.js"></script>';
-        	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.16.custom.min.js"></script>';
+        	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.2.min.js"></script>';
+        	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.18.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/MD5.js\"></script>";
@@ -120,7 +120,7 @@ class Controller_Admin extends Controller{
         	$this->view->content->links = "";
     	}else{
         	//<linkkipalkki>
-            $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","ohjelmakartta"),"info" => array("logi","lipunmyynti","tiedotteet","tuotanto","ohjelma"),"bofh" => array("clients","users"));
+            $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","video"),"info" => array("logi","lipunmyynti","tiedotteet","tuotanto","ohjelma"),"bofh" => array("clients","users"));
             $this->session->set('results',array());
             function search($array,$key,$search){
                 $data = array_search($search,$array);
@@ -170,7 +170,7 @@ class Controller_Admin extends Controller{
             	    $this->view->content->links .= "\n".form::button("dia","Diat",array("value"=>url::base($this->request)."admin/face/dia", "class" => "btn"))."<br/>";
             	    $this->view->content->links .= "\n".form::button("streams","Streamit",array("value"=>url::base($this->request)."admin/face/streams", "class" => "btn"))."<br/>";
             	    $this->view->content->links .= "\n".form::button("frontends","Frontendit",array("value"=>url::base($this->request)."admin/face/frontends", "class" => "btn"))."<br/>";
-            	    $this->view->content->links .= "\n".form::button("ohjelmakartta","Ohjelmakartta",array("value"=>url::base($this->request)."admin/face/ohjelmakartta", "class" => "btn"))."<br/>";
+            	    $this->view->content->links .= "\n".form::button("video","Videolähetys",array("value"=>url::base($this->request)."admin/face/video", "class" => "btn"))."<br/>";
         	    $this->view->content->links .= "\n</ul></div>";
         	    $this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">Info:</a></h3>";
         	    $this->view->content->links .= "\n<div><ul>";
@@ -216,9 +216,9 @@ class Controller_Admin extends Controller{
                 	$this->frontends($param1);
                 	$this->view->header->title .= " &raquo; Frontendit";
                 	break;
-                case "ohjelmakartta":
-                	$this->ohjelmakartta($param1);
-                	$this->view->header->title .= " &raquo; Ohjelmakartta";
+                case "video":
+                	$this->video($param1);
+                	$this->view->header->title .= " &raquo; Videolähetys";
                 	break;
                 case "logi":
                     $this->logi($param1);
@@ -947,145 +947,20 @@ class Controller_Admin extends Controller{
         $this->view->content->text .= "<p><strong>HUOM!</strong><ul><li>Listauksessa on vain 15min sisään itsestään ilmoittaneet frontendit</li><li>Globaalia asetusta käyttävien näyttöasetukset eivät vaikuta mihinkään.</li><li>Frontendit, jotka eivät ole ilmoittaneet itsestään yli viiteen minuuttiin, asetetaan käyttämään globaalia asetusta.</li><li>Frontendit, jotka eivät ole ilmoittaneet itsestään yli viikkoon, poistetaan automaattisesti</li></ul></p>";
     }
 
-    private function ohjelmakartta(){
+    private function video(){
     	$this->view->header->css .= html::style('css/jquery.fileupload-ui.css');
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.iframe-transport.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload.js"></script>';
+    	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload-ip.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload-ui.js"></script>';
+    	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload-jui.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.tmpl.min.js"></script>';
+    	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/locale.js"></script>';
+    	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/main.js"></script>';
     	$this->view->header->js .= '
-        <script type="text/javascript">
-            $(function(){
-                $("#upload").fileupload();
 
-                $("#upload").bind(\'fileuploaddone\', function (e, data) {
-                    $.each(data.result, function(index,file){
-                        process(file.name);
-                    });
-                });
-
-                // Load existing files:
-                $.getJSON($(\'#upload form\').prop(\'action\'), function (files) {
-                    var fu = $(\'#upload\').data(\'fileupload\');
-                    fu._adjustMaxNumberOfFiles(-files.length);
-                    fu._renderDownload(files)
-                        .appendTo($(\'#upload .files\'))
-                        .fadeIn(function () {
-                            // Fix for IE7 and lower:
-                            $(this).show();
-                        });
-                });
-
-                // Open download dialogs via iframes,
-                // to prevent aborting current uploads:
-                $(\'#upload .files a:not([target^=_blank])\').on(\'click\', function (e) {
-                    e.preventDefault();
-                    $(\'<iframe style="display:none;"></iframe>\')
-                        .prop(\'src\', this.href)
-                        .appendTo(\'body\');
-                });
-            });
-
-            function process(filename){
-                var container = $("#upload");
-                var bar = $("#progress");
-                window.setTimeout(function(){//<*hifist*>
-                    bar.html(\'<span id="baari">Prosessoidaan ohjelmakarttaa, odota hetki..</span>\');
-                    bar.show(\'medium\');
-                    window.setTimeout(function(){
-                        window.setTimeout(function(){
-                            fetch = \''.URL::base($this->request).'ajax/ohjelma/\'
-                            $.post(fetch, { "file": filename }, function(data){
-                                $("#baari").hide(\'blind\',\'300\');
-                                window.setTimeout(function(){
-                                    $("#baari").html(data.ret);
-                                    $("#baari").show(\'300\');
-                                    window.setTimeout(function(){
-                                        bar.hide(\'blind\',\'slow\');
-                                        fetch = \''.URL::base($this->request).'ajax/upload/?file=\' + filename + \'&del=1\';
-                                        $.getJSON(fetch,function(data){
-                                            $("tr.template-download").hide(\'medium\');
-                                        });
-                                        fetch = \''.URL::base($this->request).'ajax/lastupdate/\';
-                                        $.getJSON(fetch,function(data){
-                                            $("#lastupdate").html(data.ret);
-                                        });
-                                    },4000);
-                                },310);
-                            },"json");
-                        },500);
-                    },1300);
-                },500);//</*hifist*>
-            }
-        </script>
-        <script id="template-upload" type="text/x-jquery-tmpl">
-            <tr class="template-upload{{if error}} ui-state-error{{/if}}">
-                <td class="preview"></td>
-                <td class="name">${name}</td>
-                <td class="size">${sizef}</td>
-                {{if error}}
-                    <td class="error" colspan="2">Error:
-                        {{if error === \'maxFileSize\'}}File is too big
-                        {{else error === \'minFileSize\'}}File is too small
-                        {{else error === \'acceptFileTypes\'}}Filetype not allowed
-                        {{else error === \'maxNumberOfFiles\'}}Max number of files exceeded
-                        {{else}}${error}
-                        {{/if}}
-                    </td>
-                {{else}}
-                    <td class="progress"><div></div></td>
-                    <td class="start"><button>Start</button></td>
-                {{/if}}
-                <td class="cancel"><button>Cancel</button></td>
-            </tr>
-        </script>
-        <script id="template-download" type="text/x-jquery-tmpl">
-            <tr class="template-download{{if error}} ui-state-error{{/if}}">
-                {{if error}}
-                    <td></td>
-                    <td class="name">${name}</td>
-                    <td class="size">${sizef}</td>
-                    <td class="error" colspan="2">Error:
-                        {{if error === 1}}File exceeds upload_max_filesize (php.ini directive)
-                        {{else error === 2}}File exceeds MAX_FILE_SIZE (HTML form directive)
-                        {{else error === 3}}File was only partially uploaded
-                        {{else error === 4}}No File was uploaded
-                        {{else error === 5}}Missing a temporary folder
-                        {{else error === 6}}Failed to write file to disk
-                        {{else error === 7}}File upload stopped by extension
-                        {{else error === \'maxFileSize\'}}File is too big
-                        {{else error === \'minFileSize\'}}File is too small
-                        {{else error === \'acceptFileTypes\'}}Filetype not allowed
-                        {{else error === \'maxNumberOfFiles\'}}Max number of files exceeded
-                        {{else error === \'uploadedBytes\'}}Uploaded bytes exceed file size
-                        {{else error === \'emptyResult\'}}Empty file upload result
-                        {{else}}${error}
-                        {{/if}}
-                    </td>
-                {{else}}
-                    <td class="preview">
-                        {{if thumbnail_url}}
-                            <a href="${url}" target="_blank"><img src="${thumbnail_url}"></a>
-                        {{/if}}
-                    </td>
-                    <td class="name">
-                        <a href="${url}"{{if thumbnail_url}} target="_blank"{{/if}}>${name}</a>
-                    </td>
-                    <td class="size">${sizef}</td>
-                    <td colspan="2"></td>
-                {{/if}}
-
-            </tr>
-        </script>
         ';
-        /*
-
-        <td class="delete">
-                    <button data-type="${delete_type}" data-url="${delete_url}">Delete</button>
-                </td>
-
-        */
-        $this->view->content->text = "<h2>Ohjelmakarttadatan päivitys</h2><h3><span style=\"color:red\">HUOM!!!</span> Tällä työkalulla ei voi enää päivittää ohjelmakarttaa. Tulee poistumaan.</h3>";
+        $this->view->content->text = "<h2>Videolähetys</h2>";
 
         $q = DB::query(Database::SELECT,"SELECT `update` FROM `ohjelmadata` ORDER BY `update` DESC LIMIT 1")->execute(__db);
         $r = $q->as_array();
@@ -1095,23 +970,90 @@ class Controller_Admin extends Controller{
             $last_update = "Ei koskaan.";
         }
 
-        $this->view->content->text .= "<div id=\"upload\">".
-                                            form::open(URL::base($this->request).'ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post')).
-                                                "<div class=\"fileupload-buttonbar\">
-                                                    <label class=\"fileinput-button\">
-                                                        <span>Päivitä ohjelmakartta</span>".
-                                                        form::file('files[]',array("accept"=>"text/plain"))."
-                                                    </label>
-                                                 </div>".
+        $this->view->content->text .= "<div id=\"upload\" style=\"min-height:200px;\">".
+                                            form::open(URL::base($this->request).'ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post','id'=>'fileupload')).
+                                               "<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                                <div class=\"row fileupload-buttonbar\">
+                                                    <div class=\"span7\">
+                                                        <!-- The fileinput-button span is used to style the file input field as button -->
+                                                        <span class=\"btn btn-success fileinput-button\">
+                                                            <i class=\"icon-plus icon-white\"></i>
+                                                            <span>Lähetä video</span>".
+                                                            form::file('files[]',array("accept"=>"video/*","multiple"))."
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <!-- The loading indicator is shown during image processing -->
+                                                <div class=\"fileupload-loading\"></div>
+                                                <br>
+                                                <!-- The table listing the files available for upload/download -->
+                                                <table class=\"table table-striped\"><tbody class=\"files\" data-toggle=\"modal-gallery\" data-target=\"#modal-gallery\"></tbody></table>
+                                            ".
                                             form::close().
-                                            "<div class=\"fileupload-content\">
-                                                <table class=\"files\">
-                                                    <tr><td class=\"preview\"></td><td class=\"name\" colspan=\"4\">Ohjelmakartta päivitetty viimeksi: <span id=\"lastupdate\">".$last_update."</span></td></tr>
-                                                </table>
-                                                <div id=\"progress\" class=\"fileupload-progressbar\"></div>
-                                             </div>
+                                            "
+
+                                        <!-- The template to display files available for upload -->
+                                        <script id=\"template-upload\" type=\"text/x-tmpl\">
+                                        {% for (var i=0, file; file=o.files[i]; i++) { %}
+                                            <tr class=\"template-upload fade\">
+                                                <td class=\"preview\"><span class=\"fade\"></span></td>
+                                                <td class=\"name\"><span>{%=file.name%}</span></td>
+                                                <td class=\"size\"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                                                {% if (file.error) { %}
+                                                    <td class=\"error\" colspan=\"2\"><span class=\"label label-important\">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+                                                {% } else if (o.files.valid && !i) { %}
+                                                    <td>
+                                                        <div class=\"progress progress-success progress-striped active\"><div class=\"bar\" style=\"width:0%;\"></div></div>
+                                                    </td>
+                                                    <td class=\"start\">{% if (!o.options.autoUpload) { %}
+                                                        <button class=\"btn btn-primary\">
+                                                            <i class=\"icon-upload icon-white\"></i>
+                                                            <span>{%=locale.fileupload.start%}</span>
+                                                        </button>
+                                                    {% } %}</td>
+                                                {% } else { %}
+                                                    <td colspan=\"2\"></td>
+                                                {% } %}
+                                                <td class=\"cancel\">{% if (!i) { %}
+                                                    <button class=\"btn btn-warning\">
+                                                        <i class=\"icon-ban-circle icon-white\"></i>
+                                                        <span>{%=locale.fileupload.cancel%}</span>
+                                                    </button>
+                                                {% } %}</td>
+                                            </tr>
+                                        {% } %}
+                                        </script>
+                                        <!-- The template to display files available for download -->
+                                        <script id=\"template-download\" type=\"text/x-tmpl\">
+                                        {% for (var i=0, file; file=o.files[i]; i++) { %}
+                                            <tr class=\"template-download fade\">
+                                                {% if (file.error) { %}
+                                                    <td></td>
+                                                    <td class=\"name\"><span>{%=file.name%}</span></td>
+                                                    <td class=\"size\"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                                                    <td class=\"error\" colspan=\"2\"><span class=\"label label-important\">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+                                                {% } else { %}
+                                                    <td class=\"preview\">{% if (file.thumbnail_url) { %}
+                                                        <a href=\"{%=file.url%}\" title=\"{%=file.name%}\" rel=\"gallery\" download=\"{%=file.name%}\"><img src=\"{%=file.thumbnail_url%}\"></a>
+                                                    {% } %}</td>
+                                                    <td class=\"name\">
+                                                        <a href=\"{%=file.url%}\" title=\"{%=file.name%}\" rel=\"{%=file.thumbnail_url&&'gallery'%}\" download=\"{%=file.name%}\">{%=file.name%}</a>
+                                                    </td>
+                                                    <td class=\"size\"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                                                    <td colspan=\"2\"></td>
+                                                {% } %}
+                                                <td class=\"delete\">
+                                                    <button class=\"btn btn-danger\" data-type=\"{%=file.delete_type%}\" data-url=\"{%=file.delete_url%}\">
+                                                        <i class=\"icon-trash icon-white\"></i>
+                                                        <span>{%=locale.fileupload.destroy%}</span>
+                                                    </button>
+                                                    <input type=\"checkbox\" name=\"delete\" value=\"1\">
+                                                </td>
+                                            </tr>
+                                        {% } %}
+                                        </script>
                                         </div>
-                                        <p><br/><br/><strong>HUOM!</strong><br/>On suositeltavaa, että piilotat ohjelmakarttadiat datan päivityksen ajaksi. Näin dioihin ei tule kummallisuuksia.</p>";
+                                        ";
 
     }
 
