@@ -1083,6 +1083,45 @@ class Controller_Admin extends Controller{
                     $(document).on("contextmenu",function(e){
                       return false; //tapetaan selaimen oma context menu koko sivulta
                    });
+                   $(window).bind("keydown",function(e){
+                        switch(e.which){
+                            case 113://F2
+                                e.preventDefault();
+                                $("#filter").focus().select();
+                                return false;
+                                break;
+                            case 117://F6
+                                e.preventDefault();
+                                $("#tag").val("tiedote");
+                                $("#com").focus();
+                                return false;
+                                break;
+                            case 118://F7
+                                e.preventDefault();
+                                $("#tag").val("ongelma");
+                                $("#com").focus();
+                                return false;
+                                break;
+                            case 119://F8
+                                e.preventDefault();
+                                $("#tag").val("kysely");
+                                $("#com").focus();
+                                return false;
+                                break;
+                            case 120://F9
+                                e.preventDefault();
+                                $("#tag").val("löytötavara");
+                                $("#com").focus();
+                                return false;
+                                break;
+                            case 121://F10
+                                e.preventDefault();
+                                $("#tag").val("muu");
+                                $("#com").focus();
+                                return false;
+                                break;
+                        }
+                   });
                 });
 
                 var row = 0;
@@ -1103,6 +1142,11 @@ class Controller_Admin extends Controller{
                     },"json");
                     return false;
                 };
+
+                function selecti(e){
+                    var keycode = e.which;
+
+                }
 
                 function save(){
                     var container = $("#feedback");
