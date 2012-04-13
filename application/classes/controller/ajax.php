@@ -496,13 +496,13 @@ class Controller_Ajax extends Controller{
                             break;
                         case 'POST':
                             if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
-                                $upload_handler->delete();
+                                if($this->session->get('level',0)>=3) $upload_handler->delete();
                             } else {
                                 $upload_handler->post();
                             }
                             break;
                         case 'DELETE':
-                            $upload_handler->delete();
+                            if($this->session->get('level',0)>=3) $upload_handler->delete();
                             break;
                         default:
                             header('HTTP/1.1 405 Method Not Allowed');
@@ -786,6 +786,8 @@ class Controller_Ajax extends Controller{
                     $u = Jelly::query('user',$id)->select();
                     if(strcasecmp($u->kayttis,$this->session->get('user')) == 0){
                         $return = array("ret" => "Et voi poistaa itseäsi!");
+                    }elseif($u->level > $this->session->get('level')){
+                        $return = array("ret" => "Et voi poistaa itseäsi mahtavampaa!");
                     }else{
                         $u->delete();
                         $return = array("ret" => true);
@@ -797,10 +799,12 @@ class Controller_Ajax extends Controller{
                     $u = Jelly::query('user',$id)->select();
                     if(strcasecmp($u->kayttis,$this->session->get('user')) == 0){
                         $return = array("ret" => "Et voi muuttaa omaa tasoasi!");
+                    }elseif($u->level > $this->session->get('level')){
+                        $return = array("ret" => "Et voi muokata itseäsi mahtavampaa!");
                     }else{
                         $u->level = $level;
                         $u->save();
-                        $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH");
+                        $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH",4=>"ÜberBOFH");
                         $return = array("ret" => true,"newlevel"=>$levels[$level]);
                     }
                     break;

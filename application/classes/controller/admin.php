@@ -971,7 +971,7 @@ class Controller_Admin extends Controller{
         $this->view->content->text = "<h2>Videolähetys</h2>";
 
         $this->view->content->text .= "<div id=\"upload\">".
-                                            form::open(URL::base($this->request).'ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post','id'=>'fileupload',"data-url"=>URL::base($this->request)."ajax/upload")).
+                                            form::open(URL::base($this->request).'ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post','id'=>'fileupload')).
                                                "<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                                                 <div class=\"row fileupload-buttonbar\">
                                                     <div class=\"span7\">
@@ -1522,7 +1522,7 @@ class Controller_Admin extends Controller{
             ';
 
         $this->view->content->text = "<h2>Käyttäjienhallinta</h2>";
-        $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH");
+        $levels = array(1=>"Peruskäyttö",2=>"Laaja käyttö",3=>"BOFH",4=>"ÜberBOFH");
         $this->view->footer->dialogs .= "
             <ul id=\"myMenu\" class=\"contextMenu\" style=\"width:180px;\">
                 <li class=\"kuittaa\">
