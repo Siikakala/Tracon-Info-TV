@@ -962,24 +962,16 @@ class Controller_Admin extends Controller{
         ';
         $this->view->content->text = "<h2>Videolähetys</h2>";
 
-        $q = DB::query(Database::SELECT,"SELECT `update` FROM `ohjelmadata` ORDER BY `update` DESC LIMIT 1")->execute(__db);
-        $r = $q->as_array();
-        if(isset($r[0])){
-            $last_update = date("d.m.Y H:i",strtotime($r[0]['update']));
-        }else{
-            $last_update = "Ei koskaan.";
-        }
-
-        $this->view->content->text .= "<div id=\"upload\" style=\"min-height:200px;\">".
-                                            form::open(URL::base($this->request).'ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post','id'=>'fileupload')).
-                                               "<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+        $this->view->content->text .= "<div id=\"upload\" style=\"min-height:200px;\">
+                                            <form action=\"".URL::base($this->request)."ajax/upload\" method=\"post\" id=\"fileupload\" accept-charset=\"utf-8\" enctype='multipart/form-data'>
+                                                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                                                 <div class=\"row fileupload-buttonbar\">
                                                     <div class=\"span7\">
                                                         <!-- The fileinput-button span is used to style the file input field as button -->
                                                         <span class=\"btn btn-success fileinput-button\">
                                                             <i class=\"icon-plus icon-white\"></i>
                                                             <span>Lähetä video</span>".
-                                                            form::file('files[]',array("accept"=>"video/*","multiple"))."
+                                                            form::file('file',array("accept"=>"video/*"))."
                                                         </span>
                                                     </div>
                                                 </div>

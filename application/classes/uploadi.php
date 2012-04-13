@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /*
  * jQuery File Upload Plugin PHP Class 5.9.2
  * https://github.com/blueimp/jQuery-File-Upload
@@ -10,22 +10,49 @@
  * http://www.opensource.org/licenses/MIT
  */
 
-class Upload
+class Uploadi
 {
     protected $options;
 
+    /**
+	 * @var  string  default instance name
+	 */
+	public static $default = 'default';
+
+	/**
+	 * @var  array  Encrypt class instances
+	 */
+	public static $instances = array();
+
+	public static function instance($name = NULL)
+	{
+		if ($name === NULL)
+		{
+			// Use the default instance name
+			$name = Uploadi::$default;
+		}
+
+		if ( ! isset(Uploadi::$instances[$name]))
+		{
+			// Create a new instance
+			Uploadi::$instances[$name] = new Upload();
+		}
+
+		return Uploadi::$instances[$name];
+	}
+
     function __construct($options=null) {
         $this->options = array(
-            'script_url' => $this->getFullUrl().'/',
+            'script_url' => URL::site('/',true),
             'upload_dir' => __documentroot.'/files/',
-            'upload_url' => $this->getFullUrl().'/files/',
+            'upload_url' => URL::site('/',true).'files/',
             'param_name' => 'files',
             // Set the following option to 'POST', if your server does not support
             // DELETE requests. This is a parameter sent to the client:
             'delete_type' => 'DELETE',
             // The php.ini settings upload_max_filesize and post_max_size
             // take precedence over the following max_file_size setting:
-            'max_file_size' => '1024M',
+            'max_file_size' => null,
             'min_file_size' => 1,
             'accept_file_types' => '/.+$/i',
             'max_number_of_files' => null,
@@ -59,16 +86,6 @@ class Upload
         if ($options) {
             $this->options = array_replace_recursive($this->options, $options);
         }
-    }
-
-    protected function getFullUrl() {
-      	return
-    		(isset($_SERVER['HTTPS']) ? 'https://' : 'http://').
-    		(isset($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'].'@' : '').
-    		(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ($_SERVER['SERVER_NAME'].
-    		(isset($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] === 443 ||
-    		$_SERVER['SERVER_PORT'] === 80 ? '' : ':'.$_SERVER['SERVER_PORT']))).
-    		substr($_SERVER['SCRIPT_NAME'],0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
     }
 
     protected function set_file_delete_url($file) {
@@ -125,26 +142,26 @@ class Upload
         }
         $new_width = $img_width * $scale;
         $new_height = $img_height * $scale;
-        $new_img = @imagecreatetruecolor($new_width, $new_height);
+        $new_img = imagecreatetruecolor($new_width, $new_height);
         switch (strtolower(substr(strrchr($file_name, '.'), 1))) {
             case 'jpg':
             case 'jpeg':
-                $src_img = @imagecreatefromjpeg($file_path);
+                $src_img = imagecreatefromjpeg($file_path);
                 $write_image = 'imagejpeg';
                 $image_quality = isset($options['jpeg_quality']) ?
                     $options['jpeg_quality'] : 75;
                 break;
             case 'gif':
-                @imagecolortransparent($new_img, @imagecolorallocate($new_img, 0, 0, 0));
-                $src_img = @imagecreatefromgif($file_path);
+                imagecolortransparent($new_img, @imagecolorallocate($new_img, 0, 0, 0));
+                $src_img = imagecreatefromgif($file_path);
                 $write_image = 'imagegif';
                 $image_quality = null;
                 break;
             case 'png':
-                @imagecolortransparent($new_img, @imagecolorallocate($new_img, 0, 0, 0));
-                @imagealphablending($new_img, false);
-                @imagesavealpha($new_img, true);
-                $src_img = @imagecreatefrompng($file_path);
+                imagecolortransparent($new_img, @imagecolorallocate($new_img, 0, 0, 0));
+                imagealphablending($new_img, false);
+                imagesavealpha($new_img, true);
+                $src_img = imagecreatefrompng($file_path);
                 $write_image = 'imagepng';
                 $image_quality = isset($options['png_quality']) ?
                     $options['png_quality'] : 9;
@@ -152,7 +169,7 @@ class Upload
             default:
                 $src_img = null;
         }
-        $success = $src_img && @imagecopyresampled(
+        $success = $src_img && imagecopyresampled(
             $new_img,
             $src_img,
             0, 0, 0, 0,
@@ -162,8 +179,8 @@ class Upload
             $img_height
         ) && $write_image($new_img, $new_file_path, $image_quality);
         // Free up memory (imagedestroy does not delete files):
-        @imagedestroy($src_img);
-        @imagedestroy($new_img);
+        imagedestroy($src_img);
+        imagedestroy($new_img);
         return $success;
     }
 
@@ -239,23 +256,23 @@ class Upload
       	if (!in_array($orientation, array(3, 6, 8))) {
       	    return false;
       	}
-      	$image = @imagecreatefromjpeg($file_path);
+      	$image = imagecreatefromjpeg($file_path);
       	switch ($orientation) {
         	  case 3:
-          	    $image = @imagerotate($image, 180, 0);
+          	    $image = imagerotate($image, 180, 0);
           	    break;
         	  case 6:
-          	    $image = @imagerotate($image, 270, 0);
+          	    $image = imagerotate($image, 270, 0);
           	    break;
         	  case 8:
-          	    $image = @imagerotate($image, 90, 0);
+          	    $image = imagerotate($image, 90, 0);
           	    break;
           	default:
           	    return false;
       	}
       	$success = imagejpeg($image, $file_path);
       	// Free up memory (imagedestroy does not delete files):
-      	@imagedestroy($image);
+      	imagedestroy($image);
       	return $success;
     }
 
@@ -334,6 +351,26 @@ class Upload
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
             return $this->delete();
         }
+
+        $post = Validation::factory( $_POST );
+        $file = Validation::factory( $_FILES );
+
+        $file->rule('file', 'Upload::not_empty');
+        $file->rule('file', 'Upload::valid');
+
+        print_r($_FILES);
+
+        if ( Request::current()->method() == Request::POST && $post->check() && $file->check() ) {
+        	// the request is valid, do your processing
+
+        	// save the uploaded file with the name 'form' to our destination
+        	$filename = Upload::save( $file['file'], $file['file']['name'], __documentroot."files/", "644" );
+
+        	if ( $filename === false ) {
+        		throw new Exception( 'Unable to save uploaded file!' );
+        	}
+        }
+        /*
         $upload = isset($_FILES[$this->options['param_name']]) ?
             $_FILES[$this->options['param_name']] : null;
         $info = array();
@@ -384,6 +421,7 @@ class Upload
             header('Content-type: text/plain');
         }
         echo $json;
+        //*/
     }
 
     public function delete() {

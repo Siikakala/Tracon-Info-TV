@@ -111,8 +111,8 @@ Kohana::init(array(
 	'base_url'   => Kohana::$environment === Kohana::DEVELOPMENT ? '/tracon_info-tv/' : '/',
 	'index_file' => false,
 	'errors'     => true,
-	'profile'    => Kohana::$environment === Kohana::DEVELOPMENT,
-	'caching'    => Kohana::$environment === Kohana::PRODUCTION
+	'profile'    => false,//Kohana::$environment === Kohana::DEVELOPMENT,
+	'caching'    => false //Kohana::$environment === Kohana::PRODUCTION
 ));
 
 /**
@@ -139,7 +139,8 @@ Kohana::modules(array(
 	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
 	));
 ini_set('memory_limit', '-1');
-ini_set('upload_max_filesize','1024M');
+ini_set('upload_max_filesize','1073741824');//1GB
+ini_set('post_max_size','1073741824');//1GB
 /**
  * Set the routes. Each route must have a minimum of a name, a URI and a set of
  * defaults for the URI.

@@ -477,17 +477,17 @@ class Controller_Ajax extends Controller{
                     $return = array("ret" => $text);
                     break;
                 case "upload"://käsittele tiedoston uploadaukset.
-                    $upload_handler = new Upload();
+                    $upload_handler = Uploadi::instance();
 
-                    header('Pragma: no-cache');
-                    header('Cache-Control: no-store, no-cache, must-revalidate');
-                    header('Content-Disposition: inline; filename="files.json"');
-                    header('X-Content-Type-Options: nosniff');
-                    header('Access-Control-Allow-Origin: *');
-                    header('Access-Control-Allow-Methods: OPTIONS, HEAD, GET, POST, PUT, DELETE');
-                    header('Access-Control-Allow-Headers: X-File-Name, X-File-Type, X-File-Size');
+                    $this->response->headers('Pragma','no-cache');
+                    $this->response->headers('Cache-Control','no-store, no-cache, must-revalidate');
+                    $this->response->headers('Content-Disposition','inline; filename="files.json"');
+                    $this->response->headers('X-Content-Type-Options','nosniff');
+                    $this->response->headers('Access-Control-Allow-Origin','*');
+                    $this->response->headers('Access-Control-Allow-Methods','OPTIONS, HEAD, GET, POST, PUT, DELETE');
+                    $this->response->headers('Access-Control-Allow-Headers','X-File-Name, X-File-Type, X-File-Size');
 
-                    switch ($_SERVER['REQUEST_METHOD']) {
+                    switch ($this->request->method()) {
                         case 'OPTIONS':
                             break;
                         case 'HEAD':
