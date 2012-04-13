@@ -978,12 +978,12 @@ class Controller_Admin extends Controller{
                                                         <!-- The fileinput-button span is used to style the file input field as button -->
                                                         <span class=\"btn btn-success fileinput-button\">
                                                             <i class=\"icon-plus icon-white\"></i>
-                                                            <span>Lähetä video</span>".
+                                                            <span>Lähetä videoita</span>".
                                                             form::file('files[]',array("accept"=>"video/*","multiple"))."
                                                         </span>
                                                         <button type=\"reset\" class=\"btn btn-warning cancel\">
                                                             <i class=\"icon-ban-circle icon-white\"></i>
-                                                            <span>Peruuta lähettäminen</span>
+                                                            <span>Peruuta kaikki</span>
                                                         </button>
                                                         <button type=\"button\" class=\"btn btn-danger delete\">
                                                             <i class=\"icon-trash icon-white\"></i>
