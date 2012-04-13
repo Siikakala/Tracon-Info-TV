@@ -83,7 +83,7 @@
             forceIframeTransport: false,
             // Set the following option to the location of a redirect url on the
             // origin server, for cross-domain iframe transport uploads:
-            redirect: undefined,
+            redirect: baseurl+'ajax/upload',
             // The parameter name for the redirect url, sent as part of the form
             // data and set to 'redirect' if this option is empty:
             redirectParamName: undefined,
@@ -168,7 +168,8 @@
             // The following are jQuery ajax settings required for the file uploads:
             processData: false,
             contentType: false,
-            cache: false
+            cache: false,
+            url: baseurl+'ajax/upload'
         },
 
         // A list of options that require a refresh after assigning a new value:

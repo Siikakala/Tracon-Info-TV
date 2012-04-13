@@ -140,7 +140,7 @@ Kohana::modules(array(
 	));
 ini_set('memory_limit', '-1');
 ini_set('upload_max_filesize','1073741824');//1GB
-ini_set('post_max_size','1073741824');//1GB
+ini_set('post_max_size','2147483648');//2GB
 /**
  * Set the routes. Each route must have a minimum of a name, a URI and a set of
  * defaults for the URI.

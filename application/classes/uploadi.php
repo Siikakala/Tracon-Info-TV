@@ -35,7 +35,7 @@ class Uploadi
 		if ( ! isset(Uploadi::$instances[$name]))
 		{
 			// Create a new instance
-			Uploadi::$instances[$name] = new Upload();
+			Uploadi::$instances[$name] = new Uploadi();
 		}
 
 		return Uploadi::$instances[$name];
@@ -43,7 +43,7 @@ class Uploadi
 
     function __construct($options=null) {
         $this->options = array(
-            'script_url' => URL::site('/',true),
+            'script_url' => URL::site('/',true)."ajax/upload",
             'upload_dir' => __documentroot.'/files/',
             'upload_url' => URL::site('/',true).'files/',
             'param_name' => 'files',
@@ -351,26 +351,25 @@ class Uploadi
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
             return $this->delete();
         }
-
+/*
         $post = Validation::factory( $_POST );
         $file = Validation::factory( $_FILES );
 
         $file->rule('file', 'Upload::not_empty');
         $file->rule('file', 'Upload::valid');
 
-        print_r($_FILES);
-
         if ( Request::current()->method() == Request::POST && $post->check() && $file->check() ) {
         	// the request is valid, do your processing
 
         	// save the uploaded file with the name 'form' to our destination
-        	$filename = Upload::save( $file['file'], $file['file']['name'], __documentroot."files/", "644" );
+        	$filename = Upload::save( $file['file'], $file['file']['name'], __documentroot."files/", 0644 );
 
         	if ( $filename === false ) {
         		throw new Exception( 'Unable to save uploaded file!' );
         	}
         }
-        /*
+//*/
+        //*
         $upload = isset($_FILES[$this->options['param_name']]) ?
             $_FILES[$this->options['param_name']] : null;
         $info = array();

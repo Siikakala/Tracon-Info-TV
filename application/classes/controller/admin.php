@@ -21,12 +21,13 @@ class Controller_Admin extends Controller{
         	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.2.min.js"></script>';
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.18.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/MD5.js\"></script>";
             //$this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\">
+                                    var baseurl = '".URL::base($this->request)."'
                                     $(function() {
                                         $( 'button, input:submit' ).button();
+
                                     });
 
                                     function normalize(href){
@@ -949,41 +950,64 @@ class Controller_Admin extends Controller{
 
     private function video(){
     	$this->view->header->css .= html::style('css/jquery.fileupload-ui.css');
-    	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.iframe-transport.js"></script>';
+     	$this->view->header->js .= '
+<!-- The Templates plugin is included to render the upload/download listings -->
+<script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"></script>
+<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>
+<!-- jQuery Image Gallery -->
+<script src="http://blueimp.github.com/jQuery-Image-Gallery/js/jquery.image-gallery.min.js"></script>
+        ';
+       	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.iframe-transport.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload-ip.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload-ui.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.fileupload-jui.js"></script>';
-    	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery.tmpl.min.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/locale.js"></script>';
     	$this->view->header->js .= '<script type="text/javascript" src="'.URL::base($this->request).'jquery/main.js"></script>';
-    	$this->view->header->js .= '
 
-        ';
         $this->view->content->text = "<h2>Videolähetys</h2>";
 
-        $this->view->content->text .= "<div id=\"upload\" style=\"min-height:200px;\">
-                                            <form action=\"".URL::base($this->request)."ajax/upload\" method=\"post\" id=\"fileupload\" accept-charset=\"utf-8\" enctype='multipart/form-data'>
-                                                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+        $this->view->content->text .= "<div id=\"upload\">".
+                                            form::open(URL::base($this->request).'ajax/upload', array('enctype' => 'multipart/form-data','method' => 'post','id'=>'fileupload',"data-url"=>URL::base($this->request)."ajax/upload")).
+                                               "<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                                                 <div class=\"row fileupload-buttonbar\">
                                                     <div class=\"span7\">
                                                         <!-- The fileinput-button span is used to style the file input field as button -->
                                                         <span class=\"btn btn-success fileinput-button\">
                                                             <i class=\"icon-plus icon-white\"></i>
                                                             <span>Lähetä video</span>".
-                                                            form::file('file',array("accept"=>"video/*"))."
+                                                            form::file('files[]',array("accept"=>"video/*","multiple"))."
                                                         </span>
+                                                        <button type=\"reset\" class=\"btn btn-warning cancel\">
+                                                            <i class=\"icon-ban-circle icon-white\"></i>
+                                                            <span>Peruuta lähettäminen</span>
+                                                        </button>
+                                                        <button type=\"button\" class=\"btn btn-danger delete\">
+                                                            <i class=\"icon-trash icon-white\"></i>
+                                                            <span>Poista</span>
+                                                        </button>
+                                                        <label for=\"kaikki\">Valitse kaikki</label>
+                                                        <input name=\"kaikki\" id=\"kaikki\" type=\"checkbox\" class=\"toggle\" />
+                                                    </div>
+                                                    <div class=\"span5\">
+                                                        <div class=\"progress progress-success progress-striped active fade\">
+                                                            <div class=\"bar\" style=\"width:0%;\"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <!-- The loading indicator is shown during image processing -->
                                                 <div class=\"fileupload-loading\"></div>
+                                                <div class=\"fileupload-progress\"></div>
                                                 <br>
                                                 <!-- The table listing the files available for upload/download -->
                                                 <table class=\"table table-striped\"><tbody class=\"files\" data-toggle=\"modal-gallery\" data-target=\"#modal-gallery\"></tbody></table>
                                             ".
                                             form::close().
                                             "
-
+                                        </div>
                                         <!-- The template to display files available for upload -->
                                         <script id=\"template-upload\" type=\"text/x-tmpl\">
                                         {% for (var i=0, file; file=o.files[i]; i++) { %}
@@ -1044,7 +1068,7 @@ class Controller_Admin extends Controller{
                                             </tr>
                                         {% } %}
                                         </script>
-                                        </div>
+
                                         ";
 
     }
@@ -1255,6 +1279,7 @@ class Controller_Admin extends Controller{
 
     private function dashboard(){
         $this->view->header->css .= html::style('css/dashboardui.css');
+        $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
         $this->view->header->js .= '
             <script type="text/javascript">
                 $(document).ready(function() {

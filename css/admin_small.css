@@ -69,7 +69,7 @@ a.hover:hover, a.hover:active{
 }
 
 #upload{
-    width: 450px;
+    width: 750px;
 }
 
 #links {
@@ -358,4 +358,30 @@ label.manual {
 
 .contextMenu LI.separator {
 	border-top: solid 1px #CCC;
+}
+#upload .span5 {
+  width: 300px;
+  float: left;
+  margin-top:-30px;
+  margin-left:365px;
+}
+#upload .span7 {
+  width: 560px ;
+  float: left;
+}
+#upload td {
+  padding: 5px;
+}
+#upload img {
+  border: 0;
+}
+#upload .row {
+  zoom: 1;
+}
+#upload .row:before, #upload .row:after {
+  display: table;
+  content: "";
+}
+#upload .row:after {
+  clear: both;
 }
