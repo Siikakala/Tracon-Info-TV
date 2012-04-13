@@ -17,7 +17,7 @@ window.locale = {
             "acceptFileTypes": "Tiedostotyyppi ei ole sallittu",
             "maxNumberOfFiles": "Tiedostojen maksimimäärä on saavutettu",
             "uploadedBytes": "Lähetetty data ylittää tiedostokoon",
-            "emptyResult": "Tyhjä tiedostonlähetysvastaus"
+            "emptyResult": "Tiedoston tallennus epäonnistui"
         },
         "error": "Virhe",
         "start": "Aloita",
