@@ -1085,6 +1085,13 @@ class Controller_Admin extends Controller{
                    });
                    $(window).bind("keydown",function(e){
                         switch(e.which){
+                            case 112://F1
+                            case 114://F3
+                            case 116://F5
+                            case 122://F11
+                                e.preventDefault();
+                                return false;
+                                break;
                             case 113://F2
                                 e.preventDefault();
                                 $("#filter").focus().select();
