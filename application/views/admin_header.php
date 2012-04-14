@@ -7,7 +7,6 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="Refresh" content="1800" />
 	<link rel="shortcut icon" href="<?php print URL::base('http',true); ?>favicon.gif" />
 	<title><?php print __title . $title; ?></title>
 	<?php print $css; ?>

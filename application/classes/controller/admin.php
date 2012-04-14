@@ -1143,11 +1143,6 @@ class Controller_Admin extends Controller{
                     return false;
                 };
 
-                function selecti(e){
-                    var keycode = e.which;
-
-                }
-
                 function save(){
                     var container = $("#feedback");
                     container.hide(\'fast\');
