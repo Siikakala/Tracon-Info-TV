@@ -132,7 +132,7 @@ class Controller_Admin extends Controller{
         	$this->view->content->links = "";
     	}else{
         	//<linkkipalkki>
-            $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","video"),"info" => array("logi","lipunmyynti","tiedotteet","tuotanto","ohjelma"),"bofh" => array("clients","users"));
+            $pages = array("tvadm" => array("scroller","rulla","dia","streams","frontends","video"),"info" => array("logi","lipunmyynti","tiedotteet","tuotanto","ohjelma"),"bofh" => array("clients","users","settings"));
             $this->session->set('results',array());
             function search($array,$key,$search){
                 $data = array_search($search,$array);
@@ -197,6 +197,7 @@ class Controller_Admin extends Controller{
             	    $this->view->content->links .= "\n<div><ul>";
                 	    $this->view->content->links .= "\n".form::button("clients","Clientit",array("value"=>url::base($this->request)."admin/face/clients", "class" => "btn"))."<br/>";
                 	    $this->view->content->links .= "\n".form::button("users","Käyttäjät",array("value"=>url::base($this->request)."admin/face/users", "class" => "btn"))."<br/>";
+                	    $this->view->content->links .= "\n".form::button("settings","Asetukset",array("value"=>url::base($this->request)."admin/face/settings", "class" => "btn"))."<br/>";
                     $this->view->content->links .= "\n</ul></div>";
                 }
             $this->view->content->links .= "\n</div><br/><ul>";
