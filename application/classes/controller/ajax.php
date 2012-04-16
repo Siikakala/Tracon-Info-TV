@@ -41,7 +41,7 @@ class Controller_Ajax extends Controller{
                   ),
             "info-common" => array(
                   "kutsut" =>
-                      array("ohjelma_add"),
+                      array("ohjelma_add","kategoria_add","slot_add","sali_add"),
                   "level"  => 2
                   ),
             "info-adv" => array(
@@ -880,6 +880,21 @@ class Controller_Ajax extends Controller{
                         $d->loppuaika = $loppustamp;
                         $d->save();
                     }
+                    $return = array("ret" => true);
+                    break;
+              case "kategoria_add":
+                    $post = $_POST;
+                    Jelly::factory('kategoriat')->set(Arr::extract($post,array('tunniste','nimi')))->save();
+                    $return = array("ret" => true);
+                    break;
+              case "slot_add":
+                    $post = $_POST;
+                    Jelly::factory('slotit')->set(Arr::extract($post,array('pituus','selite')))->save();
+                    $return = array("ret" => true);
+                    break;
+              case "sali_add":
+                    $post = $_POST;
+                    Jelly::factory('salit')->set(Arr::extract($post,array('tunniste','nimi')))->save();
                     $return = array("ret" => true);
                     break;
             }

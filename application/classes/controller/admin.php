@@ -1661,6 +1661,75 @@ class Controller_Admin extends Controller{
             			}
             		});
 
+            		$("#dialog-kategoria-add").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:200,
+            			width: 280,
+            			modal: true,
+            			buttons: {
+            				"Lisää": function() {
+            					fetch = \''.URL::base($this->request).'ajax/kategoria_add/\';
+                                $.post(fetch, $("#kategoria_add").serialize(), function(data){
+                                    if(data.ret == true){
+                                        $(this).dialog( "close" );
+                                    }else{
+                                        alert("Kategorian lisäys epäonnistui!\n\n"+data.ret);
+                                    }
+                                },"json");
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
+
+            		$("#dialog-slot-add").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:200,
+            			width: 280,
+            			modal: true,
+            			buttons: {
+            				"Lisää": function() {
+            					fetch = \''.URL::base($this->request).'ajax/slot_add/\';
+                                $.post(fetch, $("#slot_add").serialize(), function(data){
+                                    if(data.ret == true){
+                                        $(this).dialog( "close" );
+                                    }else{
+                                        alert("Aikaslotin lisäys epäonnistui!\n\n"+data.ret);
+                                    }
+                                },"json");
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
+
+            		$("#dialog-sali-add").dialog({
+            			resizable: false,
+            			autoOpen: false,
+            			height:200,
+            			width: 280,
+            			modal: true,
+            			buttons: {
+            				"Lisää": function() {
+            					fetch = \''.URL::base($this->request).'ajax/sali_add/\';
+                                $.post(fetch, $("#sali_add").serialize(), function(data){
+                                    if(data.ret == true){
+                                        $(this).dialog( "close" );
+                                    }else{
+                                        alert("Salin lisäys epäonnistui!\n\n"+data.ret);
+                                    }
+                                },"json");
+            				},
+            				"Peruuta": function() {
+            					$(this).dialog( "close" );
+            				}
+            			}
+            		});
+
             		var dates = $( "#from, #to" ).datepicker({
             			defaultDate: "+1w",
             			minDate:-7,
@@ -1788,7 +1857,7 @@ class Controller_Admin extends Controller{
         $slotquery = Jelly::query('slotit')->select();
         $slotit = array();
         foreach($slotquery as $row){
-            $slotit[$row->tunniste] = $row->nimi;
+            $slotit[$row->pituus] = $row->selite;
         }
         $slotit["muu"] = "Muu:";
         $this->view->footer->dialogs .= "
@@ -1801,7 +1870,35 @@ class Controller_Admin extends Controller{
                                 "</table>".form::close()."
                             </div>
 
-                                    ";
+                            <div id=\"dialog-kategoria-add\" title=\"Lisää uusi kategoria\">
+                                <p>Tunniste on järjestelmän sisäiseen käyttöön, nimi näkyy näkymissä</p>
+                                ".form::open(null,array("id"=>"kategoria_add"))."
+                                <table>".
+                                    "<tr><td>".form::label('tunniste','Tunniste:')."</td><td>".form::input('tunniste','',array("size"=>"20"))."</td></tr>".
+                                    "<tr><td>".form::label('nimi','Nimi:')."</td><td>".form::input('nimi','',array("size"=>"20"))."</td></tr>
+                                </table>
+                                ".form::close()."
+                            </div>
+
+                            <div id=\"dialog-slot-add\" title=\"Lisää uusi aikaslotti\">
+                                <p>Minuuttimäärä on järjestelmän sisäiseen käyttöön, selite näkyy näkymissä</p>
+                                ".form::open(null,array("id"=>"slot_add"))."
+                                <table>".
+                                    "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::input('pituus','',array("size"=>"20"))." minuuttia</td></tr>".
+                                    "<tr><td>".form::label('selite','Selite:')."</td><td>".form::input('selite','',array("size"=>"20"))."</td></tr>
+                                </table>
+                                ".form::close()."
+                            </div>
+
+                            <div id=\"dialog-sali-add\" title=\"Lisää uusi sali\">
+                                <p>Tunniste on järjestelmän sisäiseen käyttöön, nimi näkyy näkymissä</p>
+                                ".form::open(null,array("id"=>"sali_add"))."
+                                <table>".
+                                    "<tr><td>".form::label('tunniste','Tunniste:')."</td><td>".form::input('tunniste','',array("size"=>"20"))."</td></tr>".
+                                    "<tr><td>".form::label('nimi','Nimi:')."</td><td>".form::input('nimi','',array("size"=>"20"))."</td></tr>
+                                </table>
+                                ".form::close()."
+                            </div>";
 
         $this->view->content->text .= "<br/><br/><div id=\"tabit\">
                                         <ul style=\"height:29px\">
@@ -1880,15 +1977,15 @@ class Controller_Admin extends Controller{
                                             <div style=\"min-height:20px;\"><div id=\"asetus_feedback\" style=\"display:none;\"></div></div>
                                             <div id=\"kategoriat_acc\">
                                                 <h3><a href=\"#\">Kategoriat</a></h3>
-                                                <div><p>".form::button('add_kategoria','Lisää kategoria',array('onclick'=>''))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                                <div><p>".form::button('add_kategoria','Lisää kategoria',array('onclick'=>'$("#dialog-kategoria-add").dialog(\'open\');'))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
                                             </div>
                                             <div id=\"slotit_acc\">
                                                 <h3><a href=\"#\">Aikaslotit</a></h3>
-                                                <div><p>".form::button('add_slot','Lisää aikaslotti',array('onclick'=>''))."<br/>Minuuttimäärä on vain järjestelmää itseään varten. Tunniste on vain helpompaa hahmottamista varten.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                                <div><p>".form::button('add_slot','Lisää aikaslotti',array('onclick'=>'$("#dialog-slot-add").dialog(\'open\');'))."<br/>Minuuttimäärä on vain järjestelmää itseään varten. Tunniste on vain helpompaa hahmottamista varten.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
                                             </div>
                                             <div id=\"salit_acc\">
                                                 <h3><a href=\"#\">Salit</a></h3>
-                                                <div><p>".form::button('add_sali','Lisää sali',array('onclick'=>''))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                                <div><p>".form::button('add_sali','Lisää sali',array('onclick'=>'$("#dialog-sali-add").dialog(\'open\');'))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
                                             </div>
                                         </div>
                                     </div>
