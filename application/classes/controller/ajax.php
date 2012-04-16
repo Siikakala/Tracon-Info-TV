@@ -9,6 +9,8 @@ class Controller_Ajax extends Controller{
     public function before(){
         $db = Database::instance();
     	$this->session = Session::instance();
+    	$tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
+        define("__tableprefix",$tb);
     }
 
     /**
