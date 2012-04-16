@@ -9,7 +9,7 @@ class Model_Logi extends Jelly_Model
 
         // The table the model is attached to
         // It defaults to the name of the model pluralized
-        $meta->table('logi');
+        $meta->table(__tableprefix.'logi');
 
         // Fields defined by the model
         $meta->fields(array(

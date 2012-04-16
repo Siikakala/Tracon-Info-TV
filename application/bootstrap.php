@@ -73,7 +73,7 @@ if (Kohana::$environment === Kohana::PRODUCTION)
 
     define("__documentroot","/home/www/info.tracon.fi/"); //ja tuotantohakemistoa.
 
-    define("__table-prefix",""); //"Muuttuvan" datan taulujen prefix. (ohjelmadata, infologi yms.)
+    //define("__tableprefix",""); //"Muuttuvan" datan taulujen prefix. (ohjelmadata, infologi yms.)
 
     // Turn off notices and strict errors
     error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
@@ -91,7 +91,7 @@ if (Kohana::$environment === Kohana::PRODUCTION)
 
     define("__documentroot","/var/www/tracon_info-tv/"); //ja kehityshakemistoa.
 
-    define("__table-prefix",""); //"Muuttuvan" datan taulujen prefix.
+    //define("__tableprefix","dev"); //"Muuttuvan" datan taulujen prefix.
 
 }
 /**

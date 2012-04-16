@@ -9,6 +9,8 @@ class Controller_Admin extends Controller{
     public function before(){
         $db = Database::instance();
     	$this->session = Session::instance();
+    	$tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
+        define("__tableprefix",$tb."-");
     	if($this->request->action() != "ajax"){//ei turhaan alusteta viewiä ajax-responselle
            	$this->view = new View('admin');
         	$this->view->header = new view('admin_header');
@@ -1686,14 +1688,13 @@ class Controller_Admin extends Controller{
             			buttons: {
             				"Lisää": function() {
             					fetch = \''.URL::base($this->request).'ajax/ohjelma_add/\';
-                                $.post(fetch, { "row": row }, function(data){
+                                $.post(fetch, $("#ohjelma_add").serialize(), function(data){
                                     if(data.ret == true){
-                                        $(\'#\'+row).remove();
+                                        $(this).dialog( "close" );
                                     }else{
-                                        alert("Käyttäjän poisto epäonnistui!\n\n"+data.ret);
+                                        alert("Ohjelman lisäys epäonnistui!\n\n"+data.ret);
                                     }
                                 },"json");
-                                $(this).dialog( "close" );
             				},
             				"Peruuta": function() {
             					$(this).dialog( "close" );
@@ -1770,6 +1771,23 @@ class Controller_Admin extends Controller{
                                          });
             	});
 
+            	function save(){
+                	var start = $("#from").val();
+                	var stop = $("#to").val();
+                	var starth = $("#alku-klo-h").val();
+                	var startm = $("#alku-klo-m").val();
+                	var stoph = $("#loppu-klo-h").val();
+                	var stopm = $("#loppu-klo-m").val();
+                	fetch = \''.URL::base($this->request).'ajax/tapahtuma_save/\';
+                    $.post(fetch, { "start": start, "starth": starth, "startm": startm, "stop": stop,  "stoph": stoph, "stopm": stopm }, function(data){
+                        if(data.ret == true){
+                            //tallennus ok
+                        }else{
+                            alert("Tallennus epäonnistui!\n\n"+data.ret);
+                        }
+                    },"json");
+            	}
+
             	$("#salit label").live("click",function(){
                 	var id = $(this).attr("id");
                 	var pressed = $(this).attr("aria-pressed");
@@ -1800,14 +1818,24 @@ class Controller_Admin extends Controller{
         $data = Jelly::query('ohjelma')->select();
         $this->view->content->text .= form::button('add',"Lisää uusi ohjelmanumero",array("onclick"=>"$(\"#dialog-add\").dialog('open');"));
 
+        $katequery = Jelly::query('kategoriat')->select();
+        $kategoriat = array();
+        foreach($katequery as $row){
+            $kategoriat[$row->tunniste] = $row->nimi;
+        }
+        $slotquery = Jelly::query('slotit')->select();
+        $slotit = array();
+        foreach($slotquery as $row){
+            $slotit[$row->tunniste] = $row->nimi;
+        }
         $this->view->footer->dialogs .= "
-                            <div id=\"dialog-add\" title=\"Lisää uusi ohjelmanumero\"><table>".
+                            <div id=\"dialog-add\" title=\"Lisää uusi ohjelmanumero\">".form::open(null,array("id"=>"ohjelma_add"))."<table>".
                                 "<tr><td>".form::label('otsikko','Ohjelmanumero:')."</td><td>".form::input('otsikko','',array("size"=>"35"))."</td></tr>".
                                 "<tr><td>".form::label('pitaja','Pitäjä:')."</td><td>".form::input('pitaja','',array("size"=>"35"))."</td></tr>".
-                                "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',array("Anime","Rope","Kunniavieras","Muu"))."</td></tr>".//lataa oikeesti kannasta, kuten myös pituudet
-                                "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',array("45"=>"45min","105"=>"1h 45min","165"=>"2h 45min","muu"=>"Muu:"),"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<div id=\"mp-cont\" style=\"height:16px;width:100px;margin-left:80px;margin-top:-19px;\"><span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span></div></td></tr>".
+                                "<tr><td>".form::label('kategoria','Kategoria:')."</td><td>".form::select('kategoria',$kategoriat)."</td></tr>".
+                                "<tr><td>".form::label('pituus','Pituus:')."</td><td>".form::select('pituus',$slotit,"45",array("id"=>"pituusselect"))."&nbsp;&nbsp;&nbsp;<div id=\"mp-cont\" style=\"height:16px;width:100px;margin-left:80px;margin-top:-19px;\"><span id=\"muupituus\" style=\"display:none;\">".form::input('muupituus','',array("size"=>"5"))." min</span></div></td></tr>".
                                 "<tr><td>".form::label('kuvaus','Ohjelmakuvaus:')."</td><td>&nbsp;</td></tr><tr><td colspan=\"2\">".form::textarea('kuvaus','',array("cols"=>"80","rows"=>"15"))."</td></tr>".
-                                "</table>
+                                "</table>".form::close()."
                             </div>
 
                                     ";
@@ -1820,10 +1848,11 @@ class Controller_Admin extends Controller{
                                         </ul>";
 
         //<ohjelmakartan timetable>
-        $span = Date::span(strtotime("8.9.2012 10:00"),strtotime("9.9.2012 18:00"),"hours");
+        $tc = Jelly::query('tapahtuma')->limit(1)->select();//tapahtumaconfig
+        $span = Date::span(strtotime($tc->alkuaika),strtotime($tc->loppuaika),"hours");
         $timetable = "<table class=\"timetable\" border=\"1\" z-index=\"1\" cellspacing=\"0\" style=\"top:0px;left:0px;\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";
         $slots=4;
-        $start = strtotime("8.9.2012 10:00");
+        $start = strtotime($tc->alkuaika);
         for($i=1;$i<$span;$i++){
             $hour = $start + ($i * 3600);
             $timetable .= "<tr class=\"hourstart-$i\" id=\"$i\" hour=\"$hour\" slot=\"0\"><td style=\"text-align:right;\">".date("d.m. H",$hour).":00</td></tr>";
@@ -1845,9 +1874,13 @@ class Controller_Admin extends Controller{
                 $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" style=\"width:185px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</div></li>";
         }
         //</ohjelmanumerot>
-
+        $saliquery = Jelly::query('salit')->select();
+        $salit = "";
+        foreach($saliquery as $row){
+            $salit .= form::checkbox($row->tunniste,$row->tunniste,false,array("id"=>$row->tunniste."-c")).form::label($row->tunniste."-c",$row->nimi,array("id"=>$row->tunniste));
+        }
         $this->view->content->text .= "<div id=\"kartta\" style=\"height:600px;\">
-                                            <div id=\"salit\">Valitse salit: "/*lataa oikeesti kannasta*/.form::checkbox("iso","iso",false,array("id"=>"iso-c")).form::label("iso-c","Iso sali",array("id"=>"iso")).form::checkbox("pieni","pieni",false,array("id"=>"pieni-c")).form::label("pieni-c","Pieni sali",array("id"=>"pieni")).form::checkbox("studio","studio",false,array("id"=>"studio-c")).form::label("studio-c","Studio",array("id"=>"studio")).form::checkbox("sopraano","sopraano",false,array("id"=>"sopraano-c")).form::label("sopraano-c","Sopraano",array("id"=>"sopraano")).form::checkbox("rondo","rondo",false,array("id"=>"rondo-c")).form::label("rondo-c","Rondo",array("id"=>"rondo"))."</div>
+                                            <div id=\"salit\">Valitse salit: ".$salit."</div>
                                             <br/>
                                             <div style=\"float:left;\">
                                                 <ol id=\"ohjelmanumerot\" style=\"list-style-type: none;position:relative\">
@@ -1880,6 +1913,8 @@ class Controller_Admin extends Controller{
                                                 <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu','',array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),18,array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),0,array("id"=>"loppu-klo-m"))."</td></tr>
                                             </table>
                                             <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>
+
+                                            ".form::button('save','Tallenna',array('onclick'=>'save();'))."
                                         </div>
                                     </div>
         ";

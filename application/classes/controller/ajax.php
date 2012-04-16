@@ -22,14 +22,29 @@ class Controller_Ajax extends Controller{
     	$return = "";
     	$this->session->set('results',array());
     	$kutsut = array(
-        	"infotv-common" => array(
+        	"infotv-readonly" => array(
                   "kutsut" =>
-                      array("scroller_save","scroller_load","scroller_delete","scroller_delete","rulla_row","rulla_save","rulla_load","rulla_delete","tv","dia_load","dia_save","dia_delete","stream_load","frontend_load","upload","ohjelma","lastupdate"),
+                      array("scroller_load","rulla_row","rulla_load","dia_load","stream_load","frontend_load","lastupdate"),
                   "level"  => 1
+                  ),
+            "infotv-common" => array(
+                  "kutsut" =>
+                      array("scroller_save","scroller_delete","scroller_delete","rulla_save","rulla_delete","dia_save","dia_delete","upload","tv","ohjelma"),
+                  "level"  => 2
                   ),
             "infotv-adv" => array(
                   "kutsut" =>
                       array("stream_delete","stream_save","frontend_save"),
+                  "level"  => 3
+                  ),
+            "info-common" => array(
+                  "kutsut" =>
+                      array("ohjelma_add"),
+                  "level"  => 2
+                  ),
+            "info-adv" => array(
+                  "kutsut" =>
+                      array("tapahtuma_save"),
                   "level"  => 3
                   ),
             "logi-common" => array(
@@ -830,6 +845,13 @@ class Controller_Ajax extends Controller{
                             'last_login' => 0
                          ))->save();
                     $return = array("ret" => true);
+                    break;
+              case "ohjelma_add":
+                    $post = $_POST;
+                    $post['kesto'] = $post['pituus'];
+                    Jelly::factory('ohjelma')->set(Arr::extract($post,array('otsikko','pitaja','kategoria','kesto','kuvaus')))->save();
+                    break;
+              case "tapahtuma_save":
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
