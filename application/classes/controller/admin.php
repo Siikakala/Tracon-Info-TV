@@ -32,6 +32,15 @@ class Controller_Admin extends Controller{
 
                                     });
 
+                                    function inform(container,message){
+                                        container.hide(0);
+                                        container.html(message);
+                                        container.show('drop',{ direction: \"right\", distance: \"-50px\" },500);
+                                        window.setTimeout(function(){
+                                            container.hide('drop',{ direction: \"right\", distance: \"100px\" },1000);
+                                        },4000);
+                                    }
+
                                     function normalize(href){
                                         if($(\"#main\").width() != 960){
                                             $('#main').animate({width:'960px'},300,'easeInOutCubic');
@@ -269,13 +278,9 @@ class Controller_Admin extends Controller{
                     fetch = \''.URL::base($this->request).'ajax/scroller_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
-                            container.html(val);
-                            container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
+                            inform(container,val)
                         });
                     },"json");
-                    window.setTimeout(function(){
-                        container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                    },4000);
                     window.setTimeout(function(){
                         $("#formidata").hide("explode",{pieces:8},1000);
                     },2500);
@@ -303,13 +308,9 @@ class Controller_Admin extends Controller{
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+row).remove();
-                                container.html("Palanen poistettu. Muista tallentaa muutoksesi!");
-                                container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
+                                inform(container,"Palanen poistettu. Muista tallentaa muutoksesi!");
                             }
                         });
-                        window.setTimeout(function(){
-                            container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                        },4000);
                     }
                 }
 
@@ -324,12 +325,7 @@ class Controller_Admin extends Controller{
                             if(!$(this).hasClass("ignore")){
                                 $(this).parent().parent().remove();
                                 var container = $("#feedback");
-                                container.hide(0);
-                                container.html("Rivi poistettu. Muista tallentaa muutoksesi!");
-                                container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
-                                window.setTimeout(function(){
-                                    container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                                },4000);
+                                inform(container,"Rivi poistettu. Muista tallentaa muutoksesi!");
                             }
                         }
                     });
@@ -377,13 +373,9 @@ class Controller_Admin extends Controller{
                     fetch = \''.URL::base($this->request).'ajax/rulla_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
-                            container.html(val);
-                            container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
+                            inform(container,val);
                         });
                     },"json");
-                    window.setTimeout(function(){
-                        container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                    },4000);
                     window.setTimeout(function(){
                         $("#formidata").hide("explode",{pieces:8},1000);
                     },2500);
@@ -413,14 +405,9 @@ class Controller_Admin extends Controller{
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+row).remove();
-                                container.hide(0);
-                                container.html("Rivi poistettu. Muista tallentaa muutoksesi!");
-                                container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
-                                window.setTimeout(function(){
-                                    container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                                },4000);
+                                inform(container,"Rivi poistettu. Muista tallentaa muutoksesi!");
                             }else{
-                                container.html("Rivin poisto ei tapahtunut ongelmitta. Lataa sivu uudelleen ja yritä uudelleen.");
+                                inform(container,"Rivin poisto ei tapahtunut ongelmitta. Lataa sivu uudelleen ja yritä uudelleen.");
                             }
                         });
 
@@ -438,12 +425,7 @@ class Controller_Admin extends Controller{
                             if(!$(this).hasClass("ignore")){
                                 $(this).parent().parent().remove();
                                 var container = $("#feedback");
-                                container.hide(0);
-                                container.html("Rivi poistettu. Muista tallentaa muutoksesi!");
-                                container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
-                                window.setTimeout(function(){
-                                    container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                                },4000);
+                                inform(container,"Rivi poistettu. Muista tallentaa muutoksesi!");
                             }
                         }
                     });
@@ -644,15 +626,10 @@ class Controller_Admin extends Controller{
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+id).remove();
-                                container.hide(0);
-                                container.html("Rivi poistettu. Muista tallentaa muutoksesi!");
+                                inform(container,"Rivi poistettu. Muista tallentaa muutoksesi!");
                             }else{
-                                container.html(data.ret);
+                                inform(container,data.ret);
                             }
-                            container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
-                            window.setTimeout(function(){
-                                container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                            },4000);
                         });
 
                     }
@@ -669,13 +646,9 @@ class Controller_Admin extends Controller{
                     fetch = \''.URL::base($this->request).'ajax/stream_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
-                            container.html(val);
-                            container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
+                            inform(container,val);
                         });
                     },"json");
-                    window.setTimeout(function(){
-                        container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                    },4000);
                     window.setTimeout(function(){
                         $("#formidata").hide("explode",{pieces:8},1000);
                     },2500);
@@ -706,13 +679,7 @@ class Controller_Admin extends Controller{
                     click: function(){
                         if(!$(this).hasClass("ignore")){
                             $(this).parent().parent().remove();
-                            var container = $("#feedback");
-                            container.hide(0);
-                            container.html("Rivi poistettu. Muista tallentaa muutoksesi!");
-                            container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
-                            window.setTimeout(function(){
-                                container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                            },4000);
+                            inform($("#feedback"),"Rivi poistettu. Muista tallentaa muutoksesi!");
                         }
                     }
                 });
@@ -774,15 +741,10 @@ class Controller_Admin extends Controller{
                         $.getJSON(fetch, function(data) {
                             if(data.ret == true){
                                 $("."+id).remove();
-                                container.hide(0);
-                                container.html("Frontend poistettu. Muista tallentaa muutoksesi!");
+                                inform(container,"Frontend poistettu. Muista tallentaa muutoksesi!");
                             }else{
-                                container.html(data.ret);
+                                inform(container,data.ret);
                             }
-                            container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
-                            window.setTimeout(function(){
-                                container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                            },4000);
                         });
 
                     }
@@ -794,13 +756,9 @@ class Controller_Admin extends Controller{
                     fetch = \''.URL::base($this->request).'ajax/frontend_save/\'
                     $.post(fetch,$("#form").serialize(),function(data) {
                         $.each(data,function(key,val){
-                            container.html(val);
-                            container.show(\'drop\',{ direction: "right", distance: "-50px" },500);
+                            inform(container,val);
                         });
                     },"json");
-                    window.setTimeout(function(){
-                        container.hide(\'drop\',{ direction: "right", distance: "100px" },1000);
-                    },4000);
                     window.setTimeout(function(){
                         $("#formidata").hide("explode",{pieces:8},1000);
                     },2500);
@@ -1446,10 +1404,10 @@ class Controller_Admin extends Controller{
                 					fetch = \''.URL::base($this->request).'ajax/user_pass/\';
                                     $.post(fetch, { "row": row, "pass": MD5($("#pass1").val()) }, function(data){
                                         if(data.ret == true){
-                                            $("#dialog-pass-feedback").html("Salasana vaihdettu");
+                                            inform($("#dialog-pass-feedback"),"Salasana vaihdettu");
                                             $( "form" )[ 0 ].reset();
                                         }else{
-                                            $("#dialog-pass-feedback").html("Käyttäjän salasanan vaihto epäonnistui!<br/>"+data.ret);
+                                            inform($("#dialog-pass-feedback"),"Käyttäjän salasanan vaihto epäonnistui!<br/>"+data.ret);
                                         }
                                     },"json");
                                 }else{
@@ -1472,9 +1430,9 @@ class Controller_Admin extends Controller{
             					fetch = \''.URL::base($this->request).'ajax/user_level/\';
                                 $.post(fetch, { "row": row, "level": $("#level").val() }, function(data){
                                     if(data.ret == true){
-                                        $("#dialog-level-feedback").html("Käyttäjätaso vaihdettu, uusi taso on "+data.newlevel);
+                                        inform($("#dialog-level-feedback"),"Käyttäjätaso vaihdettu, uusi taso on "+data.newlevel);
                                     }else{
-                                        $("#dialog-level-feedback").html("Käyttäjätason vaihto epäonnistui!<br/>"+data.ret);
+                                        inform($("#dialog-level-feedback"),"Käyttäjätason vaihto epäonnistui!<br/>"+data.ret);
                                     }
                                 },"json");
             				},
@@ -1497,10 +1455,10 @@ class Controller_Admin extends Controller{
                 					fetch = \''.URL::base($this->request).'ajax/user_new/\';
                                     $.post(fetch, { "user": $("#user").val(), "pass": MD5($("#u_pass1").val()), "level": $("#u_level").val() }, function(data){
                                         if(data.ret == true){
-                                            $("#dialog-newuser-feedback").html("Käyttäjä lisätty.");
+                                            inform($("#dialog-newuser-feedback"),"Käyttäjä lisätty.");
                                             $( "form" )[ 0 ].reset();
                                         }else{
-                                            $("#dialog-pass-feedback").html("Käyttäjän lisääminen epäonnistui!<br/>"+data.ret);
+                                            inform($("#dialog-pass-feedback"),"Käyttäjän lisääminen epäonnistui!<br/>"+data.ret);
                                         }
                                     },"json");
                                 }else{
@@ -1772,6 +1730,7 @@ class Controller_Admin extends Controller{
             	});
 
             	function save(){
+                	var container = $("#asetus_feedback");
                 	var start = $("#from").val();
                 	var stop = $("#to").val();
                 	var starth = $("#alku-klo-h").val();
@@ -1781,9 +1740,9 @@ class Controller_Admin extends Controller{
                 	fetch = \''.URL::base($this->request).'ajax/tapahtuma_save/\';
                     $.post(fetch, { "start": start, "starth": starth, "startm": startm, "stop": stop,  "stoph": stoph, "stopm": stopm }, function(data){
                         if(data.ret == true){
-                            //tallennus ok
+                            inform(container,"Asetukset tallennettu!");
                         }else{
-                            alert("Tallennus epäonnistui!\n\n"+data.ret);
+                            inform(container,"Tallennus epäonnistui!\n\n"+data.ret);
                         }
                     },"json");
             	}
@@ -1912,6 +1871,7 @@ class Controller_Admin extends Controller{
                                                 <tr><td>".form::label('alku','Tapahtuman alkuaika')."</td><td>".form::input('alku',date('d.m.Y',strtotime($tc->alkuaika)),array("id"=>"from","size"=>"8"))." klo ".form::select('alku-klo-h',Date::hours(1,true),date('H',strtotime($tc->alkuaika)),array("id"=>"alku-klo-h"))." ".form::select('alku-klo-m',Date::minutes(1),date('i',strtotime($tc->alkuaika)),array("id"=>"alku-klo-m"))."</td></tr>
                                                 <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu',date('d.m.Y',strtotime($tc->loppuaika)),array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),date('H',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),date('i',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-m"))."</td></tr>
                                             </table>
+                                            <div id=\"asetus_feedback\" style=\"minheight:20px;display:none\"><div>
                                             <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>
 
                                             ".form::button('save','Tallenna',array('onclick'=>'save();'))."
