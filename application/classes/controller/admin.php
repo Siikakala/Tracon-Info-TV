@@ -1649,7 +1649,7 @@ class Controller_Admin extends Controller{
             					fetch = \''.URL::base($this->request).'ajax/ohjelma_add/\';
                                 $.post(fetch, $("#ohjelma_add").serialize(), function(data){
                                     if(data.ret == true){
-                                        $(this).dialog( "close" );
+                                        $("#dialog-add").dialog( "close" );
                                     }else{
                                         alert("Ohjelman lisäys epäonnistui!\n\n"+data.ret);
                                     }
@@ -1672,7 +1672,7 @@ class Controller_Admin extends Controller{
             					fetch = \''.URL::base($this->request).'ajax/kategoria_add/\';
                                 $.post(fetch, $("#kategoria_add").serialize(), function(data){
                                     if(data.ret == true){
-                                        $(this).dialog( "close" );
+                                        $("#dialog-kategoria-add").dialog( "close" );
                                     }else{
                                         alert("Kategorian lisäys epäonnistui!\n\n"+data.ret);
                                     }
@@ -1695,7 +1695,7 @@ class Controller_Admin extends Controller{
             					fetch = \''.URL::base($this->request).'ajax/slot_add/\';
                                 $.post(fetch, $("#slot_add").serialize(), function(data){
                                     if(data.ret == true){
-                                        $(this).dialog( "close" );
+                                        $("#dialog-slot-add").dialog( "close" );
                                     }else{
                                         alert("Aikaslotin lisäys epäonnistui!\n\n"+data.ret);
                                     }
@@ -1718,7 +1718,7 @@ class Controller_Admin extends Controller{
             					fetch = \''.URL::base($this->request).'ajax/sali_add/\';
                                 $.post(fetch, $("#sali_add").serialize(), function(data){
                                     if(data.ret == true){
-                                        $(this).dialog( "close" );
+                                        $("#dialog-sali-add").dialog( "close" );
                                     }else{
                                         alert("Salin lisäys epäonnistui!\n\n"+data.ret);
                                     }
@@ -1732,6 +1732,7 @@ class Controller_Admin extends Controller{
 
             		var dates = $( "#from, #to" ).datepicker({
             			defaultDate: "+1w",
+            			firstDay: 1,
             			minDate:-7,
             			maxDate:"+1Y +6M",
             			dateFormat:"dd.mm.yy",
@@ -1766,7 +1767,7 @@ class Controller_Admin extends Controller{
                     $(".target").live({
                                     drop: function(event,ui){
                                 		alert(ui.draggable.text() + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
-                                		if($(this).parent().attr(\'hour\') == "1347094800"){
+                                		if(true){//$(this).parent().attr(\'hour\') == "1347094800"){
                                     		r = false;
                                             if(ui.draggable.parent().is("li")){
                                                 ui.draggable.parent().css({\'height\':\'0\'});
@@ -1930,7 +1931,7 @@ class Controller_Admin extends Controller{
         $data = Jelly::query('ohjelma')->select();
         foreach($data as $row){
             if($row->loaded())//15min==15px;
-                $le = rand(3,9) * 15;
+                $le = $row->kesto / 45 * 3 * 15;
                 $li = $le +10;
                 $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" style=\"width:185px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</div></li>";
         }
