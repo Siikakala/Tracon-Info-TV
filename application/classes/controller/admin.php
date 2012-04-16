@@ -10,7 +10,7 @@ class Controller_Admin extends Controller{
         $db = Database::instance();
     	$this->session = Session::instance();
     	$tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
-        define("__tableprefix",$tb."-");
+        define("__tableprefix",$tb);
     	if($this->request->action() != "ajax"){//ei turhaan alusteta viewiä ajax-responselle
            	$this->view = new View('admin');
         	$this->view->header = new view('admin_header');

@@ -20,7 +20,7 @@ class Controller_Frontend extends Controller {
         //$this->view->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>"; //tätä ei toistaiseksi käytetä.
     	$this->view->css = html::style("css/admin.css");
         $tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
-        define("__tableprefix",$tb."-");
+        define("__tableprefix",$tb);
     }
 
     public function action_to_tv(){
