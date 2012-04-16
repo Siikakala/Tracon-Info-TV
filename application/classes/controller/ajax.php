@@ -775,12 +775,12 @@ class Controller_Ajax extends Controller{
                         return substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',15)),0,rand(2,15));
                     }
                     $q = DB::query(Database::SELECT,
-                                    'SELECT tag FROM logi'
+                                    'SELECT tag FROM '.__tableprefix.'logi'
                                     )->execute(__db);
                     $riveja = $q->count();
 
                     $query = DB::query(Database::INSERT,
-                                        'INSERT INTO logi (tag,comment,adder) '.
+                                        'INSERT INTO '.__tableprefix.'logi (tag,comment,adder) '.
                                         'VALUES (:tag,:comment,:adder)'
                                         );
                     for($i=1;$i<600;$i++){
