@@ -1977,15 +1977,30 @@ class Controller_Admin extends Controller{
                                             <div style=\"min-height:20px;\"><div id=\"asetus_feedback\" style=\"display:none;\"></div></div>
                                             <div id=\"kategoriat_acc\">
                                                 <h3><a href=\"#\">Kategoriat</a></h3>
-                                                <div><p>".form::button('add_kategoria','Lisää kategoria',array('onclick'=>'$("#dialog-kategoria-add").dialog(\'open\');'))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                                <div><p>".form::button('add_kategoria','Lisää kategoria',array('onclick'=>'$("#dialog-kategoria-add").dialog(\'open\');'))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p>
+                                                <table class=\"stats\"><thead style=\"color:black;\"><th>Tunniste</th><th>Nimi</th></thead><tbody>";
+                                                foreach($kategoriat as $tunniste=>$nimi){
+                                                    $this->view->content->text .= "<tr><td>".$tunniste."</td><td>".$nimi."</td></tr>";
+                                                }
+                                                $this->view->content->text .= "</table><br/><br/></div>
                                             </div>
                                             <div id=\"slotit_acc\">
                                                 <h3><a href=\"#\">Aikaslotit</a></h3>
-                                                <div><p>".form::button('add_slot','Lisää aikaslotti',array('onclick'=>'$("#dialog-slot-add").dialog(\'open\');'))."<br/>Minuuttimäärä on vain järjestelmää itseään varten. Tunniste on vain helpompaa hahmottamista varten.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                                <div><p>".form::button('add_slot','Lisää aikaslotti',array('onclick'=>'$("#dialog-slot-add").dialog(\'open\');'))."<br/>Minuuttimäärä on vain järjestelmää itseään varten. Tunniste on vain helpompaa hahmottamista varten.</p>
+                                                <table class=\"stats\"><thead style=\"color:black;\"><th>Pituus (minuuttia)</th><th>Selite</th></thead><tbody>";
+                                                foreach($slotit as $pituus=>$selite){
+                                                    $this->view->content->text .= "<tr><td>".$pituus."</td><td>".$selite."</td></tr>";
+                                                }
+                                                $this->view->content->text .= "</table><br/><br/></div>
                                             </div>
                                             <div id=\"salit_acc\">
                                                 <h3><a href=\"#\">Salit</a></h3>
-                                                <div><p>".form::button('add_sali','Lisää sali',array('onclick'=>'$("#dialog-sali-add").dialog(\'open\');'))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                                <div><p>".form::button('add_sali','Lisää sali',array('onclick'=>'$("#dialog-sali-add").dialog(\'open\');'))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p>
+                                                <table class=\"stats\"><thead style=\"color:black;\"><th>Tunniste</th><th>Nimi</th></thead><tbody>";
+                                                foreach($saliquery as $row){
+                                                    $this->view->content->text .= "<tr><td>".$row->tunniste."</td><td>".$row->nimi."</td></tr>";
+                                                }
+                                                $this->view->content->text .= "</table><br/><br/></div>
                                             </div>
                                         </div>
                                     </div>
