@@ -1681,6 +1681,9 @@ class Controller_Admin extends Controller{
             		$("#tabit").tabs();
             		$("#salit").buttonset();
             		//$("#ohjelmanumerot").selectable();
+            		$("#kategoriat_acc").accordion({collapsible:true,active:false,autoHeight:false});
+            		$("#slotit_acc").accordion({collapsible:true,active:false,autoHeight:false});
+            		$("#salit_acc").accordion({collapsible:true,active:false,autoHeight:false});
             		$(".target").droppable({
                                         accept: function(event,ui){
                                             if(event.parent().attr(\'hour\') == "1347094800"){
@@ -1871,10 +1874,20 @@ class Controller_Admin extends Controller{
                                                 <tr><td>".form::label('alku','Tapahtuman alkuaika')."</td><td>".form::input('alku',date('d.m.Y',strtotime($tc->alkuaika)),array("id"=>"from","size"=>"8"))." klo ".form::select('alku-klo-h',Date::hours(1,true),date('H',strtotime($tc->alkuaika)),array("id"=>"alku-klo-h"))." ".form::select('alku-klo-m',Date::minutes(1),date('i',strtotime($tc->alkuaika)),array("id"=>"alku-klo-m"))."</td></tr>
                                                 <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu',date('d.m.Y',strtotime($tc->loppuaika)),array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),date('H',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),date('i',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-m"))."</td></tr>
                                             </table>
-                                            <div id=\"asetus_feedback\" style=\"minheight:20px;display:none\"><div>
-                                            <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>
-
-                                            ".form::button('save','Tallenna',array('onclick'=>'save();'))."
+                                            ".form::button('save','Tallenna',array('onclick'=>'save();'))."<br/><br/>
+                                            <div style=\"min-height:20px;\"><div id=\"asetus_feedback\" style=\"display:none;\"></div></div>
+                                            <div id=\"kategoriat_acc\">
+                                                <h3><a href=\"#\">Kategoriat</a></h3>
+                                                <div><p>".form::button('add_kategoria','Lisää kategoria',array('onclick'=>''))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                            </div>
+                                            <div id=\"slotit_acc\">
+                                                <h3><a href=\"#\">Aikaslotit</a></h3>
+                                                <div><p>".form::button('add_slot','Lisää aikaslotti',array('onclick'=>''))."<br/>Minuuttimäärä on vain järjestelmää itseään varten. Tunniste on vain helpompaa hahmottamista varten.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                            </div>
+                                            <div id=\"salit_acc\">
+                                                <h3><a href=\"#\">Salit</a></h3>
+                                                <div><p>".form::button('add_sali','Lisää sali',array('onclick'=>''))."<br/>Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.</p><p>lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>and lots<br/>of content</p></div>
+                                            </div>
                                         </div>
                                     </div>
         ";

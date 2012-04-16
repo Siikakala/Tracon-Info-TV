@@ -867,7 +867,7 @@ class Controller_Ajax extends Controller{
                     if($new == 0){
                         Jelly::factory('tapahtuma')->set(array('alkuaika'=>$alkustamp,'loppuaika'=>$loppustamp,'nimi'=>"Tracon 7"))->save();
                     }else{
-                        $d = Jelly::query('tapahtuma')->load();
+                        $d = Jelly::query('tapahtuma')->limit(1)->select();
                         $d->alkuaika = $alkustamp;
                         $d->loppuaika = $loppustamp;
                         $d->save();
