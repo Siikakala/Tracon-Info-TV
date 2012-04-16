@@ -858,7 +858,7 @@ class Controller_Ajax extends Controller{
                     $loppustamp = strtotime($post['stop']." ".$post['stoph'].":".$post['stopm']);
                     $new = Jelly::query('tapahtuma')->count();
                     if($new == 0){
-                        Jelly::factory('tapahtuma')->set(array('alkuaika'=>$alkustamp,'loppuaika'=>$loppustamp))->save();
+                        Jelly::factory('tapahtuma')->set(array('alkuaika'=>$alkustamp,'loppuaika'=>$loppustamp,'nimi'=>"Tracon 7"))->save();
                     }else{
                         $d = Jelly::query('tapahtuma')->load(1);
                         $d->alkuaika = $alkustamp;
