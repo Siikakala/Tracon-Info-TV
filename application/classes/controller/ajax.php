@@ -850,8 +850,22 @@ class Controller_Ajax extends Controller{
                     $post = $_POST;
                     $post['kesto'] = $post['pituus'];
                     Jelly::factory('ohjelma')->set(Arr::extract($post,array('otsikko','pitaja','kategoria','kesto','kuvaus')))->save();
+                    $return = array("ret" => true);
                     break;
               case "tapahtuma_save":
+                    $post = $_POST;
+                    $alkustamp = strtotime($post['start']." ".$post['starth'].":".$post['startm']);
+                    $loppustamp = strtotime($post['stop']." ".$post['stoph'].":".$post['stopm']);
+                    $new = Jelly::query('tapahtuma')->count();
+                    if($new == 0){
+                        Jelly::factory('tapahtuma')->set(array('alkuaika'=>$alkustamp,'loppuaika'=>$loppustamp))->save();
+                    }else{
+                        $d = Jelly::query('tapahtuma')->load(1);
+                        $d->alkuaika = $alkustamp;
+                        $d->loppuaika = $loppustamp;
+                        $d->save();
+                    }
+                    $return = array("ret" => true);
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
