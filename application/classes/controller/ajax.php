@@ -49,10 +49,15 @@ class Controller_Ajax extends Controller{
                       array("tapahtuma_save"),
                   "level"  => 3
                   ),
+            "logi-readonly" => array(
+                  "kutsut" =>
+                      array("todo_refresh","todo_search"),
+                  "level"  => 1
+                  ),
             "logi-common" => array(
                   "kutsut" =>
-                      array("todo_save","todo_refresh","todo_search","todo_ack","todo_unack","todo_del"),
-                  "level"  => 1
+                      array("todo_save","todo_ack","todo_unack","todo_del"),
+                  "level"  => 2
                   ),
             "logi-adv" => array(
                   "kutsut" =>
@@ -862,7 +867,7 @@ class Controller_Ajax extends Controller{
                     if($new == 0){
                         Jelly::factory('tapahtuma')->set(array('alkuaika'=>$alkustamp,'loppuaika'=>$loppustamp,'nimi'=>"Tracon 7"))->save();
                     }else{
-                        $d = Jelly::query('tapahtuma')->load(1);
+                        $d = Jelly::query('tapahtuma')->load();
                         $d->alkuaika = $alkustamp;
                         $d->loppuaika = $loppustamp;
                         $d->save();
