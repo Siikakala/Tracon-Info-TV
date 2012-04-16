@@ -1777,7 +1777,6 @@ class Controller_Admin extends Controller{
             	</script>';
         $this->view->content->text = "<h2>Ohjelmakartan hallinta</h2>";
 
-        $data = Jelly::query('ohjelma')->select();
         $this->view->content->text .= form::button('add',"Lisää uusi ohjelmanumero",array("onclick"=>"$(\"#dialog-add\").dialog('open');"));
 
         $katequery = Jelly::query('kategoriat')->select();
@@ -1830,6 +1829,7 @@ class Controller_Admin extends Controller{
 
         //<ohjelmanumerot>
         $ohjelmat = "";
+        $data = Jelly::query('ohjelma')->select();
         foreach($data as $row){
             if($row->loaded())//15min==15px;
                 $le = rand(3,9) * 15;
