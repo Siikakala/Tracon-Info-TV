@@ -1640,7 +1640,7 @@ class Controller_Admin extends Controller{
                     $("#dialog-add").dialog({
             			resizable: false,
             			autoOpen: false,
-            			height:450,
+            			height:460,
             			width: 550,
             			modal: true,
             			buttons: {
@@ -1790,6 +1790,7 @@ class Controller_Admin extends Controller{
         foreach($slotquery as $row){
             $slotit[$row->tunniste] = $row->nimi;
         }
+        $slotit["muu"] = "Muu:";
         $this->view->footer->dialogs .= "
                             <div id=\"dialog-add\" title=\"Lisää uusi ohjelmanumero\">".form::open(null,array("id"=>"ohjelma_add"))."<table>".
                                 "<tr><td>".form::label('otsikko','Ohjelmanumero:')."</td><td>".form::input('otsikko','',array("size"=>"35"))."</td></tr>".

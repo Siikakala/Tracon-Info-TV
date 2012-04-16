@@ -855,7 +855,11 @@ class Controller_Ajax extends Controller{
                     break;
               case "ohjelma_add":
                     $post = $_POST;
-                    $post['kesto'] = $post['pituus'];
+                    if(strcasecmp($post['pituus'],"muu") === 0){
+                        $post['kesto'] = $post['muupituus'];
+                    }else{
+                        $post['kesto'] = $post['pituus'];
+                    }
                     Jelly::factory('ohjelma')->set(Arr::extract($post,array('otsikko','pitaja','kategoria','kesto','kuvaus')))->save();
                     $return = array("ret" => true);
                     break;
