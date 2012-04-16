@@ -1909,8 +1909,8 @@ class Controller_Admin extends Controller{
 
          $this->view->content->text .= "<div id=\"asetukset\">
                                             <table>
-                                                <tr><td>".form::label('alku','Tapahtuman alkuaika')."</td><td>".form::input('alku','',array("id"=>"from","size"=>"8"))." klo ".form::select('alku-klo-h',Date::hours(1,true),8,array("id"=>"alku-klo-h"))." ".form::select('alku-klo-m',Date::minutes(1),0,array("id"=>"alku-klo-m"))."</td></tr>
-                                                <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu','',array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),18,array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),0,array("id"=>"loppu-klo-m"))."</td></tr>
+                                                <tr><td>".form::label('alku','Tapahtuman alkuaika')."</td><td>".form::input('alku',date('d.m.Y',$tc->alkuaika),array("id"=>"from","size"=>"8"))." klo ".form::select('alku-klo-h',Date::hours(1,true),date('H',$tc->alkuaika),array("id"=>"alku-klo-h"))." ".form::select('alku-klo-m',Date::minutes(1),date('i',$tc->alkuaika),array("id"=>"alku-klo-m"))."</td></tr>
+                                                <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu',date('d.m.Y',$tc->loppuaika),array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),date('H',$tc->loppuaika),array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),date('i',$tc->loppuaika),array("id"=>"loppu-klo-m"))."</td></tr>
                                             </table>
                                             <p>Täällä voit myöhemmin hallita tapahtuman alku- ja loppuaikaa, salien lukumäärää ja nimiä, kategorioita, aikaslotteja ja kaikkea muuta ohjelmaan liittyvää.</p>
 
