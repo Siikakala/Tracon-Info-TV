@@ -843,15 +843,19 @@ class Controller_Ajax extends Controller{
                     $user = $_POST['user'];
                     $pass = $_POST['pass'];
                     $level = $_POST['level'];
-                    $secret = Kohana::$config->load('auth.secret');
-                    $d = Jelly::factory('user')
-                         ->set(array(
-                            'kayttis'    => $user,
-                            'passu'      => sha1($pass.$secret),
-                            'level'      => $level,
-                            'last_login' => 0
-                         ))->save();
-                    $return = array("ret" => true);
+                    if($level > $this->session->get('level')){
+                        $return = array("ret" => "Et voi luoda itseäsi mahtavampaa!");
+                    }else{
+                        $secret = Kohana::$config->load('auth.secret');
+                        $d = Jelly::factory('user')
+                             ->set(array(
+                                'kayttis'    => $user,
+                                'passu'      => sha1($pass.$secret),
+                                'level'      => $level,
+                                'last_login' => 0
+                             ))->save();
+                        $return = array("ret" => true);
+                    }
                     break;
               case "ohjelma_add":
                     $post = $_POST;
