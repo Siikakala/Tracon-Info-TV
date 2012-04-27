@@ -165,6 +165,25 @@ ol, ul {
 	margin-left: 25px;
 }
 
+table.timetable {
+    top:0px;
+    left:0px;
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+	margin-bottom: 10px;
+	cursor: default;
+}
+
+table.timetable th {
+	background-color: #CCC;
+	padding: 3px 15px 3px 3px;
+	color:black;
+}
+
+table.timetable td {
+	border: 1px solid #CCC;
+}
+
 table.stats {
 	border: 1px solid #CCC;
 	border-collapse: collapse;

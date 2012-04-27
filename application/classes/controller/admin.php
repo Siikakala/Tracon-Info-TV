@@ -1756,17 +1756,11 @@ class Controller_Admin extends Controller{
             		$("#slotit_acc").accordion({collapsible:true,active:false,autoHeight:false});
             		$("#salit_acc").accordion({collapsible:true,active:false,autoHeight:false});
             		$(".target").droppable({
-                                        accept: function(event,ui){
-                                            if(event.parent().attr(\'hour\') == "1347094800"){
-                                                return true;
-                                            }else{
-                                                return false;
-                                            }
-                                        }
+                                        accept: \'.drag\'
                                         });
                     $(".target").live({
                                     drop: function(event,ui){
-                                		alert(ui.draggable.text() + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
+                                		alert(ui.draggable.text() + " ID:llä " + ui.draggable.attr(\'oid\') + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
                                 		if(true){//$(this).parent().attr(\'hour\') == "1347094800"){
                                     		r = false;
                                             if(ui.draggable.parent().is("li")){
@@ -1777,11 +1771,13 @@ class Controller_Admin extends Controller{
                                     		var x = pos.top;
                                     		var y = pos.left;
                                     		ui.draggable.css({\'top\': x, \'left\': y,\'position\': \'absolute\'});
+                                    		ui.draggable.attr(\'added\',$(this).attr(\'added\'));
+                                    		ui.draggable.attr(\'hour\',$(this).parent().attr(\'hour\'));
                                     		window.setTimeout(function(){
                                         		r = true;
                                     		},20);
                                     	}else{
-                                        	r = true;
+                                        	r = false;
                                     	}
                                     },
 
@@ -1792,11 +1788,7 @@ class Controller_Admin extends Controller{
                                          snap: ".target",
                                          snapMode: "inner",
                                          revert: function(){
-                                             if(r == true){
-                                                 return true;
-                                             }else{
-                                                 return false;
-                                             }
+                                             return r;
                                          },
                                          zIndex: 4,
                                          cursorAt:{top: 3, left: -20}
@@ -1835,6 +1827,7 @@ class Controller_Admin extends Controller{
                     }else{
                         $(\'.timetable td[added|="\'+id+\'"]\').remove();
                         $(\'.timetable th[added|="\'+id+\'"]\').remove();
+                        $(\'#cal-cont div[added|="\'+id+\'"]\').remove();
                     }
             	});
 
@@ -1911,7 +1904,7 @@ class Controller_Admin extends Controller{
         //<ohjelmakartan timetable>
         $tc = Jelly::query('tapahtuma')->limit(1)->select();//tapahtumaconfig
         $span = Date::span(strtotime($tc->alkuaika),strtotime($tc->loppuaika),"hours");
-        $timetable = "<table class=\"timetable\" border=\"1\" z-index=\"1\" cellspacing=\"0\" style=\"top:0px;left:0px;\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";
+        $timetable = "<table class=\"timetable\" z-index=\"1\" cellspacing=\"0\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";
         $slots=4;
         $start = strtotime($tc->alkuaika);
         for($i=1;$i<$span;$i++){
@@ -1931,9 +1924,9 @@ class Controller_Admin extends Controller{
         $data = Jelly::query('ohjelma')->select();
         foreach($data as $row){
             if($row->loaded())//15min==15px;
-                $le = $row->kesto / 45 * 3 * 15;
+                $le = $row->kesto - 12 + ($row->kesto / 45 * 3);
                 $li = $le +10;
-                $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" style=\"width:185px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</div></li>";
+                $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" oid=\"".$row->id."\" style=\"width:180px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</div></li>";
         }
         //</ohjelmanumerot>
         $saliquery = Jelly::query('salit')->select();
@@ -1949,7 +1942,7 @@ class Controller_Admin extends Controller{
                                                     $ohjelmat
                                                 </ol>
                                             </div>
-                                            <div style=\"height: 500px; max-width:100%; width:auto; left: 280px; position:absolute; overflow-y:auto\">
+                                            <div style=\"height: 500px; max-width:100%; width:auto; min-width:118px; left: 280px; position:absolute; overflow-y:auto\">
                                                 <div style=\"position:relative; width=100%; overflow:hidden;\" id=\"cal-cont\">
                                                     $timetable
                                                 </div>

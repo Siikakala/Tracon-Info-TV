@@ -708,10 +708,7 @@ class Controller_Ajax extends Controller{
                         }
 
                         $c = count($arrays);
-                        //print $c;
-                        if($c > 0)
-                            $result = array_keys($values);
-                        elseif($c == 0 && !empty($values))
+                        if($c >= 0 && !empty($values))
                             $result = array_keys($values);
                         else
                             $result = array();
