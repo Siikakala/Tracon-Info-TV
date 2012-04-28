@@ -11,9 +11,6 @@ $(function() {
     $("#links .btn").click(function(){
         normalize($(this).attr("value"));
     });
-    $("#accord").accordion({active:".$active.",autoHeight: false,icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
-
-
 });
 
 function inform(container,message){

@@ -102,6 +102,11 @@ class Controller_Admin extends Controller{
             }elseif($resultsi[0] == "bofh"){
                 $active = 2;
             }
+            $this->view->header->js .= "\n<script type=\"text/javascript\">
+                                    $(function() {
+                                        $(\"#accord\").accordion({active:".$active.",autoHeight: false,icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
+                                    });
+                                    </script>";
 
 			$this->view->content->links = "\n<div id=\"accord\">\n";
     			$this->view->content->links .= "\n<h3><a href=\"#\" class=\"head-links\">TV-ylläpito:</a></h3>";
