@@ -81,39 +81,43 @@ class Controller_Admin extends Controller{
     */
     public function action_index(){
     	if(!$this->session->get('logged_in')){
-        	$this->view->content->text = "<h2>Kirjaudu sisään</h2>";
-    	    $this->view->content->text .= form::open('admin/login');
+        	$this->view->header->js .= "\n<script type=\"text/javascript\">
+            	$(function() {
+                    $(\"#feedback\").html(\"\");
+                    $(\"#login\").submit(function(e){
+                        e.preventDefault();
+                    });
+                });
+            	function login(){
+                	var user = $(\"#user\").val();
+                	var pass = MD5($(\"#pass\").val());
+                	fetch = baseurl+'ajax/login/'
+                    $.post(fetch,{'user':user,'pass':pass},function(data) {
+                        if(data.ret == true){
+                            location.reload(true);
+                        }else{
+                            inform($(\"#feedback\"),data.ret);
+                        }
+                    },\"json\");
+            	}
+        	</script>";
+        	$this->view->content->text = "<h2>Kirjaudu sisään</h2><div style=\"margin-left:0px;\">";
+    	    $this->view->content->text .= form::open("admin",array("id"=>"login","onsubmit"=>"return false;","style"=>"float:left;"));
 			$this->view->content->text .= "<table><tr><td>";
 			$this->view->content->text .= form::label('user','Käyttäjätunnus:')."</td><td>";
     	    $this->view->content->text .= form::input('user',null,array('id'=>'user'))."</td></tr><tr><td>";
 			$this->view->content->text .= form::label('pass','Salasana:')."</td><td>";
 			$this->view->content->text .= form::password('pass',null,array('id'=>'pass'))."</td></tr><tr><td></td><td>";
-			$this->view->content->text .= form::submit('submit','Kirjaudu',array('onclick'=>'this.form.pass.value = MD5(this.form.pass.value)'));
-    	    if(isset($_GET['return'])) $this->view->content->text .= form::hidden('return',$_GET['return']);
+			$this->view->content->text .= form::submit('submit','Kirjaudu',array('onclick'=>'login(); return false;'));
 			$this->view->content->text .= "</td></tr></table>";
     	    $this->view->content->text .= form::close();
+    	    $this->view->content->text .= "</div><div style=\"min-height:15px;margin-top:120px;\"><div id=\"feedback\">Selaimesi Javascript ei ole käytössä. Ilman sitä et voi käyttää järjestelmää.</div></div>";
     	    $this->view->content->links = "";
     	    $this->response->body($this->view->render());
     	}else
             if(isset($_GET['return'])) $this->request->redirect($_GET['return']);
         	else $this->request->redirect('admin/face');
 
-    }
-
-    public function action_login(){
-        $auth = new Model_Authi();
-        $login = $auth->auth($_POST['user'],$_POST['pass'],$_SERVER['REMOTE_ADDR']);
-        if($login !== false){
-            $this->session->set('logged_in',true);//true/false
-            $this->session->set('level',$login);//>= 1
-            $this->session->set('user',$_POST['user']); //käyttäjätunnus.
-            if(isset($_POST['return'])) $this->request->redirect($_POST['return']);//jos return-urli on määritelty, palataan sinne.
-            else $this->request->redirect('admin/face');//muuten mennään oletussivulle.
-        }else{
-            $this->view->content->text = "<p class=\"error\">Väärä käyttäjätunnus tai salasana!</p>";
-            $this->view->content->links = "";
-        }
-        $this->response->body($this->view->render());
     }
 
     /**

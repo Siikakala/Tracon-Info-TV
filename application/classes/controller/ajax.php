@@ -71,7 +71,7 @@ class Controller_Ajax extends Controller{
                   ),
             "public" => array(
                   "kutsut" =>
-                      array("check"),
+                      array("login","check"),
                   "level" => 0
                   )
               );
@@ -98,6 +98,19 @@ class Controller_Ajax extends Controller{
             $return = array("ret"=>false);
         }elseif($this->session->get('level',0) >= $kutsut[$resultsi[0]]['level']){//varmistetaan että on kirjauduttu sisään ja oikeudet muokata asioita.
         	switch($param1){
+            	case "login":
+                    $auth = new Model_Authi();
+                    $login = $auth->auth($_POST['user'],$_POST['pass'],$_SERVER['REMOTE_ADDR']);
+                    if($login !== false){
+                        $this->session->set('logged_in',true);//true/false
+                        $this->session->set('level',$login);//>= 1
+                        $this->session->set('user',$_POST['user']); //käyttäjätunnus.
+                        $ret = true;
+                    }else{
+                        $ret = "Väärä käyttäjätunnus tai salasana!";
+                    }
+                    $return = array("ret"=>$ret);
+                    break;
                 case "scroller_save":
                     $post = $_POST;
                     $data = array();
