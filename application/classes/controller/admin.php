@@ -1827,10 +1827,11 @@ class Controller_Admin extends Controller{
                     	var sali = $(this).text();
                     	fetch = \''.URL::base($this->request).'ajax/ohjelma_load/\';
                     	$.post(fetch, {"sali":id}, function(data){
+                        	$(".drag").draggable("destroy");
                         	var response = $.parseJSON(data);
                             $(".timetable tbody tr").append(\'<td class="target" added="\'+id+\'">&nbsp;</td>\');//tässä vaiheessa vasta piirretään ruudukko
                             $(".timetable thead tr").append(\'<th added="\'+id+\'">\'+sali+\'</th>\');
-                            $(".target").droppable();
+                            $(".target").droppable({accept: \'.drag\'});
                             if(response.ret == true){
                                 $.each(response.ohjelmat,function(index,ohjelma){
                                     var pos = $(".timetable tbody").find(\'tr[hour|="\'+ohjelma.hour+\'"] td[added|="\'+id+\'"]\').position();
@@ -1838,9 +1839,18 @@ class Controller_Admin extends Controller{
                                     $("#cal-cont").prepend(element);
                                     $("#cal-cont").find(\'div[oid|="\'+ohjelma.oid+\'"]\').css({\'top\':pos.top,\'left\':pos.left});
                                 });
+                            $(".drag").draggable({
+                                         snap: ".target",
+                                         snapMode: "inner",
+                                         revert: "invalid",
+                                         zIndex: 4,
+                                         cursorAt:{top: 3, left: -20}
+                                         });
                             }else{
                             }
                         });
+
+
                     }else{
                         $(\'.timetable td[added|="\'+id+\'"]\').remove();
                         $(\'.timetable th[added|="\'+id+\'"]\').remove();
