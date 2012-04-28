@@ -1635,7 +1635,6 @@ class Controller_Admin extends Controller{
                 });
                 var row = 0;
                 var passerror = 0;
-                var r = true;
 
                 $(function(){
                     $("#dialog-add").dialog({
@@ -1756,7 +1755,8 @@ class Controller_Admin extends Controller{
             		$("#slotit_acc").accordion({collapsible:true,active:false,autoHeight:false});
             		$("#salit_acc").accordion({collapsible:true,active:false,autoHeight:false});
             		$(".target").droppable({
-                                        accept: \'.drag\'
+                                        accept: \'.drag\',
+                                        tolerance: \'pointer\'
                                         });
                     $(".target").live({
                                     drop: function(event,ui){
@@ -1787,7 +1787,6 @@ class Controller_Admin extends Controller{
                                                 }
                                             }
                                         },"json");
-                                		//alert(ui.draggable.text() + " ID:llä " + ui.draggable.attr(\'oid\') + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
                                     },
 
 
@@ -1831,7 +1830,7 @@ class Controller_Admin extends Controller{
                         	var response = $.parseJSON(data);
                             $(".timetable tbody tr").append(\'<td class="target" added="\'+id+\'">&nbsp;</td>\');//tässä vaiheessa vasta piirretään ruudukko
                             $(".timetable thead tr").append(\'<th added="\'+id+\'">\'+sali+\'</th>\');
-                            $(".target").droppable({accept: \'.drag\'});
+                            $(".target").droppable({accept: \'.drag\',tolerance: \'pointer\'});
                             if(response.ret == true){
                                 $.each(response.ohjelmat,function(index,ohjelma){
                                     var pos = $(".timetable tbody").find(\'tr[hour|="\'+ohjelma.hour+\'"] td[added|="\'+id+\'"]\').position();

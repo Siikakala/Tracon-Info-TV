@@ -7,7 +7,7 @@
 class Controller_Ajax extends Controller{
 
     public function before(){
-        $db = Database::instance();
+        $this->db = Database::instance(__db);
     	$this->session = Session::instance();
     	$tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
         define("__tableprefix",$tb);
@@ -896,16 +896,21 @@ class Controller_Ajax extends Controller{
                     break;
               case "ohjelma_save":
                     $post = $_POST;
+                    $predata = Jelly::query('ohjelma',$post['id'])->select_column('kesto')->select();
                     $querytesti =
                     "SELECT id
                      FROM   ".__tableprefix."ohjelma
-                     WHERE  alkuaika < '".date('Y-m-d H:i:s',$post['hour'])."'
-                            AND
-                            '".date('Y-m-d H:i:s',$post['hour'])."' > DATE_ADD(alkuaika,INTERVAL kesto MINUTE)
+                     WHERE  alkuaika BETWEEN '".date('Y-m-d H:i:s',$post['hour'])."' AND '".date('Y-m-d H:i:s',$post['hour']+$predata->kesto * 60 - 1)."'
                             AND
                             sali = :sali
+                            AND
+                            id != :id
                     ";
-                    $check = DB::query(Database::SELECT,$querytesti)->param(":sali",$post['sali'])->execute(__db);
+                    $check = DB::query(Database::SELECT,$querytesti)->parameters(array(":sali"=>$post['sali'],":id"=>$post['id']));
+                    $sql = $check->compile($this->db);
+                    $check = $check->execute(__db);
+                    $checki = $check->as_array();
+                    var_dump($sql);
                     //$check = Jelly::query('ohjelma')->where('alkuaika','<',date('Y-m-d H:i:s',strtotime($post['hour'])))->and_where(date('Y-m-d H:i:s',strtotime($post['hour'])),'>',DB::expr('DATE_ADD(alkuaika, INTERVAL kesto MINUTE)'))->and_where('sali','=',$post['sali'])->select();
                     if($check->count() === 0){
                         $d = Jelly::query('ohjelma',$post['id'])->select();
