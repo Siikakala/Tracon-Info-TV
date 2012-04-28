@@ -1761,25 +1761,19 @@ class Controller_Admin extends Controller{
                     $(".target").live({
                                     drop: function(event,ui){
                                         var that = $(this);
-                                        var yui = ui;
+                                        var hour = $(this).parent().attr(\'hour\');
+                                        var added = $(this).attr(\'added\');
+                                        var pos = $(this).position();
                                         fetch = \''.URL::base($this->request).'ajax/ohjelma_save/\';
                                         $.post(fetch, { "id": ui.draggable.attr(\'oid\'), "hour": $(this).parent().attr(\'hour\'), "sali": $(this).attr(\'added\') }, function(data){
                                             if(data.ret == true){
-                                                r = false;
                                                 if(ui.draggable.parent().is("li")){
                                                     ui.draggable.parent().css({\'height\':\'0\'});
                                                 }
-
                                                 ui.draggable.prependTo("#cal-cont");
-                                        		var pos = that.position();
-                                        		var x = pos.top;
-                                        		var y = pos.left;
-                                        		ui.draggable.css({\'top\': x, \'left\': y,\'position\': \'absolute\'});
-                                        		ui.draggable.attr(\'added\',that.attr(\'added\'));
-                                        		ui.draggable.attr(\'hour\',that.parent().attr(\'hour\'));
-                                        		window.setTimeout(function(){
-                                            		r = true;
-                                        		},20);
+                                        		ui.draggable.css({\'top\': pos.top, \'left\': pos.left,\'position\': \'absolute\'});
+                                        		ui.draggable.attr(\'added\',added);
+                                        		ui.draggable.attr(\'hour\',hour);
                                             }else{
                                                 if(ui.draggable.parent().is("li")){
                                                     var posi = ui.draggable.parent().position();
@@ -1797,7 +1791,7 @@ class Controller_Admin extends Controller{
                                          snapMode: "inner",
                                          revert: "invalid",
                                          zIndex: 4,
-                                         cursorAt:{top: 3, left: -20}
+                                         cursorAt:{top: 0, left: -20}
                                          });
             	});
 
@@ -1827,27 +1821,27 @@ class Controller_Admin extends Controller{
                     	fetch = \''.URL::base($this->request).'ajax/ohjelma_load/\';
                     	$.post(fetch, {"sali":id}, function(data){
                         	$(".drag").draggable("destroy");
-                        	var response = $.parseJSON(data);
+                        	$(".target").droppable("destroy");
                             $(".timetable tbody tr").append(\'<td class="target" added="\'+id+\'">&nbsp;</td>\');//tässä vaiheessa vasta piirretään ruudukko
                             $(".timetable thead tr").append(\'<th added="\'+id+\'">\'+sali+\'</th>\');
                             $(".target").droppable({accept: \'.drag\',tolerance: \'pointer\'});
-                            if(response.ret == true){
-                                $.each(response.ohjelmat,function(index,ohjelma){
+                            if(data.ret == true){
+                                $.each(data.ohjelmat,function(index,ohjelma){
                                     var pos = $(".timetable tbody").find(\'tr[hour|="\'+ohjelma.hour+\'"] td[added|="\'+id+\'"]\').position();
                                     var element = "<div added=\""+id+"\" hour=\""+ohjelma.hour+"\" class=\"ui-widget-content drag ui-corner-all "+ohjelma.kategoria+"\" oid=\""+ohjelma.oid+"\" style=\"width:180px;height:"+ohjelma.height+"px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\""+ohjelma.title+"\">"+ohjelma.nimi+"</div>";
                                     $("#cal-cont").prepend(element);
                                     $("#cal-cont").find(\'div[oid|="\'+ohjelma.oid+\'"]\').css({\'top\':pos.top,\'left\':pos.left});
                                 });
+                            }else{
+                            }
                             $(".drag").draggable({
                                          snap: ".target",
                                          snapMode: "inner",
                                          revert: "invalid",
                                          zIndex: 4,
-                                         cursorAt:{top: 3, left: -20}
+                                         cursorAt:{top:0,left: -20}
                                          });
-                            }else{
-                            }
-                        });
+                        },"json");
 
 
                     }else{
@@ -1951,7 +1945,7 @@ class Controller_Admin extends Controller{
 
         //<ohjelmanumerot>
         $ohjelmat = "";
-        $data = Jelly::query('ohjelma')->where('sali','like','')->select();
+        $data = Jelly::query('ohjelma')->where('sali','like','0')->or_where('sali','like','')->select();
         foreach($data as $row){
             if($row->loaded())//15min==15px;
                 $le = $row->kesto - 12 + ($row->kesto / 45 * 3);
