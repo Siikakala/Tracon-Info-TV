@@ -1990,7 +1990,8 @@ class Controller_Admin extends Controller{
 
 
 
-         if($this->session->get('level') >= 3) $this->view->content->text .= "<div id=\"asetukset\">
+         if($this->session->get('level') >= 3){
+             $this->view->content->text .= "<div id=\"asetukset\">
                                             <table>
                                                 <tr><td>".form::label('alku','Tapahtuman alkuaika')."</td><td>".form::input('alku',date('d.m.Y',strtotime($tc->alkuaika)),array("id"=>"from","size"=>"8"))." klo ".form::select('alku-klo-h',Date::hours(1,true),date('H',strtotime($tc->alkuaika)),array("id"=>"alku-klo-h"))." ".form::select('alku-klo-m',Date::minutes(1),date('i',strtotime($tc->alkuaika)),array("id"=>"alku-klo-m"))."</td></tr>
                                                 <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu',date('d.m.Y',strtotime($tc->loppuaika)),array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),date('H',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),date('i',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-m"))."</td></tr>
@@ -2026,8 +2027,8 @@ class Controller_Admin extends Controller{
                                             </div>
                                         </div>
                                     </div>
-        ";
-
+            ";
+        }
     }
 
 
