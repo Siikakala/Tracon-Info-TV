@@ -919,12 +919,7 @@ class Controller_Ajax extends Controller{
                             AND
                             id != :id
                     ";
-                    $check = DB::query(Database::SELECT,$querytesti)->parameters(array(":sali"=>$post['sali'],":id"=>$post['id']));
-                    $sql = $check->compile($this->db);
-                    $check = $check->execute(__db);
-                    $checki = $check->as_array();
-                    var_dump($sql);
-                    //$check = Jelly::query('ohjelma')->where('alkuaika','<',date('Y-m-d H:i:s',strtotime($post['hour'])))->and_where(date('Y-m-d H:i:s',strtotime($post['hour'])),'>',DB::expr('DATE_ADD(alkuaika, INTERVAL kesto MINUTE)'))->and_where('sali','=',$post['sali'])->select();
+                    $check = DB::query(Database::SELECT,$querytesti)->parameters(array(":sali"=>$post['sali'],":id"=>$post['id']))->execute(__db);
                     if($check->count() === 0){
                         $d = Jelly::query('ohjelma',$post['id'])->select();
                         $d->alkuaika = $post['hour'];
@@ -939,12 +934,10 @@ class Controller_Ajax extends Controller{
               case "ohjelma_load":
                     $post = $_POST;
                     $d = Jelly::query('ohjelma')->where('sali','like',$post['sali'])->select();
-                    //var_dump($d);
                     $ret = array();
                     foreach($d as $row){
                         $ret[] = array("oid"=>$row->id,"hour"=>strtotime($row->alkuaika),"kategoria"=>$row->kategoria,"height"=>($row->kesto - 12 + ($row->kesto / 45 * 3)),"title"=>"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." ","nimi"=>htmlspecialchars($row->otsikko));
                     }
-                    //var_dump($ret);
                     $return = array("ret" => true,"ohjelmat"=>$ret);
                     break;
             }
