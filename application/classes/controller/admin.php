@@ -1793,7 +1793,7 @@ class Controller_Admin extends Controller{
                     $(".drag").draggable({
                                          snap: ".target",
                                          snapMode: "inner",
-                                         revert: "invalid",
+                                         revert: true,
                                          zIndex: 4,
                                          cursorAt:{top: 0, left: -20}
                                          });
@@ -1841,7 +1841,7 @@ class Controller_Admin extends Controller{
                             $(".drag").draggable({
                                          snap: ".target",
                                          snapMode: "inner",
-                                         revert: "invalid",
+                                         revert: true,
                                          zIndex: 4,
                                          cursorAt:{top:0,left: -20}
                                          });
@@ -1925,9 +1925,9 @@ class Controller_Admin extends Controller{
         $this->view->content->text .= "<br/><br/><div id=\"tabit\">
                                         <ul style=\"height:29px\">
                                             <li><a href=\"#kartta\">Ohjelmakartta</a></li>
-                                            <li><a href=\"#ohjelmat\">Ohjelmien muokkaus</a></li>
-                                            <li><a href=\"#asetukset\">Asetukset</a></li>
-                                        </ul>";
+                                            <li><a href=\"#ohjelmat\">Ohjelmien muokkaus</a></li>";
+         if($this->session->get('level') >= 3) $this->view->content->text .= "<li><a href=\"#asetukset\">Asetukset</a></li>";
+        $this->view->content->text .= "</ul>";
 
         //<ohjelmakartan timetable>
         $tc = Jelly::query('tapahtuma')->limit(1)->select();//tapahtumaconfig
@@ -1990,7 +1990,7 @@ class Controller_Admin extends Controller{
 
 
 
-         $this->view->content->text .= "<div id=\"asetukset\">
+         if($this->session->get('level') >= 3) $this->view->content->text .= "<div id=\"asetukset\">
                                             <table>
                                                 <tr><td>".form::label('alku','Tapahtuman alkuaika')."</td><td>".form::input('alku',date('d.m.Y',strtotime($tc->alkuaika)),array("id"=>"from","size"=>"8"))." klo ".form::select('alku-klo-h',Date::hours(1,true),date('H',strtotime($tc->alkuaika)),array("id"=>"alku-klo-h"))." ".form::select('alku-klo-m',Date::minutes(1),date('i',strtotime($tc->alkuaika)),array("id"=>"alku-klo-m"))."</td></tr>
                                                 <tr><td>".form::label('loppu','Tapahtuman päättymisaika')."</td><td>".form::input('loppu',date('d.m.Y',strtotime($tc->loppuaika)),array("id"=>"to","size"=>"8"))." klo ".form::select('loppu-klo-h',Date::hours(1,true),date('H',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),date('i',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-m"))."</td></tr>
