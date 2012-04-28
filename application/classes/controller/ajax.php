@@ -903,9 +903,9 @@ class Controller_Ajax extends Controller{
                             AND
                             '".date('Y-m-d H:i:s',$post['hour'])."' > DATE_ADD(alkuaika,INTERVAL kesto MINUTE)
                             AND
-                            sali = '".$post['sali']."'
+                            sali = :sali
                     ";
-                    $check = DB::query(Database::SELECT,$querytesti)->execute(__db);
+                    $check = DB::query(Database::SELECT,$querytesti)->param(":sali",$post['sali'])->execute(__db);
                     //$check = Jelly::query('ohjelma')->where('alkuaika','<',date('Y-m-d H:i:s',strtotime($post['hour'])))->and_where(date('Y-m-d H:i:s',strtotime($post['hour'])),'>',DB::expr('DATE_ADD(alkuaika, INTERVAL kesto MINUTE)'))->and_where('sali','=',$post['sali'])->select();
                     if($check->count() === 0){
                         $d = Jelly::query('ohjelma',$post['id'])->select();
