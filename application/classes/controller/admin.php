@@ -111,7 +111,7 @@ class Controller_Admin extends Controller{
 			$this->view->content->text .= form::submit('submit','Kirjaudu',array('onclick'=>'login(); return false;'));
 			$this->view->content->text .= "</td></tr></table>";
     	    $this->view->content->text .= form::close();
-    	    $this->view->content->text .= "</div><div style=\"min-height:15px;margin-top:120px;\"><div id=\"feedback\">Selaimesi Javascript ei ole käytössä. Ilman sitä et voi käyttää järjestelmää.</div></div>";
+    	    $this->view->content->text .= "</div><div style=\"min-height:15px;margin-top:120px;\"><div id=\"feedback\"><span style=\"color:red\">Selaimesi Javascript ei ole käytössä. Ilman sitä et voi käyttää järjestelmää.</span></div></div>";
     	    $this->view->content->links = "";
     	    $this->response->body($this->view->render());
     	}else
