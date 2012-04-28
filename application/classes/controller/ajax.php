@@ -41,7 +41,7 @@ class Controller_Ajax extends Controller{
                   ),
             "info-common" => array(
                   "kutsut" =>
-                      array("ohjelma_add","kategoria_add","slot_add","sali_add"),
+                      array("ohjelma_add","kategoria_add","slot_add","sali_add","ohjelma_save","ohjelma_load"),
                   "level"  => 2
                   ),
             "info-adv" => array(
@@ -893,6 +893,41 @@ class Controller_Ajax extends Controller{
                     $post = $_POST;
                     Jelly::factory('salit')->set(Arr::extract($post,array('tunniste','nimi')))->save();
                     $return = array("ret" => true);
+                    break;
+              case "ohjelma_save":
+                    $post = $_POST;
+                    $querytesti =
+                    "SELECT id
+                     FROM   ".__tableprefix."ohjelma
+                     WHERE  alkuaika < '".date('Y-m-d H:i:s',$post['hour'])."'
+                            AND
+                            '".date('Y-m-d H:i:s',$post['hour'])."' > DATE_ADD(alkuaika,INTERVAL kesto MINUTE)
+                            AND
+                            sali = '".$post['sali']."'
+                    ";
+                    $check = DB::query(Database::SELECT,$querytesti)->execute(__db);
+                    //$check = Jelly::query('ohjelma')->where('alkuaika','<',date('Y-m-d H:i:s',strtotime($post['hour'])))->and_where(date('Y-m-d H:i:s',strtotime($post['hour'])),'>',DB::expr('DATE_ADD(alkuaika, INTERVAL kesto MINUTE)'))->and_where('sali','=',$post['sali'])->select();
+                    if($check->count() === 0){
+                        $d = Jelly::query('ohjelma',$post['id'])->select();
+                        $d->alkuaika = $post['hour'];
+                        $d->sali = $post['sali'];
+                        $d->save();
+                        $return = array("ret" => true);
+                    }else{
+                        $return = array("ret" => false);
+                    }
+
+                    break;
+              case "ohjelma_load":
+                    $post = $_POST;
+                    $d = Jelly::query('ohjelma')->where('sali','like',$post['sali'])->select();
+                    //var_dump($d);
+                    $ret = array();
+                    foreach($d as $row){
+                        $ret[] = array("oid"=>$row->id,"hour"=>strtotime($row->alkuaika),"kategoria"=>$row->kategoria,"height"=>($row->kesto - 12 + ($row->kesto / 45 * 3)),"title"=>"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." ","nimi"=>htmlspecialchars($row->otsikko));
+                    }
+                    //var_dump($ret);
+                    $return = array("ret" => true,"ohjelmat"=>$ret);
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.

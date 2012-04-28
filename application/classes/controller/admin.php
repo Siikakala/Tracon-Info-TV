@@ -1760,25 +1760,34 @@ class Controller_Admin extends Controller{
                                         });
                     $(".target").live({
                                     drop: function(event,ui){
-                                		alert(ui.draggable.text() + " ID:llä " + ui.draggable.attr(\'oid\') + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
-                                		if(true){//$(this).parent().attr(\'hour\') == "1347094800"){
-                                    		r = false;
-                                            if(ui.draggable.parent().is("li")){
-                                                ui.draggable.parent().css({\'height\':\'0\'});
+                                        var that = $(this);
+                                        var yui = ui;
+                                        fetch = \''.URL::base($this->request).'ajax/ohjelma_save/\';
+                                        $.post(fetch, { "id": ui.draggable.attr(\'oid\'), "hour": $(this).parent().attr(\'hour\'), "sali": $(this).attr(\'added\') }, function(data){
+                                            if(data.ret == true){
+                                                r = false;
+                                                if(ui.draggable.parent().is("li")){
+                                                    ui.draggable.parent().css({\'height\':\'0\'});
+                                                }
+
+                                                ui.draggable.prependTo("#cal-cont");
+                                        		var pos = that.position();
+                                        		var x = pos.top;
+                                        		var y = pos.left;
+                                        		ui.draggable.css({\'top\': x, \'left\': y,\'position\': \'absolute\'});
+                                        		ui.draggable.attr(\'added\',that.attr(\'added\'));
+                                        		ui.draggable.attr(\'hour\',that.parent().attr(\'hour\'));
+                                        		window.setTimeout(function(){
+                                            		r = true;
+                                        		},20);
+                                            }else{
+                                                if(ui.draggable.parent().is("li")){
+                                                    var posi = ui.draggable.parent().position();
+                                                    ui.draggable.css({\'top\': posi.top, \'left\': posi.left});
+                                                }
                                             }
-                                    		ui.draggable.prependTo("#cal-cont");
-                                    		var pos = $(this).position();
-                                    		var x = pos.top;
-                                    		var y = pos.left;
-                                    		ui.draggable.css({\'top\': x, \'left\': y,\'position\': \'absolute\'});
-                                    		ui.draggable.attr(\'added\',$(this).attr(\'added\'));
-                                    		ui.draggable.attr(\'hour\',$(this).parent().attr(\'hour\'));
-                                    		window.setTimeout(function(){
-                                        		r = true;
-                                    		},20);
-                                    	}else{
-                                        	r = false;
-                                    	}
+                                        },"json");
+                                		//alert(ui.draggable.text() + " ID:llä " + ui.draggable.attr(\'oid\') + " tiputettiin alkavaksi " + $(this).parent().attr(\'hour\') + " salissa " + $(this).attr(\'added\') + "!");
                                     },
 
 
@@ -1787,9 +1796,7 @@ class Controller_Admin extends Controller{
                     $(".drag").draggable({
                                          snap: ".target",
                                          snapMode: "inner",
-                                         revert: function(){
-                                             return r;
-                                         },
+                                         revert: "invalid",
                                          zIndex: 4,
                                          cursorAt:{top: 3, left: -20}
                                          });
@@ -1818,16 +1825,30 @@ class Controller_Admin extends Controller{
                 	var pressed = $(this).attr("aria-pressed");
                     if(pressed == "false"){
                     	var sali = $(this).text();
-                    	//tässä välissä haetaan ajaxilla salin ohjelmadata backendiltä.
-                        $(".timetable tbody tr").append(\'<td class="target" added="\'+id+\'">&nbsp;</td>\');//tässä vaiheessa vasta piirretään ruudukko
-                        $(".timetable thead tr").append(\'<th added="\'+id+\'">\'+sali+\'</th>\');
-                        $(".target").droppable();
-                        var pos = $(".timetable tbody").find(\'tr[hour|="1347099300"] td[added|="\'+id+\'"]\').position();
-                        $(".timetable tbody").find(\'tr[hour|="1347099300"] td[added|="\'+id+\'"]\').html("Tämä on lisätty javascriptillä.");//tässä oikeasti piirretään ohjelmanumerot, .eachilla.
+                    	fetch = \''.URL::base($this->request).'ajax/ohjelma_load/\';
+                    	$.post(fetch, {"sali":id}, function(data){
+                        	var response = $.parseJSON(data);
+                            $(".timetable tbody tr").append(\'<td class="target" added="\'+id+\'">&nbsp;</td>\');//tässä vaiheessa vasta piirretään ruudukko
+                            $(".timetable thead tr").append(\'<th added="\'+id+\'">\'+sali+\'</th>\');
+                            $(".target").droppable();
+                            if(response.ret == true){
+                                $.each(response.ohjelmat,function(index,ohjelma){
+                                    var pos = $(".timetable tbody").find(\'tr[hour|="\'+ohjelma.hour+\'"] td[added|="\'+id+\'"]\').position();
+                                    var element = "<div added=\""+id+"\" hour=\""+ohjelma.hour+"\" class=\"ui-widget-content drag ui-corner-all "+ohjelma.kategoria+"\" oid=\""+ohjelma.oid+"\" style=\"width:180px;height:"+ohjelma.height+"px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\""+ohjelma.title+"\">"+ohjelma.nimi+"</div>";
+                                    $("#cal-cont").prepend(element);
+                                    $("#cal-cont").find(\'div[oid|="\'+ohjelma.oid+\'"]\').css({\'top\':pos.top,\'left\':pos.left});
+                                });
+                            }else{
+                            }
+                        });
                     }else{
                         $(\'.timetable td[added|="\'+id+\'"]\').remove();
                         $(\'.timetable th[added|="\'+id+\'"]\').remove();
                         $(\'#cal-cont div[added|="\'+id+\'"]\').remove();
+                        $(\'#cal-cont div\').each(function(index,element){
+                            var pos = $(".timetable tbody").find(\'tr[hour|="\'+$(element).attr(\'hour\')+\'"] td[added|="\'+$(element).attr(\'added\')+\'"]\').position();
+                            $(element).css({\'top\':pos.top,\'left\':pos.left});
+                        });
                     }
             	});
 
@@ -1921,7 +1942,7 @@ class Controller_Admin extends Controller{
 
         //<ohjelmanumerot>
         $ohjelmat = "";
-        $data = Jelly::query('ohjelma')->select();
+        $data = Jelly::query('ohjelma')->where('sali','like','')->select();
         foreach($data as $row){
             if($row->loaded())//15min==15px;
                 $le = $row->kesto - 12 + ($row->kesto / 45 * 3);
