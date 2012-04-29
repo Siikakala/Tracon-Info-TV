@@ -299,8 +299,6 @@ class Model_Public extends Model_Database {
                         $nyt = time();
                         $pos = $stop - $nyt;
                         $pros = 100-($pos/$len)*100;
-                        if($pros > 100)
-                            $pros = 100;
                         $spin[$key] = round($pros,1);
 
                     }else{//ohjelmaa ei ole.
