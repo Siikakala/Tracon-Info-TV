@@ -90,7 +90,7 @@ function check(cont){
     if(x.length > 6){
         $("#text_cont").clearQueue();
     }
-    fetch = baseurl+\\'ajax/check/\\';
+    fetch = baseurl+'ajax/check/';
     $.getJSON(fetch, function(data) {
         if(data.ret == true){
             $.each(data,function(index,value){
@@ -105,7 +105,7 @@ function check(cont){
                                 switch(value.part){
                                     case "text":
                                         twitter.hide(290);
-                                        $("#text_cont").show(\\'blind\\',300);
+                                        $("#text_cont").show('blind',300);
                                         window.setTimeout(function(){
                                             container.html(value.palautus);
                                             $.each(value.pie,function(index2,value2){
@@ -114,7 +114,7 @@ function check(cont){
                                                 }
                                             });
                                             window.setTimeout(function(){
-                                                container.show(\\'clip\\',300);
+                                                container.show('clip',300);
                                             },100);
                                         },300);
                                         break;
@@ -122,7 +122,7 @@ function check(cont){
                                         twiit = page;
                                         container.hide("puff",300);
                                         window.setTimeout(function(){
-                                            $("#text_cont").hide(\\'blind\\',300);
+                                            $("#text_cont").hide('blind',300);
                                         },200);
                                         window.setTimeout(function(){
                                             twitter.show(300);
@@ -141,11 +141,11 @@ function check(cont){
                                                         autoPlay: true,
                                                         autoBuffering: true,
                                                         live:true,
-                                                        provider:\\'influxis\\'
+                                                        provider:'influxis'
                                                     },
                                                     plugins:{
                                                         influxis:{
-                                                            url:baseurl+\\'flowplayer/flowplayer.rtmp-3.2.3.swf\\',
+                                                            url:baseurl+'flowplayer/flowplayer.rtmp-3.2.3.swf',
                                                             netConnectionUrl:value.video
                                                         },
                                                         controls: null
