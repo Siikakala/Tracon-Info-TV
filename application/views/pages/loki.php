@@ -7,7 +7,7 @@
         (&quot;Hae kaikki rivit, joiden kentistä löytyy kaikki hakusanat&quot;)
         Yhdistelmä: hakusana1|hakusana2 hakusana3
         (&quot;Hae kaikki rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2, mutta myös hakusana3&quot;)" />
-    <span class="ui-icon ui-icon-circle-close" style="float:right; margin:2px 0 20px 0;" onclick="$('#filter').val('');search();"></span>
+    <span class="ui-icon ui-icon-circle-close" style="float:right; margin:-18px 0 0 2px;" onclick="$('#filter').val('');search();"></span>
 </div>
 <div id="add">
     <form action="" method="post" id="form" accept-charset="utf-8" onsubmit="save(); return false;">
