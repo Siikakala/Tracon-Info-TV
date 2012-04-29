@@ -20,14 +20,15 @@ $(function(){
 				fetch = baseurl+'ajax/ohjelma_add/';
                 $.post(fetch, $("#ohjelma_add").serialize(), function(data){
                     if(data.ret == true){
-                        $("#dialog-add").dialog( "close" );
+                        $( "form" )[ 0 ].reset();
                     }else{
                         alert("Ohjelman lisäys epäonnistui!\n\n"+data.ret);
                     }
                 },"json");
 			},
-			"Peruuta": function() {
+			"Sulje": function() {
 				$(this).dialog( "close" );
+				location.reload(true);
 			}
 		}
 	});
@@ -132,7 +133,7 @@ $(function(){
     $(".drag").draggable({
                          snap: ".target",
                          snapMode: "inner",
-                         revert: true,
+                         revert: "invalid",
                          zIndex: 4,
                          cursorAt:{top: 0, left: -20}
                          });
@@ -142,7 +143,9 @@ function e_dro(){
     $(".target").droppable("destroy");
     $(".target").droppable({
                 tolerance: 'pointer',
+                hoverClass: 'new',
                 drop: function(event,ui){
+                    console.log("Drop detected!");
                     var hour = $(this).parent().attr('hour');
                     var added = $(this).attr('added');
                     var pos = $(this).position();
@@ -157,6 +160,7 @@ function e_dro(){
                     		ui.draggable.attr('added',added);
                     		ui.draggable.attr('hour',hour);
                         }else{
+                            console.log("Ny mentiin falsee.");
                         }
                     },"json");
                 }
@@ -189,9 +193,9 @@ $("#salit label").live("click",function(){
     	fetch = baseurl+'ajax/ohjelma_load/';
     	$.post(fetch, {"sali":id}, function(data){
         	$(".drag").draggable("destroy");
+        	$(".target").droppable("destroy");
             $(".timetable tbody tr").append('<td class="target" added="'+id+'">&nbsp;</td>');//tässä vaiheessa vasta piirretään ruudukko
             $(".timetable thead tr").append('<th added="'+id+'">'+sali+'</th>');
-            e_dro();
             if(data.ret == true){
                 $.each(data.ohjelmat,function(index,ohjelma){
                     var pos = $(".timetable tbody").find('tr[hour|="'+ohjelma.hour+'"] td[added|="'+id+'"]').position();
@@ -201,10 +205,35 @@ $("#salit label").live("click",function(){
                 });
             }else{
             }
+            $(".target").droppable({
+                        tolerance: 'pointer',
+                        accept: '.drag',
+                        hoverClass: 'new',
+                        drop: function(event,ui){
+                            console.log("Drop detected!");
+                            var hour = $(this).parent().attr('hour');
+                            var added = $(this).attr('added');
+                            var pos = $(this).position();
+                            fetch = baseurl+'ajax/ohjelma_save/';
+                            $.post(fetch, { "id": ui.draggable.attr('oid'), "hour": hour, "sali": added }, function(data){
+                                if(data.ret == true){
+                                    if(ui.draggable.parent().is("li")){
+                                        ui.draggable.parent().css({'height':'0'});
+                                    }
+                                    ui.draggable.prependTo("#cal-cont");
+                            		ui.draggable.css({'top': pos.top, 'left': pos.left,'position': 'absolute'});
+                            		ui.draggable.attr('added',added);
+                            		ui.draggable.attr('hour',hour);
+                                }else{
+                                    console.log("Ny mentiin falsee.");
+                                }
+                            },"json");
+                        }
+            });
             $(".drag").draggable({
                          snap: ".target",
                          snapMode: "inner",
-                         revert: true,
+                         revert: "invalid",
                          zIndex: 4,
                          cursorAt:{top:0,left: -20}
                          });
