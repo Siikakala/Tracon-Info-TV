@@ -27,7 +27,6 @@
   <ul>
       <li>Numerointi voi hyppiä numeroiden yli, ne näytetään pienimmästä suurimpaan.</li>
       <li><strong>Älä käytä kohtaa 0!</strong> Rivi ei tallennu tällöin.</li>
-      <li>Twitter-feediä ei voi olla kuin yksi. Ensimmäisen jälkeiset ovat vain tyhjiä dioja.</li>
       <li>Diat näkyvät noin sekunnin pidempään kuin määrität tässä.</li>
   </ul>
 </p>
