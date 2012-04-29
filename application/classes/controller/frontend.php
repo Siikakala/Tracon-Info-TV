@@ -14,7 +14,6 @@ class Controller_Frontend extends Controller {
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.validate.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.framerate.js\"></script>";
-        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.Scroller-1.0.src.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."flowplayer/flowplayer-3.2.6.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/widget.js\"></script>";
         //$this->view->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>"; //tätä ei toistaiseksi käytetä.
@@ -31,7 +30,7 @@ class Controller_Frontend extends Controller {
 	{
     	$this->view->js .= '
     	<script type="text/javascript">
-    	var baseurl = \' '.URL::base($this->request).' \';
+    	var baseurl = \''.URL::base($this->request).'\';
         </script>
     	';
     	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/frontend.js\"></script>";
