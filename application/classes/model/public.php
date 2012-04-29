@@ -294,11 +294,11 @@ class Model_Public extends Model_Database {
                             $korvaaja = "(".substr($paiva,0,2).") ".$korvaaja;
                         $korvaaja = '<div id="'.$key.'" class="timer fill"></div>'.$korvaaja;
                         $start = strtotime($data[0]['alkuaika']);
-                        $stop = $start + $data[0]['kesto'] * 60;
+                        $stop = $start + ($data[0]['kesto'] * 60);
                         $len = $stop - $start;
                         $nyt = time();
                         $pos = $stop - $nyt;
-                        $pros = ($pos/$len)*100;
+                        $pros = 100-($pos/$len)*100;
                         if($pros > 100)
                             $pros = 100;
                         $spin[$key] = round($pros,1);
