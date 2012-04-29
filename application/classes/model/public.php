@@ -331,7 +331,7 @@ class Model_Public extends Model_Database {
                         $a = date("H:i",strtotime($data2[0]['alkuaika']));
                         $b = date("H:i",strtotime($data2[0]['alkuaika'])+$data2[0]['kesto']*60);
                         $korvaaja2 = $a." - ".$b." ".$this->utf8($data2[0]['otsikko']);
-                        if(date("N") !== date("N",strtotime($data2[0]['alkuaika'])))
+                        if(date("N") !== date("N",strtotime($data2[0]['alkuaika'])) || $force_days)
                             $korvaaja2 = "(".substr($days[date("N",strtotime($data2[0]['alkuaika']))],0,2).") ".$korvaaja2;
                     }
                     $text = str_replace($match,$korvaaja2,$text);
