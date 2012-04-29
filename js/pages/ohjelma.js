@@ -143,6 +143,7 @@ function e_dro(){
     $(".target").droppable("destroy");
     $(".target").droppable({
                 tolerance: 'pointer',
+                accept: '.drag',
                 hoverClass: 'new',
                 drop: function(event,ui){
                     console.log("Drop detected!");
@@ -205,31 +206,7 @@ $("#salit label").live("click",function(){
                 });
             }else{
             }
-            $(".target").droppable({
-                        tolerance: 'pointer',
-                        accept: '.drag',
-                        hoverClass: 'new',
-                        drop: function(event,ui){
-                            console.log("Drop detected!");
-                            var hour = $(this).parent().attr('hour');
-                            var added = $(this).attr('added');
-                            var pos = $(this).position();
-                            fetch = baseurl+'ajax/ohjelma_save/';
-                            $.post(fetch, { "id": ui.draggable.attr('oid'), "hour": hour, "sali": added }, function(data){
-                                if(data.ret == true){
-                                    if(ui.draggable.parent().is("li")){
-                                        ui.draggable.parent().css({'height':'0'});
-                                    }
-                                    ui.draggable.prependTo("#cal-cont");
-                            		ui.draggable.css({'top': pos.top, 'left': pos.left,'position': 'absolute'});
-                            		ui.draggable.attr('added',added);
-                            		ui.draggable.attr('hour',hour);
-                                }else{
-                                    console.log("Ny mentiin falsee.");
-                                }
-                            },"json");
-                        }
-            });
+            e_dro();
             $(".drag").draggable({
                          snap: ".target",
                          snapMode: "inner",
