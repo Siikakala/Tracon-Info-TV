@@ -34,7 +34,7 @@ class Controller_Frontend extends Controller {
     	var baseurl = \' '.URL::base($this->request).' \';
         </script>
     	';
-    	$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/frontend.js\"></script>";
+    	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/frontend.js\"></script>";
     	$this->view->text = "Tervetuloa seuraamaan Tracon VI:n inforuutua.<br><br>Odota hetki, synkronoidutaan inforuutujärjestelmään.";
 		$this->response->body($this->view->render());
 	}
