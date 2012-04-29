@@ -244,19 +244,8 @@ class Model_Public extends Model_Database {
      public function parse_ohjelmatags($text){
         $text = $this->utf8($text);
         $days = array(1=>"Maanantai",2=>"Tiistai",3=>"Keskiviikko",4=>"Torstai",5=>"Perjantai",6=>"Lauantai",7=>"Sunnuntai");
-        //* //<- poista ensimmäinen kauttaviiva jos haluat määritellä ajankohdan manuaalisesti
-        if(date("N") >= 6){//jos on lauantai tai sunnuntai
-            $paiva = $days[date("N")]; //viikonpäivä
-            $nyt = date("G") - constant("ALKUAIKA_".$paiva) + 1 ;//koska muuten kellon tunnin liian vähän. G = 24h-tunnit ilman etunollaa.
-            $force_days = false;
-        }else{
-        //*/
-            $paiva = "Lauantai";
-            $nyt = 1;//7 on hyvä debuggi lauantaille.
-            $force_days = true; //muuta true:ksi jollet debuggaa!
-        }//<- kommentoi myös tämä.
-        if($nyt < 1)//päivän eka ohjelmaslotti on 1
-            $nyt = 1;
+        $paiva = $days[date("N")]; //viikonpäivä
+        $force_days = false;
         preg_match_all("/(\[.{1,20}\])/",$text,$matches);//etsi kaikki 1-20 merkin mittaiset [tagit]
         $spin = array(false);
 
@@ -265,8 +254,8 @@ class Model_Public extends Model_Database {
         //print_r($matches);
         foreach($matches[1] as $key => $match){//käydään kaikki tagit läpi.
             if($match == "[aika]"){//tässä tagissa ei ole väliviivaa, joten erillisprosessointi.
-                $a = constant("ALKUAIKA_".$paiva) + $nyt - 1;//koska muuten eletään tuntia liian pitkällä. Kompensoidaan siis aikaisempi kompensointi.
-                $b = constant("ALKUAIKA_".$paiva) + $nyt;
+                $a = date("H");
+                $b = $a+1;
                 $korvaa = $a." - ".$b;
                 $text = str_replace("[aika]",$korvaa,$text);
             }else{//"väliviivalliset"
@@ -282,20 +271,16 @@ class Model_Public extends Model_Database {
                 //huomio allaolevasta: Mikäli jokin osa tagista typotettu, tai ko. salissa ei ole (enää) ohjelmaa, tagi korvataan viivalla (-). Koodi osaa katsoa seuraavan vuorokauden puolelle.
                 if(strncasecmp($koska,"nyt",3) == 0){
                     $query = DB::query(Database::SELECT,//kaivetaan kannasta tällä hetkellä halutussa salissa pyörivä ohjelma.
-                                        "SELECT  nimi ".
-                                        "       ,alku ".
+                                        "SELECT  otsikko ".
+                                        "       ,alkuaika ".
                                         "       ,kesto ".
-                                        "       ,alku+kesto as \"loppu\" ".//tämä on periaatteessa turhia tässä queryssä.
-                                        "FROM    ohjelmadata ".
+                                        "FROM    ".__tableprefix."ohjelma ".
                                         "WHERE   sali = :sali ".
                                         "        AND ".
-                                        "        ($nyt >= alku AND $nyt < alku+kesto) ".
-                                        "        AND ".
-                                        "        paiva = :paiva ".
+                                        "        UNIX_TIMESTAMP() BETWEEN UNIX_TIMESTAMP(alkuaika) AND (UNIX_TIMESTAMP(alkuaika)+(kesto*60)) ".
                                         "LIMIT   1"
                                         );
-                    $query->parameters(array(":sali"  => $sali,
-                                             ":paiva" => $paiva
+                    $query->parameters(array(":sali"  => $sali
                                             ));
                     $result = $query->execute(__db);
                     if($result->count() > 0){
@@ -304,40 +289,37 @@ class Model_Public extends Model_Database {
                         $data = false;
                     }
                     if($data){//ohjelmanumero löytyi / ohjelmaa on.
-                        $korvaaja = $this->utf8($data[0]['nimi']);
+                        $korvaaja = $this->utf8($data[0]['otsikko']);
                         if($force_days)
                             $korvaaja = "(".substr($paiva,0,2).") ".$korvaaja;
                         $korvaaja = '<div id="'.$key.'" class="timer fill"></div>'.$korvaaja;
-                        if(45 <= ((($data[0]['kesto']/($nyt - $data[0]['alku'] + 1)) * 60) - 15)){//(((02/(7-5+1))*60) + 02 - 15)*100
-                            $ny = idate("i");
-                            $positio = (((int)$nyt - (int)$data[0]['alku']) * 60) + $ny;
-                            $spin[$key] = ((int)$positio * 100) / (((int)$data[0]['kesto'] * 60) - 15);
-                            if($spin[$key]>100)
-                                $spin[$key] = 100;
-                            elseif($spin[$key]<0)
-                                $spin[$key] = 0;
-                        }else
-                            $spin[$key] = 100;
+                        $start = strtotime($data[0]['alkuaika']);
+                        $stop = $start + $data[0]['kesto'] * 60;
+                        $len = $stop - $start;
+                        $nyt = time();
+                        $pos = $stop - $nyt;
+                        $pros = ($pos/$len)*100;
+                        if($pros > 100)
+                            $pros = 100;
+                        $spin[$key] = round($pros,1);
+
                     }else{//ohjelmaa ei ole.
                         $korvaaja = "-";
                     }
                     $text = str_replace($match,$korvaaja,$text);//korvataan kaikki kyseiset tagit.
                 }elseif(strncasecmp($koska,"next",4) == 0){
                     $query2 = DB::query(Database::SELECT,//kaivetaan halutun salin seuraava ohjelmanumero.
-                                        "SELECT  nimi ".
-                                        "       ,alku ".
-                                        "       ,kesto ".
-                                        "       ,alku+kesto as \"loppu\" ".
-                                        "FROM    ohjelmadata ".
-                                        "WHERE   sali = :sali ".
-                                        "        AND ".
-                                        "        alku > $nyt".
-                                        "        AND ".
-                                        "        paiva = :paiva ".
+                                        "SELECT   otsikko ".
+                                        "        ,alkuaika ".
+                                        "        ,kesto ".
+                                        "FROM     ".__tableprefix."ohjelma ".
+                                        "WHERE    sali = :sali ".
+                                        "         AND ".
+                                        "         alkuaika > NOW() ".
+                                        "ORDER BY alkuaika ASC ".
                                         "LIMIT   1"
                                         );
-                    $query2->parameters(array(":sali"  => $sali,
-                                              ":paiva" => $paiva
+                    $query2->parameters(array(":sali"  => $sali
                                              ));
                     $result2 = $query2->execute(__db);
                     if($result2->count() > 0){
@@ -346,43 +328,11 @@ class Model_Public extends Model_Database {
                         $data2 = false;
                     }
                     if($data2){
-                        $a = constant("ALKUAIKA_".$paiva) + $data2[0]['alku'] - 1;
-                        $b = constant("ALKUAIKA_".$paiva) + $data2[0]['loppu'] - 1;
-                        $korvaaja2 = $a." - ".$b." ".$this->utf8($data2[0]['nimi']);
-                        if($force_days)
+                        $a = date("H:i",strtotime($data2[0]['alkuaika']));
+                        $b = date("H:i",strtotime($data2[0]['alkuaika'])+$data2[0]['kesto']*60);
+                        $korvaaja2 = $a." - ".$b." ".$this->utf8($data2[0]['otsikko']);
+                        if(date("N") !== date("N",strtotime($data2[0]['alkuaika'])))
                             $korvaaja2 = "(".substr($paiva,0,2).") ".$korvaaja2;
-                    }elseif(strncasecmp($paiva,"Lauantai",8) == 0){
-                        $query3 = DB::query(Database::SELECT,//kaivetaan halutun salin seuraava ohjelmanumero seuraavana päivänä.
-                                            "SELECT  nimi ".
-                                            "       ,alku ".
-                                            "       ,kesto ".
-                                            "       ,alku+kesto as \"loppu\" ".
-                                            "FROM    ohjelmadata ".
-                                            "WHERE   sali = :sali ".
-                                            "        AND ".
-                                            "        alku > 0".
-                                            "        AND ".
-                                            "        paiva = :paiva ".
-                                            "LIMIT   1"
-                                            );
-                        $query3->parameters(array(":sali"  => $sali,
-                                                  ":paiva" => "Sunnuntai"
-                                                 ));
-                        $result3 = $query3->execute(__db);
-                        if($result3->count() > 0){
-                            $data3 = $result3->as_array();
-                        }else{
-                            $data3 = false;
-                        }
-                        if($data3){
-                            $a = constant("ALKUAIKA_Sunnuntai") + $data3[0]['alku'] - 1;
-                            $b = constant("ALKUAIKA_Sunnuntai") + $data3[0]['loppu'] - 1;
-                            $korvaaja2 = "(Su) ".$a." - ".$b." ".$this->utf8($data3[0]['nimi']);
-                        }else{
-                            $korvaaja2 = "-";
-                        }
-                    }else{
-                        $korvaaja2 = "-";
                     }
                     $text = str_replace($match,$korvaaja2,$text);
                 }else{//tagi typotettu eli tagia ei löydy.

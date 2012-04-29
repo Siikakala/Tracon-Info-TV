@@ -209,6 +209,7 @@ $("#salit label").live("click",function(){
             e_dro();
             $(".drag").draggable({
                          snap: ".target",
+                         refreshPositions: true,
                          snapMode: "inner",
                          revert: "invalid",
                          zIndex: 4,
