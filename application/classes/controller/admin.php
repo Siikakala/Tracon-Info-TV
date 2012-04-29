@@ -228,6 +228,8 @@ class Controller_Admin extends Controller{
             }
         else
             $result[0] = false;
+        $salit = Jelly::query('salit')->select_column('tunniste')->select();
+        $this->view->content->text->salit = implode(", ",array_keys($salit->as_array("tunniste")));
 
         $this->view->content->text->select = form::select("dia",$result,0,array("onchange"=>"load(this.value)","id"=>"dia_sel"));
     }

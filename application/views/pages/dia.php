@@ -17,6 +17,9 @@
    klo 11:30 tekstin "Avajaiset".
 </p>
 <p>
+   Eri salilyhenteet: <?php print $salit; ?>
+</p>
+<p>
    <strong>Pistä kuva-urlit johonkin ylös mikäli lisäät kuvia, koska et voi muokata niitä! (tinymce:n bugi)</strong>
 </p>
 <p>
