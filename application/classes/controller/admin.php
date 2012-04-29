@@ -218,7 +218,7 @@ class Controller_Admin extends Controller{
     private function dia($param1){
         $this->view->header->js .= $this->tinymce("admin.css");
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/dia.js\"></script>";
-        $this->view->content->text  = new view('pages/dia');
+        $this->view->content->text = new view('pages/dia');
 
         $query = Jelly::query('diat')->order_by('dia_id')->select();
         $result[0] = "";
@@ -451,7 +451,7 @@ class Controller_Admin extends Controller{
         $slotit["muu"] = "Muu:";
         $this->view->footer->dialogs = new view('dialogs/ohjelma');
         $this->view->footer->dialogs->kategoria = form::select('kategoria',$kategoriat);
-        $this->view->footer->dialogs->pituus =form::select('pituus',$slotit,"45",array("id"=>"pituusselect"));
+        $this->view->footer->dialogs->pituus = form::select('pituus',$slotit,"45",array("id"=>"pituusselect"));
 
         //<ohjelmakartan timetable>
         $tc = Jelly::query('tapahtuma')->limit(1)->select();//tapahtumaconfig
