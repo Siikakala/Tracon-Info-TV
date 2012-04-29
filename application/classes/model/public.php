@@ -268,7 +268,7 @@ class Model_Public extends Model_Database {
                 $sali = str_replace(" ","_",strtolower(substr($parts[0],1)));//salin nimi ([Iso Sali -> iso_sali)
                 $koska = substr($parts[1],0,-1);//nyt|next
 
-                //huomio allaolevasta: Mikäli jokin osa tagista typotettu, tai ko. salissa ei ole (enää) ohjelmaa, tagi korvataan viivalla (-). Koodi osaa katsoa seuraavan vuorokauden puolelle.
+                //huomio allaolevasta: Mikäli jokin osa tagista typotettu, tai ko. salissa ei ole (enää) ohjelmaa, tagi korvataan viivalla (-). Koodi osaa katsoa seuraavien vuorokauden puolelle.
                 if(strncasecmp($koska,"nyt",3) == 0){
                     $query = DB::query(Database::SELECT,//kaivetaan kannasta tällä hetkellä halutussa salissa pyörivä ohjelma.
                                         "SELECT  otsikko ".
@@ -332,7 +332,7 @@ class Model_Public extends Model_Database {
                         $b = date("H:i",strtotime($data2[0]['alkuaika'])+$data2[0]['kesto']*60);
                         $korvaaja2 = $a." - ".$b." ".$this->utf8($data2[0]['otsikko']);
                         if(date("N") !== date("N",strtotime($data2[0]['alkuaika'])))
-                            $korvaaja2 = "(".substr($paiva,0,2).") ".$korvaaja2;
+                            $korvaaja2 = "(".substr($days[date("N",strtotime($data2[0]['alkuaika']))],0,2).") ".$korvaaja2;
                     }
                     $text = str_replace($match,$korvaaja2,$text);
                 }else{//tagi typotettu eli tagia ei löydy.
