@@ -460,7 +460,10 @@ class Controller_Admin extends Controller{
         //<ohjelmakartan timetable>
         $tc = Jelly::query('tapahtuma')->limit(1)->select();//tapahtumaconfig
         if($tc->loaded())
-            $span = Date::span(strtotime($tc->alkuaika),strtotime($tc->loppuaika),"hours");
+            if(strtotime($tc->loppuaika) > strtotime($tc->alkuaika))
+                $span = Date::span(strtotime($tc->alkuaika),strtotime($tc->loppuaika),"hours");
+            else
+                $span = 0;
         else
             $span = 0;
         $timetable = "<table class=\"timetable\" z-index=\"1\" cellspacing=\"0\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";

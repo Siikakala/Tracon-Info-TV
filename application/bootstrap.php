@@ -76,13 +76,13 @@ if (Kohana::$environment === Kohana::PRODUCTION)
     //define("__tableprefix",""); //"Muuttuvan" datan taulujen prefix. (ohjelmadata, infologi yms.)
 
     // Turn off notices and strict errors
-    // error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
+    error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
 
     //Turn off all errors.
     //error_reporting(0);
 
     //Turn on all errors.
-    error_reporting(-1);
+    //error_reporting(-1);
 
 }elseif (Kohana::$environment === Kohana::DEVELOPMENT){
 
