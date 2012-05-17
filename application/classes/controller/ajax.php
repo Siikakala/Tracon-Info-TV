@@ -904,6 +904,7 @@ class Controller_Ajax extends Controller{
                     break;
               case "sali_add":
                     $post = $_POST;
+                    $post['tunniste'] = str_replace(" ","_",strtolower($post['nimi']));
                     Jelly::factory('salit')->set(Arr::extract($post,array('tunniste','nimi')))->save();
                     $return = array("ret" => true);
                     break;

@@ -68,13 +68,9 @@
 </div>
 
 <div id="dialog-sali-add" title="Lisää uusi sali">
-    <p>Tunniste on järjestelmän sisäiseen käyttöön, nimi näkyy näkymissä</p>
+    <p>Tunniste on järjestelmän sisäiseen käyttöön ja luodaan automaattisesti, nimi näkyy näkymissä</p>
     <form action="" method="post" id="sali_add" accept-charset="utf-8">
         <table>
-            <tr>
-                <td><label for="tunniste">Tunniste:</label></td>
-                <td><input type="text" name="tunniste" value="" size="20" /></td>
-            </tr>
             <tr>
                 <td><label for="nimi">Nimi:</label></td>
                 <td><input type="text" name="nimi" value="" size="20" /></td>

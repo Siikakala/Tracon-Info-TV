@@ -96,7 +96,7 @@
                 <p>
                     <button name="add_sali" onclick="$(&quot;#dialog-sali-add&quot;).dialog(&#039;open&#039;);">Lisää sali</button>
                     <br/>
-                    Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä. Tunnistetta käytetään tosin myös ohjelmatageissa, joten "kaikki pienellä, välit alaviivoiksi" (esim: Iso sali -> iso_sali) voi olla ihan fiksu käytäntö.
+                    Tunniste on vain järjestelmää itseään varten, ja luodaan automaattisesti. Varsinainen nimi näkyy eri näkymissä. Tunnistetta käytetään ohjelmatageissa, joten ne luodaan automaattisesti mallilla "kaikki pienellä, välit alaviivoiksi" (esim: Iso sali -> iso_sali).
                 </p>
                 <table class="stats">
                     <thead style="color:black;">
