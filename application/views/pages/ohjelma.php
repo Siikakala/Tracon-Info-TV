@@ -39,7 +39,7 @@
             </tr>
             <tr>
                 <td><label for="loppu">Tapahtuman päättymisaika</label></td>
-                <td><input type="text" id="to" name="loppu" value="<?php print $loppupaiva; ?>" size="8" /> klo <?php print $alkuselect; ?></td>
+                <td><input type="text" id="to" name="loppu" value="<?php print $loppupaiva; ?>" size="8" /> klo <?php print $loppuselect; ?></td>
             </tr>
         </table>
         <button name="save" onclick="save();">Tallenna</button><br/><br/>
