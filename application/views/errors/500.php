@@ -25,7 +25,7 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 
 <p>Tarkennus: <?php echo $error_message; ?></p>
 
-<p><a href="<?php echo URL::site('/', true) ?>">Jos halusit etusivulle, klikkaa tästä.</a></p>
+<p><a href="<?php echo URL::site('/admin', true) ?>">Jos halusit etusivulle, klikkaa tästä.</a></p>
 </div>
 </div>
 </body>
