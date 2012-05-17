@@ -465,7 +465,10 @@ class Controller_Admin extends Controller{
             $span = 0;
         $timetable = "<table class=\"timetable\" z-index=\"1\" cellspacing=\"0\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";
         $slots=4;
-        $start = strtotime($tc->alkuaika);
+        if($tc->loaded())
+            $start = strtotime($tc->alkuaika);
+        else
+            $start = 0;
         for($i=0;$i<$span;$i++){
             $hour = $start + ($i * 3600);
             $timetable .= "<tr class=\"hourstart-$i\" id=\"$i\" hour=\"$hour\" slot=\"0\"><td style=\"text-align:right;\">".date("d.m. H",$hour).":00</td></tr>";
