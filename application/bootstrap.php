@@ -195,12 +195,6 @@ Route::set('error', 'error/<action>/<origuri>/<message>', array('action' => '[0-
 
 define("__title","Höylä");
 
-//ohjelmakarttaprosessointia varten.
-define("ALKUAIKA_Lauantai", 10);
-define("LOPPUAIKA_Lauantai", 24);
-define("ALKUAIKA_Sunnuntai", 0);
-define("LOPPUAIKA_Sunnuntai", 18);
-
 // -- URI test bench -----------------------------------------------------------
 
 //comment line bellow and change $uri to relative path what to test.
