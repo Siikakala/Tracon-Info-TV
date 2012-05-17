@@ -121,7 +121,9 @@ $(function(){
 		}
 	});
 
-	$("#tabit").tabs();
+	$("#tabit").tabs({
+                    cookie:{}
+                    });
 	$("#salit").buttonset();
 	//$("#ohjelmanumerot").selectable();
 	$("#kategoriat_acc").accordion({collapsible:true,active:false,autoHeight:false});
