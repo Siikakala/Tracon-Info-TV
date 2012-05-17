@@ -331,6 +331,8 @@ class Model_Public extends Model_Database {
                         $korvaaja2 = $a." - ".$b." ".$this->utf8($data2[0]['otsikko']);
                         if(date("N") !== date("N",strtotime($data2[0]['alkuaika'])) || $force_days)
                             $korvaaja2 = "(".substr($days[date("N",strtotime($data2[0]['alkuaika']))],0,2).") ".$korvaaja2;
+                    }else{
+                        $korvaaja2 = "-";
                     }
                     $text = str_replace($match,$korvaaja2,$text);
                 }else{//tagi typotettu eli tagia ei löydy.
