@@ -443,12 +443,14 @@ class Controller_Admin extends Controller{
         $katequery = Jelly::query('kategoriat')->select();
         $kategoriat = array();
         foreach($katequery as $row){
-            $kategoriat[$row->tunniste] = $row->nimi;
+            if($row->loaded())
+                $kategoriat[$row->tunniste] = $row->nimi;
         }
         $slotquery = Jelly::query('slotit')->select();
         $slotit = array();
         foreach($slotquery as $row){
-            $slotit[$row->pituus] = $row->selite;
+            if($row->loaded())
+                $slotit[$row->pituus] = $row->selite;
         }
         $slotit["muu"] = "Muu:";
         $this->view->footer->dialogs = new view('dialogs/ohjelma');
@@ -457,7 +459,10 @@ class Controller_Admin extends Controller{
 
         //<ohjelmakartan timetable>
         $tc = Jelly::query('tapahtuma')->limit(1)->select();//tapahtumaconfig
-        $span = Date::span(strtotime($tc->alkuaika),strtotime($tc->loppuaika),"hours");
+        if($tc->loaded())
+            $span = Date::span(strtotime($tc->alkuaika),strtotime($tc->loppuaika),"hours");
+        else
+            $span = 0;
         $timetable = "<table class=\"timetable\" z-index=\"1\" cellspacing=\"0\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";
         $slots=4;
         $start = strtotime($tc->alkuaika);
@@ -477,16 +482,18 @@ class Controller_Admin extends Controller{
         $ohjelmat = "";
         $data = Jelly::query('ohjelma')->where('sali','like','0')->or_where('sali','like','')->select();
         foreach($data as $row){
-            if($row->loaded())//15min==15px;
+            if($row->loaded()){//15min==15px;
                 $le = $row->kesto - 12 + ($row->kesto / 45 * 3);
                 $li = $le +10;
                 $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" oid=\"".$row->id."\" style=\"width:180px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</div></li>";
+            }
         }
         //</ohjelmanumerot>
         $saliquery = Jelly::query('salit')->select();
         $salit = "";
         foreach($saliquery as $row){
-            $salit .= form::checkbox($row->tunniste,$row->tunniste,false,array("id"=>$row->tunniste."-c")).form::label($row->tunniste."-c",$row->nimi,array("id"=>$row->tunniste));
+            if($row->loaded())
+                $salit .= form::checkbox($row->tunniste,$row->tunniste,false,array("id"=>$row->tunniste."-c")).form::label($row->tunniste."-c",$row->nimi,array("id"=>$row->tunniste));
         }
 
         $this->view->content->text->salit = $salit;
