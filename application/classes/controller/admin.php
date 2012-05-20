@@ -396,6 +396,7 @@ class Controller_Admin extends Controller{
         $this->view->header->css .= html::style('css/dashboardui.css');
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.dashboard.js\"></script>";
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/dashboard.js\"></script>";
+        //$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/widget.js\"></script>";
         $this->view->content->text = new view('pages/dashboard');
     }
 

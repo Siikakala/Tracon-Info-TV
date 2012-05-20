@@ -23,8 +23,8 @@ $(document).ready(function() {
                 {   title: "Layout1",
                     id: "layout1",
                     image: "layouts/layout5.png",
-                    html: '<div class="layout layout-aa"><div class="column first column-first"></div><div class="column second column-second"></div></div>',
-                    classname: 'layout-aa'
+                    html: '<div class="layout layout-aa"><div class="column first column-first"></div><div class="column second column-second"></div><div class="column third column-third"></div></div>',
+                    classname: 'layout-aaa'
                 }
               ]
         });

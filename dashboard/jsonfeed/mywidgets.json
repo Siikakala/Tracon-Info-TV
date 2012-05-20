@@ -16,6 +16,13 @@
       "column" : "second",
       "open" : true,
       "url" : "../../dashboard/widgets/logi.html"
+    },
+    {
+      "title" : "Twitter #tracon",
+      "id" : "twitter",
+      "column" : "first",
+      "open" : true,
+      "url" : "../../dashboard/widgets/twitter.html"
     }
   ]
   }

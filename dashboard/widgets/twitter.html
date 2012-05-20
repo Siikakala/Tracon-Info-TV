@@ -1,0 +1,56 @@
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#docdialog').dialog({
+      autoOpen: false,
+      height: 305,
+      width: 430,
+      modal: true
+    });
+
+    $('.loadDoc').live('click',function() {
+      $('#docdialog').dialog('open');
+      return false;
+    });
+
+    $('#docdialogtabs').tabs();
+
+  });
+
+</script>
+
+<div style="display:block; position:relative;" id="twtr">
+<script type="text/javascript">
+ $.getScript('http://widgets.twimg.com/j/2/widget.js', function () {
+new TWTR.Widget({
+  version: 2,
+  type: 'search',
+  search: '#tracon',
+  interval: 3000,
+  title: '',
+  subject: '',
+  width: 'auto',
+  height: 400,
+  id: 'twtr',
+  theme: {
+    shell: {
+      background: '#880000',
+      color: '#ffffff'
+    },
+    tweets: {
+      background: '#ffffff',
+      color: '#444444',
+      links: '#800000'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: false,
+    live: true,
+    hashtags: true,
+    timestamp: true,
+    behavior: 'all'
+  }
+}).render().start();
+});
+</script>
+</div>

@@ -28,10 +28,10 @@
     <table id="taulu" class="stats tablesorter">
         <thead>
             <tr>
-                <th>Aika</th>
-                <th>Tyyppi</th>
-                <th>Viesti</th>
-                <th>Lisääjä</th>
+                <th class="ui-state-default">Aika</th>
+                <th class="ui-state-default">Tyyppi</th>
+                <th class="ui-state-default">Viesti</th>
+                <th class="ui-state-default">Lisääjä</th>
             </tr>
         </thead>
         <tbody>

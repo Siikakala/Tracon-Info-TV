@@ -743,7 +743,7 @@ class Controller_Ajax extends Controller{
                         $rows = Jelly::query('logi',-1)->select();
                     else
                         $rows = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->select();
-                    $text = "<table class=\"stats\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+                    $text = "<table class=\"stats\"><tr><th class=\"ui-state-default\">Aika</th><th class=\"ui-state-default\">Tyyppi</th><th class=\"ui-state-default\">Viesti</th><th class=\"ui-state-default\">Lisääjä</th></tr>";
 
                     foreach($rows as $row){
                         if(!empty($row->ack)){
