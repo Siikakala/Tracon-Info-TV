@@ -1,7 +1,9 @@
 $(document).ready(function() {
     var resize = $(window).width() - 100;
     widen();
-    ref();
+    window.setTimeout(function(){
+        ref();
+    },300);
 
     $('#text').append('<div id="templates"></div>');
     $("#templates").hide();
@@ -44,6 +46,7 @@ $(document).ready(function() {
 
 function ref(){
     refresh();
+    ohjelma_refresh();
     window.setTimeout(function(){
         ref();
     },5000);

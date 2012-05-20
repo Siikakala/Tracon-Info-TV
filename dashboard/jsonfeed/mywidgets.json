@@ -23,6 +23,13 @@
       "column" : "first",
       "open" : true,
       "url" : "../../dashboard/widgets/twitter.html"
+    },
+    {
+      "title" : "Ohjelma",
+      "id" : "ohjelmat",
+      "column" : "third",
+      "open" : true,
+      "url" : "../../dashboard/widgets/ohjelma.html"
     }
   ]
   }

@@ -43,7 +43,7 @@ class Controller_Ajax extends Controller{
                   ),
             "info-common" => array(
                   "kutsut" =>
-                      array("ohjelma_add","kategoria_add","slot_add","sali_add","ohjelma_save","ohjelma_load"),
+                      array("ohjelma_add","kategoria_add","slot_add","sali_add","ohjelma_save","ohjelma_load","ohjelma_dash"),
                   "level"  => 2
                   ),
             "info-adv" => array(
@@ -942,6 +942,17 @@ class Controller_Ajax extends Controller{
                         $ret[] = array("oid"=>$row->id,"hour"=>strtotime($row->alkuaika),"kategoria"=>$row->kategoria,"height"=>($row->kesto - 12 + ($row->kesto / 45 * 3)),"title"=>"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." ","nimi"=>htmlspecialchars($row->otsikko));
                     }
                     $return = array("ret" => true,"ohjelmat"=>$ret);
+                    break;
+              case "ohjelma_dash":
+                    $salit = Jelly::query('salit')->select();
+                    $ret = "";
+                    $parser = new Model_Public();
+                    foreach($salit as $row){
+                        $check = "<b>Nyt:</b> [".$row->tunniste."-nyt]<br/><b>Seuraavaksi:</b> [".$row->tunniste."-next]";
+                        $parsed = $parser->parse_ohjelmatags($check);
+                        $ret .= "<h3>".$row->nimi."</h3><p>".$parsed[0]."</p>";
+                    }
+                    $return = array("ret" => $ret);
                     break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
