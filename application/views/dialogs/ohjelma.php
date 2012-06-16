@@ -47,6 +47,19 @@
                 <td><label for="nimi">Nimi:</label></td>
                 <td><input type="text" name="nimi" value="" size="20" /></td>
             </tr>
+            <tr>
+                <td><label for="vari">Väri:</label></td>
+                <td><input type="text" class="colorpick" name="vari" value="" size="4" /></td>
+            </tr>
+            <tr>
+                <td><label for="vari">Fontti:</label></td>
+                <td>
+                    <div id="font_color">
+                        <input type="radio" id="font_color_black" name="vari" value="black" checked /><label for="font_color_black">Musta</label>
+                        <input type="radio" id="font_color_white" name="vari" value="white" /><label for="font_color_white">Valkoinen</label>
+                    </div>
+                </td>
+            </tr>
         </table>
     </form>
 </div>

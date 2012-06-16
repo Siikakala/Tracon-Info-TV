@@ -27,6 +27,16 @@ class Model_Kategoriat extends Jelly_Model
                             "column" => "nimi",
                             "type"   => "text",
                             "other"  => ""
+                        )),
+            'vari'      => Jelly::field('text',array(
+                            "column" => "vari",
+                            "type"   => "text",
+                            "other"  => ""
+                        )),
+            'fontti'    => Jelly::field('text',array(
+                            "column" => "fontti",
+                            "type"   => "text",
+                            "other"  => ""
                         ))
         ));
         $check = new Model_Jelly_Check();

@@ -157,6 +157,10 @@ class Controller_Admin extends Controller{
                     $this->ohjelma($param1);
                     $this->view->header->title .= " &raquo; Ohjelma";
                     break;
+                case "tuotanto":
+                    $this->tuotanto($param1);
+                    $this->view->header->title .= " &raquo; Tuotantosuunnitelma";
+                    break;
                 default:
                		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>
                                                    <p>Debug-dataa:<br /><pre>".print_r($_SESSION,true)."</pre></p>";
@@ -439,6 +443,8 @@ class Controller_Admin extends Controller{
 
 
     private function ohjelma(){
+        $this->view->header->css .= html::style('css/jPicker-1.1.6.min.css');
+        $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jpicker-1.1.6.min.js\"></script>";
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/ohjelma.js\"></script>";
         $this->view->content->text = new view('pages/ohjelma');
         $this->view->content->text->level = $this->session->get('level',0);
@@ -446,8 +452,11 @@ class Controller_Admin extends Controller{
         $katequery = Jelly::query('kategoriat')->select();
         $kategoriat = array();
         foreach($katequery as $row){
-            if($row->loaded())
-                $kategoriat[$row->tunniste] = $row->nimi;
+            if($row->loaded()){
+                $kategoriat[$row->tunniste]["nimi"] = $row->nimi;
+                $kategoriat[$row->tunniste]["vari"] = $row->vari;
+                $kategoriat[$row->tunniste]["fontti"] = $row->fontti;
+            }
         }
         $slotquery = Jelly::query('slotit')->select();
         $slotit = array();
@@ -518,8 +527,8 @@ class Controller_Admin extends Controller{
         $this->view->content->text->loppupaiva = date('d.m.Y',strtotime($tc->loppuaika));
         $this->view->content->text->loppuselect = form::select('loppu-klo-h',Date::hours(1,true),date('H',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-h"))." ".form::select('loppu-klo-m',Date::minutes(1),date('i',strtotime($tc->loppuaika)),array("id"=>"loppu-klo-m"));
         $this->view->content->text->kategoriat_acc = "";
-        foreach($kategoriat as $tunniste=>$nimi){
-            $this->view->content->text->kategoriat_acc .= "<tr><td>".$tunniste."</td><td>".$nimi."</td></tr>";
+        foreach($kategoriat as $tunniste=>$data){
+            $this->view->content->text->kategoriat_acc .= "<tr style=\"background-color:'".$data["vari"]."'; color:'".$data["fontti"]."';\"><td>".$tunniste."</td><td>".$data["nimi"]."</td></tr>";
         }
         $this->view->content->text->timeslots_acc = "";
         foreach($slotit as $pituus=>$selite){
@@ -529,6 +538,10 @@ class Controller_Admin extends Controller{
         foreach($saliquery as $row){
             $this->view->content->text->salit_acc .= "<tr><td>".$row->tunniste."</td><td>".$row->nimi."</td></tr>";
         }
+    }
+
+    private function tuotanto(){
+        $this->view->content->text = new view('pages/tuotanto');
     }
 
     public function action_logout(){

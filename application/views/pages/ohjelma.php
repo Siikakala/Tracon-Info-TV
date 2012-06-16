@@ -52,7 +52,7 @@
                 <p>
                     <button name="add_kategoria" onclick="$(&quot;#dialog-kategoria-add&quot;).dialog(&#039;open&#039;);">Lisää kategoria</button>
                     <br/>
-                    Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä.
+                    Tunniste on vain järjestelmää itseään varten. Varsinainen nimi näkyy eri näkymissä. Väri on globaali värikoodaus ohjelmaa varten. Tämän lisäksi voit valita mustan ja valkoisen fontin välillä.
                 </p>
                 <table class="stats">
                     <thead style="color:black;">

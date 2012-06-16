@@ -36,7 +36,7 @@ $(function(){
 	$("#dialog-kategoria-add").dialog({
 		resizable: false,
 		autoOpen: false,
-		height:200,
+		height:261,
 		width: 280,
 		modal: true,
 		buttons: {
@@ -127,7 +127,37 @@ $(function(){
 	$("#kategoriat_acc").accordion({collapsible:true,active:false,autoHeight:false});
 	$("#slotit_acc").accordion({collapsible:true,active:false,autoHeight:false});
 	$("#salit_acc").accordion({collapsible:true,active:false,autoHeight:false});
-
+    $("#font_color").buttonset();
+    $(".colorpick").jPicker({
+            window:
+            {
+                title: "Valitse väri",
+                expandable: true,
+                effects:
+                {
+                    type: 'fade',
+                    speed:
+                    {
+                        show: 'fast',
+                        hide: 'fast'
+                    }
+                },
+                position:
+                {
+                     x: 'screenCenter',
+                     y: 'screenCenter'
+                }
+            },
+            images:
+            {
+                clientPath: baseurl+'images/'
+            },
+            color:
+            {
+                alphaSupport: true,
+                active: new $.jPicker.Color({ ahex: '00000000' })
+            }
+        });
 
 
     $(".drag").draggable({

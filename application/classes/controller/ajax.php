@@ -672,8 +672,8 @@ class Controller_Ajax extends Controller{
                   }
                   break;
               case "todo_refresh":
-                    $query = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->limit(20)->select();
-                    $text = "<table class=\"stats\" style=\"color:black\"><tr><th>Aika</th><th>Tyyppi</th><th>Viesti</th><th>Lisääjä</th></tr>";
+                    $query = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->limit(15)->select();
+                    $text = "<table class=\"stats\" style=\"color:black\"><tr><th class=\"ui-state-default\">Aika</th><th class=\"ui-state-default\">Tyyppi</th><th class=\"ui-state-default\">Viesti</th><th class=\"ui-state-default\">Lisääjä</th></tr>";
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     foreach($query as $row){
                         if(!empty($row->ack)){
@@ -896,7 +896,7 @@ class Controller_Ajax extends Controller{
                     break;
               case "kategoria_add":
                     $post = $_POST;
-                    Jelly::factory('kategoriat')->set(Arr::extract($post,array('tunniste','nimi')))->save();
+                    Jelly::factory('kategoriat')->set(Arr::extract($post,array('tunniste','nimi','vari','fontti')))->save();
                     $return = array("ret" => true);
                     break;
               case "slot_add":
