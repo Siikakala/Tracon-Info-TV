@@ -542,6 +542,12 @@ class Controller_Admin extends Controller{
 
     private function tuotanto(){
         $this->view->content->text = new view('pages/tuotanto');
+        $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/tuotanto.js\"></script>";
+        $this->view->content->text->priority = "";
+        $this->view->content->text->category = "";
+        $this->view->content->text->tablebody = "";
+        $this->view->content->text->hours = form::select('hours',Date::hours(1,true));
+        $this->view->content->text->mins = form::select('mins',Date::minutes(1));
     }
 
     public function action_logout(){
