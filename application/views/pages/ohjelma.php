@@ -1,4 +1,3 @@
-<h2>Ohjelmakartan hallinta</h2>
 <button name="add" onclick="$(&quot;#dialog-add&quot;).dialog(&#039;open&#039;);">Lisää uusi ohjelmanumero</button>
 <br/><br/>
 <div id="tabit">

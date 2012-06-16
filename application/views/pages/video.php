@@ -1,4 +1,3 @@
-<h2>Videolähetys</h2>
 <div id="upload">
      <form action="http://kita.sytes.net/tracon_info-tv/ajax/upload" method="post" id="fileupload" accept-charset="utf-8" enctype="multipart/form-data">
      <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->

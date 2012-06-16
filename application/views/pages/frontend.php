@@ -1,4 +1,3 @@
-<h2>Frontend-hallinta</h2>
 <p>
      Tällä sivulla voit tarvittaessa pakottaa jonkin frontendin näyttämään vaikkapa pelkkää diashowta, esim. infossa.
 </p>

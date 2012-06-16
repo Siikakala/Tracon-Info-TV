@@ -1,4 +1,3 @@
-<h2>Dia-hallinta</h2>
 <div id="select">
      <p>Valitse muokattava dia:
          <?php print $select; ?>

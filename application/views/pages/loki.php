@@ -1,4 +1,4 @@
-<h2>Lokikirja</h2>
+<h2>&nbsp;</h2>
 <div id="filter_cont" style="float:right;margin-top:-30px;">
     Suodatus/haku:
     <input type="text" id="filter" name="filter" size="35" title="OR-haku: hakusana1|hakusana2

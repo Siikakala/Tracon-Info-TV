@@ -1,4 +1,3 @@
-<h2>Rulla-hallinta</h2>
 <p>aka. Diashow-hallinta</p>
 <div id="formidata">
  <form action="" method="post" id="form" accept-charset="utf-8" onsubmit="return false;">
