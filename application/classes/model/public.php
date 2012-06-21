@@ -103,14 +103,14 @@ class Model_Public extends Model_Database {
 
      public function get_diadata(){
         $session = Session::instance();
-        $query1 = Jelly::query('rulla')->where('hidden','=','0')->select();
+        $query1 = Jelly::query('rulla')->where('hidden','=','0')->and_where('instance','=',$session->get('show_inst',1))->select();
         if($query1->count() > 0)
             $result1 = $query1->as_array();
         else
             $result1 = false;
-
+        $return = false;
         $kohta = $session->get("page",0);
-        switch($result1[$kohta]["type"]){
+        if($result1) switch($result1[$kohta]["type"]){
             case 1://dia
                 $d = Jelly::query('diat',$result1[$kohta]["selector"])->select();
                 if($d->count() > 0)
@@ -151,6 +151,7 @@ class Model_Public extends Model_Database {
                             "last_active" => DB::expr("NOW()"),
                             "show_tv"     => -1,
                             "show_stream" => -1,
+                            "show_inst"   => 1,
                             "dia"         => -1,
                             "use_global"  => 1
                             ))->save();
@@ -167,14 +168,17 @@ class Model_Public extends Model_Database {
                             "last_active" => DB::expr("NOW()"),
                             "show_tv"     => -1,
                             "show_stream" => -1,
+                            "show_inst"   => 1,
                             "dia"         => -1,
                             "use_global"  => 1
                             ))->save();
                 $session->set("global",1);
                 $session->set("client","Undefined");
+                $session->set("show_inst",1);
             }else{
                 $session->set("global",$query->use_global);
                 $session->set("client",$query->tunniste);
+                $session->set("show_inst",$query->show_inst);
             }
         }else{//jos keksi ja sessiodata on kunnossa.
             $y = Jelly::query('frontends')->where('uuid','=',$session->get("uid"))->limit(1)->select();
@@ -187,6 +191,7 @@ class Model_Public extends Model_Database {
             $d = Jelly::query('frontends')->where('uuid','=',$session->get("uid"))->limit(1)->select();
             $session->set("global",$d->use_global);
             $session->set("client",$d->tunniste);
+            $session->set("show_inst",$d->show_inst);
         }
 
         $client_name = $session->get("client","Undefined");
@@ -211,7 +216,8 @@ class Model_Public extends Model_Database {
 
         $query1 = DB::query(Database::SELECT,//Koska scrolleria on päivitetty viimeksi?
                             "SELECT MAX(`set`) as \"max\"".
-                            "FROM   scroller"
+                            "FROM   ".__tableprefix."scroller ".
+                            "WHERE  instance = ".$session->get('show_inst',1)
                             )->execute(__db);
         if($query1->count() > 0)
             $result1 = $query1->as_array();
@@ -221,14 +227,15 @@ class Model_Public extends Model_Database {
         if($result1){
             $stamp = strtotime($result1[0]["max"]);//unix-timestampiksi muunnos
             if($stamp > $session->get("scrollstamp") || $override){//jos kannasta löytyy tuoreampaa dataa kuin viimeisin päivitys TAI jos kyseessä on pakotettu päivitys
-                $query2 = Jelly::query('scroller')->where('hidden','=','0')->select();
-                if($query2->count() > 0)
-                    foreach($query2 as $row){
-                        $scrolli[] = $this->utf8($row->text);
-                    }
-                $scroll = implode(" &raquo; ",$scrolli);
-                $session->set("override",time());
-                $session->set("scrollstamp",time());//muistetaan vielä asettaa se päivitysaika sessiomuuttujaan.
+                $query2 = Jelly::query('scroller')->where('hidden','=','0')->and_where('instance','=',$session->get('show_inst',1))->select();
+                if($query2->count() > 0){
+                        foreach($query2 as $row){
+                            $scrolli[] = $this->utf8($row->text);
+                        }
+                    $scroll = implode(" &raquo; ",$scrolli);
+                    $session->set("override",time());
+                    $session->set("scrollstamp",time());//muistetaan vielä asettaa se päivitysaika sessiomuuttujaan.
+                }
             }//else = mikään ei muuttunut -> palauttaa falsen
         }else
             $scroll = "Info-TV";//jos scroller olisi muuten tyhjä, näytetään ainakin "Tracon Info-TV"

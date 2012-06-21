@@ -11,7 +11,59 @@ $(function() {
     $("#links .btn").click(function(){
         normalize($(this).attr("value"));
     });
+    update_load();
+    update_clock();
 });
+
+/**
+ *
+ * @access public
+ * @return void
+ **/
+function set_instance(instance){
+    fetch = baseurl+'ajax/instance/'
+    $.post(fetch,{"instance":instance},function(data) {
+        if(data.ret == true){}
+        else{
+            alert("Instanssin vaihto epäonnistui!");
+        }
+    },"json");
+}
+
+/**
+ *
+ * @access public
+ * @return void
+ **/
+function update_load(){
+    if(usrlvl >= 3){
+        var container = $("#show");
+        fetch = baseurl+'ajax/loads/'
+        $.getJSON(fetch,function(data) {
+            container.html("Serverin loadit: "+data.ret);
+        });
+        window.setTimeout(function(){
+            update_load();
+        },2500);
+    }
+}
+
+function update_clock(){
+    var kello = $("#kello");
+    var Digital = new Date();
+    var hours = Digital.getHours();
+    var minutes = Digital.getMinutes();
+    if(minutes < 10){
+        minutes = "0" + minutes;
+    }
+    if(hours < 10){
+        hours = "0" + hours;
+    }
+    kello.html(hours + ":" + minutes);
+    window.setTimeout(function(){
+        update_clock();
+    },1000);
+}
 
 function inform(container,message){
     container.hide(0);

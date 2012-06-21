@@ -9,7 +9,7 @@ class Model_Rulla extends Jelly_Model
 
         // The table the model is attached to
         // It defaults to the name of the model pluralized
-        $meta->table('rulla');
+        $meta->table(__tableprefix.'rulla');
 
         // Fields defined by the model
         $meta->fields(array(
@@ -42,7 +42,12 @@ class Model_Rulla extends Jelly_Model
                             "column" => "hidden",
                             "type"   => "tinyint",
                             "other"  => ""
-                        ))
+                        )),
+            'instance' => Jelly::field('integer',array(
+                            "column" => "instance",
+                            "type"   => "int",
+                            "other"  => "DEFAULT 1"
+                        )),
         ));
 
         $check = new Model_Jelly_Check();

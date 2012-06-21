@@ -9,7 +9,7 @@ class Model_Diat extends Jelly_Model
 
         // The table the model is attached to
         // It defaults to the name of the model pluralized
-        $meta->table('diat');
+        $meta->table(__tableprefix.'diat');
 
         // Fields defined by the model
         $meta->fields(array(

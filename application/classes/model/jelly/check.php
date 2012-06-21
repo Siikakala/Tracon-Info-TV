@@ -19,7 +19,7 @@ class Model_Jelly_Check extends Jelly_Meta
             $sql = "CREATE TABLE ".$table." (";
             $parts = array();
             foreach($fields as $field=>$o){
-                $parts[] = $o->column." ".$o->type." NOT NULL ".$o->other;
+                $parts[] = "`".$o->column."` ".$o->type." NOT NULL ".$o->other;
             }
             $sql2 = implode(", ",$parts);
             $sql .= $sql2.")";
@@ -59,7 +59,7 @@ class Model_Jelly_Check extends Jelly_Meta
             $sql = "ALTER TABLE ".$table." ";
             $parts = array();
             foreach($fails as $key=>$field){
-                $parts[] = $types[$field]." ".$fields[$field]->column." ".$fields[$field]->type." NOT NULL ".$fields[$field]->other;
+                $parts[] = $types[$field]." `".$fields[$field]->column."` ".$fields[$field]->type." NOT NULL ".$fields[$field]->other;
             }
             foreach($drop as $field=>$value){
                 $parts[] = "DROP ".$field;

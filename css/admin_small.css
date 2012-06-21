@@ -285,6 +285,29 @@ table.stats tr.type-muu-kuitattu td{
     color:#FFF;
 }
 
+.blink {
+    background-color: #92EEEE;
+    color:#000;
+}
+
+.normal {
+    background-color: white;
+    color:black;
+}
+
+#kello {
+    font-size: 50px;
+    display:inline-block;
+    margin: 0 360px;
+    width: 100px;
+    font-weight:bold;
+}
+#kello_container{
+    width: 100%;
+    float:left;
+    margin-top: -57px;
+}
+
 #progress{
     color: black;
     padding-left:20px;
@@ -403,6 +426,10 @@ label.manual {
 }
 #upload .row:after {
   clear: both;
+}
+.vastuullinen{
+  text-decoration:underline;
+  font-weight:bold;
 }
 @media all
 {

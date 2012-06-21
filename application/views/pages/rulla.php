@@ -1,4 +1,5 @@
 <p>aka. Diashow-hallinta</p>
+<p>Instanssi: <?php print $instances; ?></p>
 <div id="formidata">
  <form action="" method="post" id="form" accept-charset="utf-8" onsubmit="return false;">
      <table id="rulla" class="stats" style="border-right:0px; border-top:0px; border-bottom:0px;">

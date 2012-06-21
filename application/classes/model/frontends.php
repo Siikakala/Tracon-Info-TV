@@ -44,6 +44,11 @@ class Model_Frontends extends Jelly_Model
                             "type"   => "int",
                             "other"  => ""
                         )),
+            'show_inst' => Jelly::field('integer',array(
+                            "column" => "show_inst",
+                            "type"   => "int",
+                            "other"  => ""
+                        )),
             'dia'         => Jelly::field('integer',array(
                             "column" => "dia",
                             "type"   => "int",

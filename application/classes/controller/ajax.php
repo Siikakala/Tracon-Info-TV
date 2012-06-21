@@ -28,12 +28,12 @@ class Controller_Ajax extends Controller{
     	$kutsut = array(
         	"infotv-readonly" => array(
                   "kutsut" =>
-                      array("scroller_load","rulla_row","rulla_load","dia_load","stream_load","frontend_load","lastupdate"),
+                      array("scroller_load","rulla_row","rulla_load","dia_load","stream_load","frontend_load","lastupdate","tuotanto_dash"),
                   "level"  => 1
                   ),
             "infotv-common" => array(
                   "kutsut" =>
-                      array("scroller_save","scroller_delete","scroller_delete","rulla_save","rulla_delete","dia_save","dia_delete","upload","tv","ohjelma"),
+                      array("scroller_save","scroller_delete","scroller_delete","rulla_save","rulla_delete","dia_save","dia_delete","upload","tv","ohjelma","instance"),
                   "level"  => 2
                   ),
             "infotv-adv" => array(
@@ -43,7 +43,7 @@ class Controller_Ajax extends Controller{
                   ),
             "info-common" => array(
                   "kutsut" =>
-                      array("ohjelma_add","kategoria_add","slot_add","sali_add","ohjelma_save","ohjelma_load","ohjelma_dash"),
+                      array("ohjelma_add","kategoria_add","slot_add","sali_add","ohjelma_save","ohjelma_load","ohjelma_dash","tuotanto_save","tuotanto_refresh"),
                   "level"  => 2
                   ),
             "info-adv" => array(
@@ -68,7 +68,7 @@ class Controller_Ajax extends Controller{
                   ),
             "bofh" => array(
                   "kutsut" =>
-                      array("user_del","user_level","user_pass","user_new"),
+                      array("user_del","user_level","user_pass","user_new","loads"),
                   "level"  => 3
                   ),
             "public" => array(
@@ -107,6 +107,7 @@ class Controller_Ajax extends Controller{
                         $this->session->set('logged_in',true);//true/false
                         $this->session->set('level',$login);//>= 1
                         $this->session->set('user',$_POST['user']); //käyttäjätunnus.
+                        $this->session->set('instance',1);
                         $ret = true;
                     }else{
                         $ret = "Väärä käyttäjätunnus tai salasana!";
@@ -131,11 +132,13 @@ class Controller_Ajax extends Controller{
                                 $datat["hidden"] = false;
                             if($row >= 0 && $row < 500){//vanha rivi
                                 $row = Jelly::query('scroller',$row)->select();
-                                $row->pos    = $datat["pos"];
-                                $row->text   = $datat["text"];
-                                $row->hidden = $datat["hidden"];
+                                $row->pos      = $datat["pos"];
+                                $row->text     = $datat["text"];
+                                $row->hidden   = $datat["hidden"];
+                                $row->instance = $this->session->get('instance',1);
                                 $row->save();
                             }elseif($row >= 500){//uusi rivi
+                                $datat["instance"] = $this->session->get('instance',1);
                                 Jelly::factory('scroller')->set($datat)->save();
                             }
                         }
@@ -143,7 +146,7 @@ class Controller_Ajax extends Controller{
                     $return = array("ret"=>"Scroller päivitetty.$err Odota hetki, päivitetään listaus...");
                     break;
                 case "scroller_load":
-                	$query = Jelly::query('scroller')->order_by('pos','ASC')->select();
+                	$query = Jelly::query('scroller')->where('instance','=',$this->session->get('instance',1))->order_by('pos','ASC')->select();
                     if($query->count() > 0)
                         $result = $query->as_array();
                     else
@@ -221,6 +224,7 @@ class Controller_Ajax extends Controller{
                                 $d->selector = $datat["text"];
                                 $d->time     = $datat["time"];
                                 $d->hidden   = $datat["hidden"];
+                                $d->instance = $this->session->get('instance',1);
                                 $d->type     = $type;
                                 $d->save();
                             }elseif($row >= 500){
@@ -229,6 +233,7 @@ class Controller_Ajax extends Controller{
                                 else
                                     $datat["type"] = 1;
                                 $datat["selector"] = $datat["text"];
+                                $datat["instance"] = $this->session->get('instance',1);
                                 Jelly::factory('rulla')->set($datat)->save();
                             }
                         }
@@ -236,7 +241,7 @@ class Controller_Ajax extends Controller{
                     $return = array("ret"=>"Diashow päivitetty.$err Odota hetki, päivitetään listaus...");
                     break;
                 case "rulla_load":
-                	$query = Jelly::query('rulla')->order_by('pos')->select();
+                	$query = Jelly::query('rulla')->where('instance','=',$this->session->get('instance',1))->order_by('pos')->select();
                     if($query->count() > 0)
                         $result = $query;
                     else
@@ -270,7 +275,7 @@ class Controller_Ajax extends Controller{
                     if(!$param2){
                         $ret = false;
                     }else{
-                        Jelly::query('rulla',$param2)->select()->delete();
+                        Jelly::query('rulla',$param2)->where('instance','=',$this->session->get('instance',1))->select()->delete();
                         $ret = true;
                     }
                     $return = array("ret" => $ret);
@@ -461,6 +466,7 @@ class Controller_Ajax extends Controller{
                             $d->tunniste    = $datat["ident"];
                             $d->show_tv     = $datat["show_tv"];
                             $d->show_stream = $datat["show_stream"];
+                            $d->show_inst   = $datat["show_inst"];
                             $d->dia         = $datat["dia"];
                             $d->use_global  = $datat["use_global"];
                             $d->save();
@@ -475,6 +481,8 @@ class Controller_Ajax extends Controller{
                     }else{
                         $result = false;
                     }
+
+                    $instances = $this->get_instances();
 
                     $query4 = Jelly::query('diat')->order_by('dia_id')->select();
                     $diat[0] = "twitter";
@@ -498,14 +506,17 @@ class Controller_Ajax extends Controller{
                             if($row->show_tv == 1){
                                 $nayta_stream = "inline";
                                 $nayta_dia = "none";
+                                $nayta_inst = "none";
                             }elseif($row->show_tv == 2){
                                 $nayta_stream = "none";
                                 $nayta_dia = "inline";
+                                $nayta_inst = "none";
                             }else{
                                 $nayta_stream = "none";
                                 $nayta_dia = "none";
+                                $nayta_inst = "inline";
                             }
-                            $text .= "<tr class=\"".$row->f_id."\"><td>".form::input("ident-".$row->f_id,$row->tunniste,array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$row->f_id,array("Diashow","Streami","Yksittäinen dia"),$row->show_tv,array("id"=>$row->f_id."-tv","onchange"=>"check(this.value,\"".$row->f_id."\");$(this).addClass(\"new\");$(\"#".$row->f_id."-stream\").addClass(\"new\");$(\"#".$row->f_id."-dia\").addClass(\"new\");")).form::select("show_stream-".$row->f_id,$streams,$row->show_stream,array("id"=>$row->f_id."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$row->f_id,$diat,$row->dia,array("id"=>$row->f_id."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;"))."</td><td>".form::checkbox("use_global-".$row->f_id,1,(boolean)$row->use_global,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
+                            $text .= "<tr class=\"".$row->f_id."\"><td>".form::input("ident-".$row->f_id,$row->tunniste,array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$row->f_id,array("Diashow","Streami","Yksittäinen dia"),$row->show_tv,array("id"=>$row->f_id."-tv","onchange"=>"check(this.value,\"".$row->f_id."\");$(this).addClass(\"new\");$(\"#".$row->f_id."-stream\").addClass(\"new\");$(\"#".$row->f_id."-dia\").addClass(\"new\");$(\"#".$row->f_id."-inst\").addClass(\"new\");")).form::select("show_stream-".$row->f_id,$streams,$row->show_stream,array("id"=>$row->f_id."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$row->f_id,$diat,$row->dia,array("id"=>$row->f_id."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;")).form::select("show_inst-".$row->f_id,$instances,$row->show_inst,array("id"=>$row->f_id."-inst","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_inst;"))."</td><td>".form::checkbox("use_global-".$row->f_id,1,(boolean)$row->use_global,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
                         }
                         $text .= "</tbody></table>".form::close();
                     }else{
@@ -672,7 +683,7 @@ class Controller_Ajax extends Controller{
                   }
                   break;
               case "todo_refresh":
-                    $query = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->limit(15)->select();
+                    $query = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->limit(10)->select();
                     $text = "<table class=\"stats\" style=\"color:black\"><tr><th class=\"ui-state-default\">Aika</th><th class=\"ui-state-default\">Tyyppi</th><th class=\"ui-state-default\">Viesti</th><th class=\"ui-state-default\">Lisääjä</th></tr>";
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     foreach($query as $row){
@@ -954,6 +965,71 @@ class Controller_Ajax extends Controller{
                     }
                     $return = array("ret" => $ret);
                     break;
+              case "tuotanto_save":
+                    $post = $_POST;
+                    if(!empty($post['start']) && !empty($post['length']) && !empty($post['event']) && !empty($post['vastuu']) && !empty($post['duunarit'])){
+                        $post['start'] = $post['start']." ".$post['hours'].":".$post['mins'];
+                        $categories = implode(',',$post['category']);
+                        $post['category'] = $categories;
+                        Jelly::factory('tuotanto')->set(Arr::extract($post,array('priority','category','type','notes','start','hours','mins','length','event','vastuu','duunarit')))->save();
+                        $return = array("ret" => true);
+                    }else{
+                        $return = array("ret" => false, "msg" => "Kaikki paitsi lisätietokenttä ovat pakollisia!");
+                    }
+                    break;
+              case "tuotanto_refresh":
+                    $data = Jelly::query('tuotanto')->order_by('start','ASC')->select();
+                    $tablebody = "<tablebody>";
+                    $priority = array('0 - Triviaali','1 - Matala','2 - Normaali','3 - Korkea','4 - Ehdoton');
+                    $category = array('ohjelma'=>'Ohjelma','viestinta'=>'Viestintä','tyovoima'=>'Työvoima','info'=>'Info','teema'=>'Teema','tilat'=>'Tilat','logistiikka'=>'Logistiikka','turva'=>'Turvallisuus','tekniikka'=>'Tekniikka','talous'=>'Talous','kunnia'=>'Kunniavieras','muu'=>'Muu');
+                    $type = array('public'=>'Julkinen','internal'=>'Sisäinen','ydin'=>'Ydinryhmä','note'=>'Huomio/kommentti');
+                    foreach($data as $row){
+                        if($row->loaded()){
+                            $categories = explode(',',$row->category);
+                            $cats = array();
+                            foreach($categories as $cate)
+                                $cats[] = $category[$cate];
+                            $show_cats = implode(", ",$cats);
+                            $hilight = "";
+                            if((strtotime($row->start)+($row->length*60)) >= time() && time() >= strtotime($row->start))
+                                $hilight = " class=\"new\"";
+                            $tablebody .= "    <tr$hilight><td>".$priority[$row->priority]."</td><td>".$show_cats."</td><td>".$type[$row->type]."</td><td>".date('d.m.Y H:i',strtotime($row->start))."</td><td>".$row->length." min</td><td>".$row->event."</td><td>".nl2br($row->notes)."</td><td>".$row->vastuu."</td><td>".$row->duunarit."</td></tr>\n";
+                        }
+                    }
+                    $return = array("ret" => true, "rivit" => $tablebody);
+                    break;
+              case "loads":
+                    $return = array("ret" => `cat /proc/loadavg|awk '{print $1,$2,$3}'`);
+                    break;
+              case "tuotanto_dash":
+                    $data = Jelly::query('tuotanto')->where('start','>=',DB::expr("DATE_SUB(NOW(), INTERVAL length MINUTE)"))->limit(10)->order_by('start','ASC')->select();
+                    $tablebody = "";
+                    $priority = array('0 - Triviaali','1 - Matala','2 - Normaali','3 - Korkea','4 - Ehdoton');
+                    $category = array('ohjelma'=>'Ohjelma','viestinta'=>'Viestintä','tyovoima'=>'Työvoima','info'=>'Info','teema'=>'Teema','tilat'=>'Tilat','logistiikka'=>'Logistiikka','turva'=>'Turvallisuus','tekniikka'=>'Tekniikka','talous'=>'Talous','kunnia'=>'Kunniavieras','muu'=>'Muu');
+                    $type = array('public'=>'Julkinen','internal'=>'Sisäinen','ydin'=>'Ydinryhmä','note'=>'Huomio/kommentti');
+                    foreach($data as $row){
+                        if($row->loaded()){
+                            $categories = explode(',',$row->category);
+                            $cats = array();
+                            foreach($categories as $cate)
+                                $cats[] = $category[$cate];
+                            $show_cats = implode(", ",$cats);
+                            $hilight = "";
+                            if((strtotime($row->start)+($row->length*60)) <= (time()+300) || (time() <= (strtotime($row->start)+60) && time() >= strtotime($row->start)))
+                                $hilight = " class=\"blink ending\"";
+                            elseif(time() >= (strtotime($row->start)-300) && time() <= strtotime($row->start))
+                                $hilight = " class=\"starting\"";
+                            elseif((strtotime($row->start)+($row->length*60)) >= time() && time() >= strtotime($row->start))
+                                $hilight = " class=\"blink\"";
+                            $tablebody .= "    <tr$hilight><td>".$priority[$row->priority]."<br/>".$show_cats."<br/>".date('d.m.Y H:i',strtotime($row->start))."</td><td>".$row->length." min</td><td>".$row->event."</td><td><span class=\"vastuullinen\">".$row->vastuu."</span>, ".$row->duunarit."</td></tr>\n";
+                        }
+                    }
+                    $return = array("ret" => true, "rivit" => $tablebody);
+                    break;
+              case "instance":
+                    $this->session->set('instance',(int)$_POST['instance']);
+                    $return = array("ret" => true);
+                    break;
             }
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
         	if($this->session->get("logged_in",false)){
@@ -966,6 +1042,21 @@ class Controller_Ajax extends Controller{
         }
         if($param1 != "upload")//upload ei tykänny ylimääräsestä "" json-palautuksen lopussa.
             print json_encode($return);
+    }
+
+    private function get_instances(){
+        $instances = Jelly::query('instances')->select();
+        if($instances->count() === 0){
+            Jelly::factory('instances')->set(array('rul_id'=>1,'nimi'=>'Public','selite'=>'Julkinen'))->save();
+            $instances = Jelly::query('instances')->select();
+        }
+        $instance_list = array();
+        foreach($instances as $row){
+            if($row->loaded()){
+                $instance_list[$row->inst_id] = $this->utf8($row->nimi);
+            }
+        }
+        return $instance_list;
     }
 
     /**

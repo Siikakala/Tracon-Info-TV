@@ -49,9 +49,9 @@
 }
 .column  {
   float:left;
-  margin:0 1% -1.5em;
+  margin:0 0.2% -1.5em;
   padding:0;
-  width:47.5%;
+  width:48.5%;
 }
 
 .layout-a .column {
@@ -85,7 +85,7 @@ width:68%;
 display:none;
 }
 .layout-aaa .column {
-  width:30.9%;
+  width:32.95%;
 }
 
 .ui-widget-overlay {

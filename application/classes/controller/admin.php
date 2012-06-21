@@ -30,14 +30,16 @@ class Controller_Admin extends Controller{
             //$this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\">
                                     var baseurl = '".URL::base($this->request)."'
+                                    var usrlvl = '".$this->session->get('level',0)."'
                                     </script>
                                         ";
         	$this->view->header->login = "";//oletuksena nää on tyhjiä
         	$this->view->header->show = "";
             if($this->session->get('logged_in') && $this->request->action() != 'logout'){//mutta jos ollaan kirjauduttu sisään, eikä kirjautumassa ulos
-
                 $this->view->header->login = "Kirjautunut käyttäjänä: ".$this->session->get('user')."<br />".html::file_anchor('admin/logout','Kirjaudu ulos');//ja näytetään kirjautunut käyttäjä, uloskirjautumislinkki, ja globaali hallinta.
-
+                if($this->session->get('level',0)>=3){
+                    $this->view->header->show = "Serverin loadit: ".`cat /proc/loadavg|awk '{print $1,$2,$3}'`;
+                }
             }
         }
     }
@@ -173,7 +175,8 @@ class Controller_Admin extends Controller{
 
 	private function scroller($param1){
     	$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/scroller.js\"></script>";
-        $query = Jelly::query('scroller')->select();
+        $query = Jelly::query('scroller')->where('instance','=',$this->session->get('instance',1))->select();
+        $instances = $this->get_instances();
         if($query->count() > 0)
             $result = true;
         else
@@ -181,6 +184,7 @@ class Controller_Admin extends Controller{
 
         $this->view->content->text  = new view('pages/scroller');
         $this->view->content->text->tablebody = "";
+        $this->view->content->text->instances = form::select('instance',$instances,$this->session->get('instance',1),array("onChange"=>"set_instance(this.value);window.setTimeout(function(){refresh_data();},200);"));
 
         if($result) foreach($query as $data){
             $this->view->content->text->tablebody .= "<tr class=\"".$data->scroll_id."\"><td>".form::input('pos-'.$data->scroll_id,$data->pos,array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data->scroll_id,$data->text,array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data->scroll_id,1,(boolean)$data->hidden,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data->scroll_id.")\" >X</a></td></tr>";
@@ -190,7 +194,8 @@ class Controller_Admin extends Controller{
     private function rulla($param1){
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/rulla.js\"></script>";
 
-        $query = Jelly::query('rulla')->order_by('pos')->select();
+        $query = Jelly::query('rulla')->where('instance','=',$this->session->get('instance',1))->order_by('pos')->select();
+        $instances = $this->get_instances();
         if($query->count() > 0)
             $result = $query;
         else
@@ -211,6 +216,7 @@ class Controller_Admin extends Controller{
 
         $this->view->content->text  = new view('pages/rulla');
         $this->view->content->text->tablebody = "";
+        $this->view->content->text->instances = form::select('instance',$instances,$this->session->get('instance',1),array("onChange"=>"set_instance(this.value);window.setTimeout(function(){refresh_data();},200);"));
 
         if($result) foreach($result as $data){
             if($data->type == 2)
@@ -293,8 +299,11 @@ class Controller_Admin extends Controller{
         else
             $striim = false;
 
+        $instances = $this->get_instances();
+
         $this->view->content->text->select = form::select("show",array("Diashow","Streami"),$show,array("id"=>"show_tv","onchange"=>"check_show(this.value);$(this).addClass(\"new\");$(\"#show_stream\").addClass(\"new\");"))
-                                            .form::select("streams",$this->get_streams(),$striim,array("id"=>"show_stream","onchange"=>"$(this).addClass(\"new\");"));
+                                            .form::select("streams",$this->get_streams(),$striim,array("id"=>"show_stream","onchange"=>"$(this).addClass(\"new\");"))
+                                            .form::select("instances",$instances,$this->session->get('show_inst',1),array("id"=>"show_inst","onchange"=>"set_instance(this.value);"));
 
 
         //</globaali hallinta>
@@ -316,10 +325,11 @@ class Controller_Admin extends Controller{
 
 
 //----------- ÄLÄ KOSKE! Tehottomampi ja huonommin toimiva Jellyllä. ----------------------------------------------------------------------
-        //Frontendit, jotka eivät ole ilmoittaneet itsestään yli viiteen minuuttiin, asetetaan käyttämään globaalia asetusta.
+        //Frontendit, jotka eivät ole ilmoittaneet itsestään yli viiteen minuuttiin, asetetaan käyttämään globaalia asetusta ja public-instanssia.
         $query2 = DB::query(Database::UPDATE,
                             "UPDATE frontends ".
                             "SET    use_global = 1 ".
+                            "      ,show_inst = 1 ".
                             "WHERE  last_active < DATE_SUB(NOW(),INTERVAL 5 MINUTE)"
                             )->execute(__db);
 
@@ -338,14 +348,17 @@ class Controller_Admin extends Controller{
                 if($data->show_tv == 1){
                     $nayta_stream = "inline";
                     $nayta_dia = "none";
+                    $nayta_inst = "none";
                 }elseif($data->show_tv == 2){
                     $nayta_stream = "none";
                     $nayta_dia = "inline";
+                    $nayta_inst = "none";
                 }else{
                     $nayta_stream = "none";
                     $nayta_dia = "none";
+                    $nayta_inst = "inline";
                 }
-                $this->view->content->text->tablebody .= "<tr class=\"".$data->f_id."\"><td>".form::input("ident-".$data->f_id,$data->tunniste,array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$data->f_id,array("Diashow","Streami","Yksittäinen dia"),$data->show_tv,array("id"=>$data->f_id."-tv","onchange"=>"check(this.value,\"".$data->f_id."\");$(this).addClass(\"new\");$(\"#".$data->f_id."-stream\").addClass(\"new\");$(\"#".$data->f_id."-dia\").addClass(\"new\");")).form::select("show_stream-".$data->f_id,$streams,$data->show_stream,array("id"=>$data->f_id."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$data->f_id,$diat,$data->dia,array("id"=>$data->f_id."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;"))."</td><td>".form::checkbox("use_global-".$data->f_id,1,(boolean)$data->use_global,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
+                $this->view->content->text->tablebody .= "<tr class=\"".$data->f_id."\"><td>".form::input("ident-".$data->f_id,$data->tunniste,array("size" => "20","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::select("show_tv-".$data->f_id,array("Diashow","Streami","Yksittäinen dia"),$data->show_tv,array("id"=>$data->f_id."-tv","onchange"=>"check(this.value,\"".$data->f_id."\");$(this).addClass(\"new\");$(\"#".$data->f_id."-stream\").addClass(\"new\");$(\"#".$data->f_id."-dia\").addClass(\"new\");$(\"#".$data->f_id."-inst\").addClass(\"new\");")).form::select("show_stream-".$data->f_id,$streams,$data->show_stream,array("id"=>$data->f_id."-stream","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_stream;")).form::select("dia-".$data->f_id,$diat,$data->dia,array("id"=>$data->f_id."-dia","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_dia;")).form::select("show_inst-".$data->f_id,$instances,$data->show_inst,array("id"=>$data->f_id."-inst","onchange"=>"$(this).addClass(\"new\");","style" => "display:$nayta_inst;"))."</td><td>".form::checkbox("use_global-".$data->f_id,1,(boolean)$data->use_global,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; background-color: transparent;\">&nbsp;</td></tr>";
             }
         }else{
             $this->view->content->text->tablebody .= "<p>Yhtään aktiivista frontendiä ei löytynyt.</p>";
@@ -543,11 +556,30 @@ class Controller_Admin extends Controller{
     private function tuotanto(){
         $this->view->content->text = new view('pages/tuotanto');
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/tuotanto.js\"></script>";
-        $this->view->content->text->priority = "";
-        $this->view->content->text->category = "";
-        $this->view->content->text->tablebody = "";
+        $priority = array('0 - Triviaali','1 - Matala','2 - Normaali','3 - Korkea','4 - Ehdoton');
+        $category = array('ohjelma'=>'Ohjelma','viestinta'=>'Viestintä','tyovoima'=>'Työvoima','info'=>'Info','teema'=>'Teema','tilat'=>'Tilat','logistiikka'=>'Logistiikka','turva'=>'Turvallisuus','tekniikka'=>'Tekniikka','talous'=>'Talous','kunnia'=>'Kunniavieras','muu'=>'Muu');
+        $type = array('public'=>'Julkinen','internal'=>'Sisäinen','ydin'=>'Ydinryhmä','note'=>'Huomio/kommentti');
+        $this->view->content->text->priority = form::select('priority',$priority,2,array("style"=>"width:100%;"));
+        $this->view->content->text->category = form::select('category[]',$category,'logistiikka',array("style"=>"width:100%;","multiple"));
+        $this->view->content->text->type = form::select('type',$type,'internal',array("style"=>"width:100%;"));
         $this->view->content->text->hours = form::select('hours',Date::hours(1,true));
         $this->view->content->text->mins = form::select('mins',Date::minutes(1));
+
+        $data = Jelly::query('tuotanto')->order_by('start','ASC')->select();
+        $tablebody = "";
+
+        foreach($data as $row){
+            if($row->loaded()){
+                $categories = explode(',',$row->category);
+                $cats = array();
+                foreach($categories as $cate)
+                    $cats[] = $category[$cate];
+                $show_cats = implode(", ",$cats);
+                $tablebody .= "    <td>".$priority[$row->priority]."</td><td>".$show_cats."</td><td>".$type[$row->type]."</td><td>".date('d.m.Y H:i',strtotime($row->start))."</td><td>".$row->length." min</td><td>".$row->event."</td><td>".nl2br($row->notes)."</td><td>".$row->vastuu."</td><td>".$row->duunarit."</td></tr>\n";
+            }
+        }
+        $this->view->content->text->tablebody = $tablebody;
+
     }
 
     public function action_logout(){
@@ -568,6 +600,21 @@ class Controller_Admin extends Controller{
             $this->session->set($row['opt'],$row['value']);
             $this->session->set("g-".$row['opt'],$row['value']);
         }
+    }
+
+    private function get_instances(){
+        $instances = Jelly::query('instances')->select();
+        if($instances->count() === 0){
+            Jelly::factory('instances')->set(array('rul_id'=>1,'nimi'=>'Public','selite'=>'Julkinen'))->save();
+            $instances = Jelly::query('instances')->select();
+        }
+        $instance_list = array();
+        foreach($instances as $row){
+            if($row->loaded()){
+                $instance_list[$row->inst_id] = $this->utf8($row->nimi);
+            }
+        }
+        return $instance_list;
     }
 
     /**

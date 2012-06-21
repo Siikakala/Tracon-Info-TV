@@ -18,4 +18,5 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 			<p id="login"><?php print $login; ?></p>
 			<p id="show"><?php print $show; ?></p>
 			<h1><?php print __title . $title; ?></h1>
+			<div id="kello_container"><p id="kello"></p></div>
 		</div>

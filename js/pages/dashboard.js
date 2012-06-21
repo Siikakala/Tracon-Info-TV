@@ -2,8 +2,10 @@ $(document).ready(function() {
     var resize = $(window).width() - 100;
     widen();
     window.setTimeout(function(){
-        ref();
-    },300);
+        dash_ref();
+        blink_ending();
+        blink_starting();
+    },3000);
 
     $('#text').append('<div id="templates"></div>');
     $("#templates").hide();
@@ -44,12 +46,13 @@ $(document).ready(function() {
     }
 });
 
-function ref(){
+function dash_ref(){
     refresh();
     ohjelma_refresh();
+    tuotanto_refresh();
     window.setTimeout(function(){
-        ref();
-    },5000);
+        dash_ref();
+    },4000);
 };
 
 function refresh(){

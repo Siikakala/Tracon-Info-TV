@@ -2,12 +2,15 @@ function check(show,id){
     if(show == 1){
         $('#' + id + '-stream').show("medium");
         $('#' + id + '-dia').hide("medium");
+        $('#' + id + '-inst').hide("medium");
     }else if(show == 2){
         $('#' + id + '-stream').hide("medium");
         $('#' + id + '-dia').show("medium");
+        $('#' + id + '-inst').hide("medium");
     }else{
         $('#' + id + '-stream').hide("medium");
         $('#' + id + '-dia').hide("medium");
+        $('#' + id + '-inst').show("medium");
     }
 }
 

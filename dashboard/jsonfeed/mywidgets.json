@@ -30,6 +30,13 @@
       "column" : "third",
       "open" : true,
       "url" : "../../dashboard/widgets/ohjelma.html"
+    },
+    {
+      "title" : "Tuotantosuunnitelma",
+      "id" : "tuotanto",
+      "column" : "second",
+      "open" : true,
+      "url" : "../../dashboard/widgets/tuotanto.html"
     }
   ]
   }

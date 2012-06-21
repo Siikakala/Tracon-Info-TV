@@ -1,0 +1,62 @@
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#docdialog').dialog({
+      autoOpen: false,
+      height: 750,
+      width: 600,
+      modal: true
+    });
+
+    $('.loadDoc').live('click',function() {
+      $('#docdialog').dialog('open');
+      return false;
+    });
+
+    $('#docdialogtabs').tabs();
+  });
+    function tuotanto_refresh(){
+        var container = $("#table2");
+        fetch = '../../ajax/tuotanto_dash/'
+        $.getJSON(fetch,function(data) {
+            container.html(data.rivit);
+        });
+    };
+    /**
+     *
+     * @access public
+     * @return void
+     **/
+    function blink_ending(){
+        $(".ending").switchClass("normal","blink",800);
+        window.setTimeout(function(){
+            $(".ending").switchClass("blink","normal",800);
+        },800);
+        window.setTimeout(function(){
+            blink_ending();
+        },2000);
+    }
+    function blink_starting(){
+        $(".starting").switchClass("normal","blink",300);
+        window.setTimeout(function(){
+            $(".starting").switchClass("blink","normal",300);
+        },300);
+        window.setTimeout(function(){
+            blink_starting();
+        },990);
+    }
+
+
+</script>
+
+<table class="stats" width="510" style="background-color:white;color:black;">
+    <thead>
+        <tr>
+            <th class="ui-state-default">Tärk./Kat./Aika</th>
+            <th class="ui-state-default">Kesto</th>
+            <th class="ui-state-default" width="200">Tapahtuma</th>
+            <th class="ui-state-default"><span style="text-decoration:underline;">Vastuuhenkilö</span>/tekijät</th>
+        </tr>
+    </thead>
+    <tbody id="table2">
+    </tbody>
+</table>

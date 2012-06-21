@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Model_Streamit extends Jelly_Model
+class Model_Instances extends Jelly_Model
 {
     public static function initialize(Jelly_Meta $meta)
     {
@@ -9,35 +9,25 @@ class Model_Streamit extends Jelly_Model
 
         // The table the model is attached to
         // It defaults to the name of the model pluralized
-        $meta->table(__tableprefix.'streamit');
+        $meta->table(__tableprefix.'instances');
 
         // Fields defined by the model
         $meta->fields(array(
-            'stream_id' => Jelly::field('primary',array(
-                            "column" => "stream_id",
+            'inst_id'   => Jelly::field('primary',array(
+                            "column" => "inst_id",
                             "type"   => "bigint unsigned",
                             "other"  => "PRIMARY KEY AUTO_INCREMENT"
                         )),
-            'tunniste'  => Jelly::field('string',array(
-                            "column" => "tunniste",
-                            "type"   => "tinytext",
-                            "other"  => ""
-                        )),
-            'url'       => Jelly::field('string',array(
-                            "column" => "url",
-                            "type"   => "tinytext",
+            'nimi'      => Jelly::field('string',array(
+                            "column" => "nimi",
+                            "type"   => "text",
                             "other"  => ""
                         )),
             'selite'    => Jelly::field('string',array(
                             "column" => "selite",
-                            "type"   => "tinytext",
+                            "type"   => "text",
                             "other"  => ""
                         )),
-            'jarjestys' => Jelly::field('integer',array(
-                            "column" => "jarjestys",
-                            "type"   => "int",
-                            "other"  => ""
-                        ))
         ));
 
         $check = new Model_Jelly_Check();

@@ -1,4 +1,3 @@
-<a class="openaddwidgetdialog headerlink" href="#">Lisää Widgetti</a>
 <div id="dashboard" class="dashboard">
     <div class="layout">
         <div class="column first column-first"></div>
