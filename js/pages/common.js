@@ -13,6 +13,19 @@ $(function() {
     });
     update_load();
     update_clock();
+    if(usrlvl > 0){
+        connect();
+        $("#chatbox").bind("keydown",function(e){
+            switch(e.which){
+                case 13://enter
+                    say($("#chatbox").val());
+                    $("#chatbox").val('')
+                    break;
+            }
+        });
+    }else{
+        $("#chat").hide(0);
+    }
 });
 
 /**
@@ -96,3 +109,62 @@ function widen(){
         },300);
     }
 }
+
+var Server;
+
+function log( text ) {
+	$log = $('#chatlog');
+	//Add text to log
+	$log.append(text);
+	//Autoscroll
+	$log[0].scrollTop = $log[0].scrollHeight - $log[0].clientHeight;
+}
+
+function send( text ) {
+	Server.send( 'message', text );
+}
+
+/**
+ *
+ * @access public
+ * @return void
+ **/
+function say(message){
+    var Digital = new Date();
+    var hours = Digital.getHours();
+    var minutes = Digital.getMinutes();
+    var seconds = Digital.getSeconds()
+    if(minutes < 10){
+        minutes = "0" + minutes;
+    }
+    if(hours < 10){
+        hours = "0" + hours;
+    }
+    if(seconds < 10){
+        seconds = "0" + seconds;
+    }
+    send("&lt;"+usr+"&gt; "+message);
+    log(hours + ":" + minutes + ":" + seconds + " <i>&lt;Sinä&gt;</i> " + message + "<br/>");
+}
+
+function connect(){
+	log('Yhdistetään...');
+	Server = new chatSocket('ws://10.10.10.2:9300');
+
+	//Let the user know we're connected
+	Server.bind('open', function() {
+		log( "Yhdistetty.<br/>" );
+	});
+
+	//OH NOES! Disconnection occurred.
+	Server.bind('close', function( data ) {
+		log( "Yhteys katkaistu.<br/>" );
+	});
+
+	//Log any messages sent from server
+	Server.bind('message', function( payload ) {
+		log( payload );
+	});
+
+	Server.connect();
+};

@@ -26,11 +26,13 @@ class Controller_Admin extends Controller{
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.18.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/MD5.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/chat.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/common.js\"></script>";
             //$this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\">
                                     var baseurl = '".URL::base($this->request)."'
                                     var usrlvl = '".$this->session->get('level',0)."'
+                                    var usr = '".$this->session->get('user',0)."'
                                     </script>
                                         ";
         	$this->view->header->login = "";//oletuksena nää on tyhjiä
