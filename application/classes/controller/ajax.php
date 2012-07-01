@@ -23,6 +23,10 @@ class Controller_Ajax extends Controller{
     public function action_ajax(){
         $param1 = $this->request->param('param1',null);
         $param2 = $this->request->param('param2',null);
+        if (Kohana::$profiling === TRUE){
+            // Start a new benchmark
+            $benchmark = Profiler::start('ajax', __FUNCTION__);
+        }
     	$return = "";
     	$this->session->set('results',array());
     	$kutsut = array(
@@ -701,7 +705,7 @@ class Controller_Ajax extends Controller{
                     $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
                     $params = explode(" ",$param1);
                     $ids = array();
-                    foreach($params as $key => $param){
+                    if(!empty($param1))foreach($params as $key => $param){
                         if(strtotime($param)||strtotime($param.date("Y"))){
                             if(strstr($param,":")){
                                 $param = date("H:i",strtotime($param));
@@ -712,15 +716,25 @@ class Controller_Ajax extends Controller{
                             }
                         }
                         //print $param."\n";
-                        $rows = Jelly::query('logi')
-                                        ->select_column('id')
-                                        ->or_where('tag','REGEXP','.*'.$param.'.*')
-                                        ->or_where('comment','REGEXP','.*'.$param.'.*')
-                                        ->or_where('adder','REGEXP','.*'.$param.'.*')
-                                        ->or_where('stamp','REGEXP','.*'.$param.'.*')
-                                        ->order_by('stamp','DESC')
-                                        ->select();
-                        $ids[] = $rows->as_array('id');
+//                        $rows = Jelly::query('logi')
+//                                        ->select_column('id')
+//                                        ->or_where('tag','REGEXP','.*'.$param.'.*')
+//                                        ->or_where('comment','REGEXP','.*'.$param.'.*')
+//                                        ->or_where('adder','REGEXP','.*'.$param.'.*')
+//                                        ->or_where('stamp','REGEXP','.*'.$param.'.*')
+//                                        ->order_by('stamp','DESC')
+//                                        ->select();
+//
+                         $rows = DB::query(Database::SELECT,
+                                         'SELECT   id '.
+                                         'FROM    '.__tableprefix.'logi '.
+                                         'WHERE    tag REGEXP :param '.
+                                         '     OR  comment REGEXP :param '.
+                                         '     OR  adder REGEXP :param '.
+                                         '     OR  stamp REGEXP :param '.
+                                         'ORDER BY stamp DESC '
+                                         )->param(':param','.*'.$param.'.*')->execute(__db);
+                         $ids[] = $rows->as_array('id');
                     }
 
                     //apufunktio, joka palauttaa vain ne avaimet, jotka löytyvät *jokaisesta* arraysta.
@@ -749,11 +763,34 @@ class Controller_Ajax extends Controller{
 //                    var_dump($id_pre);
 //                    var_dump($id_list);
                     if(!empty($id_list))
-                        $rows = Jelly::query('logi')->where('id','',DB::expr('IN('.$id_list.')'))->and_where('hidden','=','0')->order_by('stamp','DESC')->select();
+                        $rows = DB::query(Database::SELECT,
+                                        'SELECT   id '.
+                                        '        ,tag '.
+                                        '        ,comment '.
+                                        '        ,adder '.
+                                        '        ,stamp '.
+                                        '        ,ack '.
+                                        '        ,ack_stamp '.
+                                        'FROM    '.__tableprefix.'logi '.
+                                        'WHERE    hidden = 0 '.
+                                        '    AND  id IN('.$id_list.') '.
+                                        'ORDER BY stamp DESC '
+                                        )->as_object()->execute(__db);
                     elseif(!empty($param1))
                         $rows = Jelly::query('logi',-1)->select();
                     else
-                        $rows = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->select();
+                        $rows = DB::query(Database::SELECT,
+                                        'SELECT   id '.
+                                        '        ,tag '.
+                                        '        ,comment '.
+                                        '        ,adder '.
+                                        '        ,stamp '.
+                                        '        ,ack '.
+                                        '        ,ack_stamp '.
+                                        'FROM    '.__tableprefix.'logi '.
+                                        'WHERE    hidden = 0 '.
+                                        'ORDER BY stamp DESC '
+                                        )->as_object()->execute(__db);
                     $text = "<table class=\"stats\"><tr><th class=\"ui-state-default\">Aika</th><th class=\"ui-state-default\">Tyyppi</th><th class=\"ui-state-default\">Viesti</th><th class=\"ui-state-default\">Lisääjä</th></tr>";
 
                     foreach($rows as $row){
@@ -1039,6 +1076,11 @@ class Controller_Ajax extends Controller{
                 $data = "<p>Sessio on vanhentunut. ".html::file_anchor('admin/?return='.$ref,'Kirjaudu uudelleen').", palaat takaisin tälle sivulle.</p>";
                 $return = array("ret" => $data);
             }
+        }
+        if (isset($benchmark)){
+            // Stop the benchmark
+            Profiler::stop($benchmark);
+            $return['profiler'] = Profiler::stats(array($benchmark));
         }
         if($param1 != "upload")//upload ei tykänny ylimääräsestä "" json-palautuksen lopussa.
             print json_encode($return);

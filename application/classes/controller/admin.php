@@ -390,7 +390,18 @@ class Controller_Admin extends Controller{
         $this->view->content->text = new view('pages/loki');
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/logi.js\"></script>";
 
-        $rows = Jelly::query('logi')->where('hidden','=','0')->order_by('stamp','DESC')->select();
+        $rows = DB::query(Database::SELECT,
+                                        'SELECT   id '.
+                                        '        ,tag '.
+                                        '        ,comment '.
+                                        '        ,adder '.
+                                        '        ,stamp '.
+                                        '        ,ack '.
+                                        '        ,ack_stamp '.
+                                        'FROM    '.__tableprefix.'logi '.
+                                        'WHERE    hidden = 0 '.
+                                        'ORDER BY stamp DESC '
+                                        )->as_object()->execute(__db);
 
         $types = array("tiedote"=>"Tiedote","ongelma"=>"Ongelma","kysely"=>"Kysely","löytötavara"=>"Löytötavara","muu"=>"Muu");
         $this->view->content->text->select = form::select('tag',$types,2,array("id"=>"tag"));
@@ -400,14 +411,15 @@ class Controller_Admin extends Controller{
 
         if($rows->count() > 0){
             $this->view->footer->dialogs = new view('dialogs/loki');
-
+            $tablebody = "";
             foreach($rows as $row){
                 if(!empty($row->ack)){
-                    $this->view->content->text->tablebody .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag." type-".$row->tag."-kuitattu\" title=\"Kuittaaja: ".$row->ack." (".date("d.m. H:i",strtotime($row->ack_stamp)).")\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
+                    $tablebody .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag." type-".$row->tag."-kuitattu\" title=\"Kuittaaja: ".$row->ack." (".date("d.m. H:i",strtotime($row->ack_stamp)).")\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
                 }else{
-                    $this->view->content->text->tablebody .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag."\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
+                    $tablebody .= "<tr id=\"".$row->id."\" tag=\"".$row->tag."\" class=\"type-".$row->tag."\"><td row=\"".$row->id."\">".date("d.m. H:i",strtotime($row->stamp))."</td><td row=\"".$row->id."\">".$types[$row->tag]."</td><td row=\"".$row->id."\">".$row->comment."</td><td row=\"".$row->id."\">".$row->adder."</td></tr>";
                 }
             }
+            $this->view->content->text->tablebody = $tablebody;
         }
     }
 

@@ -53,10 +53,14 @@ $(document).ready(function() {
 
 var row = 0;
 var tag = "";
+var timeout;
 
 $(function() {
     $("#filter_cont").delegate("input","keyup",function(event) {
-        search();
+        window.clearTimeout(timeout);
+        timeout = window.setTimeout(function(){
+            search();
+        },200);
     })
 });
 
@@ -66,6 +70,9 @@ function search(){
     fetch = baseurl+'ajax/todo_search/'
     $.post(fetch,{ "search": search},function(data) {
         container.html(data.ret);
+        if(data.profiler != undefined){
+            $("#profiler").html(data.profiler);
+        }
     },"json");
     return false;
 };

@@ -143,7 +143,13 @@ function say(message){
     if(seconds < 10){
         seconds = "0" + seconds;
     }
-    send("&lt;"+usr+"&gt; "+message);
+    var nick = '';
+    if($("#nickbox").val() == ''){
+        nick = usr;
+    }else{
+        nick = $("#nickbox").val();
+    }
+    send("&lt;"+nick+"&gt; "+message);
     log(hours + ":" + minutes + ":" + seconds + " <i>&lt;Sinä&gt;</i> " + message + "<br/>");
 }
 
@@ -164,6 +170,7 @@ function connect(){
 	//Log any messages sent from server
 	Server.bind('message', function( payload ) {
 		log( payload );
+		console.log('\u0007');
 	});
 
 	Server.connect();

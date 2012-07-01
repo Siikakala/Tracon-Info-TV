@@ -91,6 +91,8 @@ if (Kohana::$environment === Kohana::PRODUCTION)
 
     error_reporting(-1);//Let's get errors from everything! Muahahahaa!
 
+    set_time_limit(300);// Some debugging might take time.
+
     define("__db","dev"); //Käytetään kehitystietokantaa
 
     define("__documentroot","/var/www/tracon_info-tv/"); //ja kehityshakemistoa.
@@ -115,7 +117,7 @@ Kohana::init(array(
 	'base_url'   => Kohana::$environment === Kohana::DEVELOPMENT ? '/tracon_info-tv/' : '/',
 	'index_file' => false,
 	'errors'     => true,
-	'profile'    => false,//Kohana::$environment === Kohana::DEVELOPMENT,
+	'profile'    => Kohana::$environment === Kohana::DEVELOPMENT,
 	'caching'    => false //Kohana::$environment === Kohana::PRODUCTION
 ));
 
