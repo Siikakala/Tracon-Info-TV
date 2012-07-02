@@ -19,9 +19,6 @@ $(function() {
     window.setTimeout(function(){
         check(1);
     },50);
-    window.setTimeout(function(){
-        //scrolleri();
-    },500);
 
 });
 
@@ -31,14 +28,8 @@ window.onload = function() {
           width: 690,
           height: 100
         });
-        var main = new Kinetic.Stage({
-          container: "text",
-          width: 900,
-          height: 450
-        });
 
         var layer1 = new Kinetic.Layer();
-        var layer2 = new Kinetic.Layer();
 
         marqText = new Kinetic.Text({
           x: 700,
@@ -92,15 +83,6 @@ window.onload = function() {
           }
         });
 
-        //var fill1 = grad1.createLinearGradient(50,0,50,10);
-        //var fill2 = grad2.createLinearGradient(50,0,50,10);
-
-        //fill1.addColorStop(0,'rgba(255,255,255,255)');
-        //fill1.addColorStop(1,'rgba(255,255,255,0)');
-
-        //grad1.fillStyle = fill1;
-        //grad1.fill();
-
         layer1.add(marqText);
         layer1.add(grad1);
         layer1.add(grad2);
@@ -121,26 +103,6 @@ window.onload = function() {
         });
 
         scroller.start();
-}
-
-function scrolleri(){
-    var container = $(".scrollingtext");
-    var paikka = parseInt(container.css("left"));
-    var leveys = container.width();
-    var ulkona = paikka + leveys;
-    container.animate({"left": "-=10px"},60,"linear");
-    if(ulkona < 0){
-        container.stop(true, true);
-        window.setTimeout(function(){
-            container.css("left","700px");
-        },50);
-    }
-    window.setTimeout(function(){
-        if(container.queue("fx").lenght > 1){
-            container.clearQueue("fx");
-        }
-        scrolleri();
-    },59);
 }
 
 function update_clock(){
@@ -262,7 +224,6 @@ function check(cont){
                         break;
                     case "scroller":
                         if(value.changed == true){
-                            //scroller.html(value.palautus);
                             marqText.setText(value.palautus);
                         }
                         break;

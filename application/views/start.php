@@ -18,7 +18,7 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 		</div>
 	<div id="main">
 		<div id="header">
-			<h1><div id="marquee" class="marquee" width="690"><div class="scrollingtext"><span id="rullaaja"></span></div></div></h1>
+			<h1><div id="marquee" class="marquee" width="690"></div></h1>
     		<div id="kello"></div>
         </div>
         <div id="text_cont">
