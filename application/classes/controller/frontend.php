@@ -18,11 +18,11 @@ class Controller_Frontend extends Controller {
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/widget.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/kinetic-v3.10.1.min.js\"></script>";
         //$this->view->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>"; //tätä ei toistaiseksi käytetä.
-    	$this->view->css = html::style("css/admin.css");
     	if(!defined("__tableprefix")){
             $tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
             define("__tableprefix",$tb);
         }
+        $this->view->css = html::style("css/".__tableprefix."-tv.css");
     }
 
     public function action_to_tv(){

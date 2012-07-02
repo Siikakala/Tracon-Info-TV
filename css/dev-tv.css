@@ -1,0 +1,344 @@
+* {
+ 	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #CBCBCB url('../imgs/background.png') repeat-x scroll center top;
+	color: #111;
+	font-family: "Helvetica", "Arial", sans-serif;
+	font-size: 50px;
+	overflow:hidden;
+}
+
+body.mceContentBody {
+    background: #FFF;
+}
+
+
+
+#swirlhack {
+	position: relative;
+	width: 950px;
+	margin: 0 auto 0 auto;
+	z-index: -1;
+
+}
+#swirl {
+	position: absolute;
+	left: 450px;
+	width: 567px;
+	height: 152px;
+	top:-80px;
+
+	background: transparent url('../imgs/swirl.png') no-repeat scroll left top;
+}
+a.del:link, a.del:visited{
+    color: #AAA;
+    background-color: transparent;
+    font-weight: bold;
+    font-size:16px;
+}
+a.hover:hover, a.hover:active{
+    color: #F44;
+    background-color: transparent;
+}
+
+#flash-message {
+	width: 200px;
+	height: 30px;
+	padding-top: 10px;
+	text-align: center;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+.flash-error {
+	color: Red;
+	background-color: #333;
+	border: 1px solid #f00;
+}
+
+.flash-notify {
+	color: #000;
+	background-color: #333;
+	border: 1px solid #000;
+}
+
+#main {
+	border: 2px solid black;
+	background-color: #FFF;
+	margin: 80px auto;
+	width: 1000px;
+	height:650px;
+}
+
+#header {
+	padding: 15px 25px 15px 25px;
+
+/*	background: transparent url('../imgs/logo.png') no-repeat scroll right top;*/
+    background-size: 290px;
+}
+
+#login {
+	float: right;
+	text-align: right;
+}
+#kello{
+    position:absolute;
+    float:right;
+    margin-top:-115px;
+    margin-left:700px;
+    padding-right:20px;
+    padding-top:5px;
+    color:#000;
+    font-size:100px;
+    z-index:3;
+    opacity:0.7;
+}
+
+.twtr-tweet-text {
+    font-size: 30px;
+}
+
+#marquee{
+    overflow: hidden;
+    position:relative;
+    height:100px;
+    width:690px;
+}
+div.scrollingtext{
+	position:absolute;
+    white-space:nowrap;
+}
+
+#text_cont {
+	margin: 25px 25px 25px 25px;
+	padding: 0px 25px 0px 25px;
+	height: 450px;
+	vertical-align: 50%;
+	background-color: #FFF;
+}
+
+#twitter{
+	padding: 10px 10px 10px 10px;
+    position: relative;
+    top:0px;
+}
+
+#footer {
+	clear: both;
+	color: #DADADA;
+	font-size: 10px;
+	text-align: center;
+	opacity:0.6;
+}
+
+label.error {
+	float: none;
+	color: red;
+	padding-left: .5em;
+	vertical-align: top;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:link, a:visited {
+	color: #F44;
+}
+
+a:hover, a:active {
+	background-color: #F44;
+	color: white;
+}
+
+h1 {
+	font-size: 80px;
+}
+
+h2 {
+	font-size: 60px;
+	margin-bottom: 15px;
+}
+
+h3 {
+	font-size: 50px;
+	margin-bottom: 10px;
+	margin-top: 20px;
+}
+
+p {
+	margin-bottom: 10px;
+}
+
+ol, ul {
+	margin-bottom: 10px;
+	margin-left: 25px;
+}
+
+object {
+    position:relative;
+    margin: 0;
+    top:-20px;
+    left:-30px;
+}
+
+table.stats {
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+	margin-bottom: 10px;
+}
+
+table.stats th {
+	background-color: #CCC;
+	padding: 3px 15px 3px 3px;
+	text-align: left;
+}
+
+table.stats td {
+	border: 1px solid #CCC;
+	padding: 3px 15px 3px 3px;
+}
+
+form {
+	margin-bottom: 10px;
+}
+
+form table td {
+	padding: 1px 5px 1px 0px;
+}
+
+form input {
+	padding: 2px;
+}
+
+fieldset {
+	margin-top: 20px;
+	padding: 0;
+	border: none;
+}
+
+label.manual {
+    float: left;
+	display: block;
+    width: 150px;
+	margin-right: 0.5em;
+	text-align: right;
+}
+
+.timer {
+	position:relative;
+	font-size: 50px;
+	width:1em;
+	height:1em;
+	float: left;
+	padding-top: 7px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.timer > .percent {
+	position: absolute;
+	top: 1.05em;
+	left: 0;
+	width: 3.33em;
+	font-size: 0.3em;
+	text-align:center;
+}
+.timer > #slice-0 {
+	position:absolute;
+	width:1em;
+	height:1em;
+	clip:rect(0px,1em,1em,0.5em);
+}
+.timer > #slice-1 {
+	position:absolute;
+	width:1em;
+	height:1em;
+	clip:rect(0px,1em,1em,0.5em);
+}
+.timer > #slice-2 {
+	position:absolute;
+	width:1em;
+	height:1em;
+	clip:rect(0px,1em,1em,0.5em);
+}
+.timer > #slice-0.gt50 {
+	clip:rect(auto, auto, auto, auto);
+}
+.timer > #slice-1.gt50 {
+	clip:rect(auto, auto, auto, auto);
+}
+.timer > #slice-2.gt50 {
+	clip:rect(auto, auto, auto, auto);
+}
+.timer > #slice-0 > .pie {
+	border: 0.1em solid #c0c0c0;
+	position:absolute;
+	width:0.8em; /* 1 - (2 * border width) */
+	height:0.8em; /* 1 - (2 * border width) */
+	clip:rect(0em,0.5em,1em,0em);
+	-moz-border-radius:0.5em;
+	-webkit-border-radius:0.5em;
+	border-radius:0.5em;
+}
+.timer > #slice-1 > .pie {
+	border: 0.1em solid #c0c0c0;
+	position:absolute;
+	width:0.8em; /* 1 - (2 * border width) */
+	height:0.8em; /* 1 - (2 * border width) */
+	clip:rect(0em,0.5em,1em,0em);
+	-moz-border-radius:0.5em;
+	-webkit-border-radius:0.5em;
+	border-radius:0.5em;
+}
+.timer > #slice-2 > .pie {
+	border: 0.1em solid #c0c0c0;
+	position:absolute;
+	width:0.8em; /* 1 - (2 * border width) */
+	height:0.8em; /* 1 - (2 * border width) */
+	clip:rect(0em,0.5em,1em,0em);
+	-moz-border-radius:0.5em;
+	-webkit-border-radius:0.5em;
+	border-radius:0.5em;
+}
+.timer > #slice-0 > .pie.fill {
+	-moz-transform:rotate(180deg) !important;
+	-webkit-transform:rotate(180deg) !important;
+	-o-transform:rotate(180deg) !important;
+	transform:rotate(180deg) !important;
+}
+.timer > #slice-1 > .pie.fill {
+	-moz-transform:rotate(180deg) !important;
+	-webkit-transform:rotate(180deg) !important;
+	-o-transform:rotate(180deg) !important;
+	transform:rotate(180deg) !important;
+}
+.timer > #slice-2 > .pie.fill {
+	-moz-transform:rotate(180deg) !important;
+	-webkit-transform:rotate(180deg) !important;
+	-o-transform:rotate(180deg) !important;
+	transform:rotate(180deg) !important;
+}
+.timer.fill > .percent {
+	display: none;
+	border: 1px solid black;
+}
+.timer.fill > #slice-0 > .pie {
+	border: transparent;
+	background-color: #c0c0c0;
+	width:1em;
+	height:1em;
+}
+.timer.fill > #slice-1 > .pie {
+	border: transparent;
+	background-color: #c0c0c0;
+	width:1em;
+	height:1em;
+}
+.timer.fill > #slice-2 > .pie {
+	border: transparent;
+	background-color: #c0c0c0;
+	width:1em;
+	height:1em;
+}
