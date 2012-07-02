@@ -12,7 +12,7 @@ $(function(){
                     if(data.ret == true){
                         $( "form" )[ 0 ].reset();
                     }else{
-                        alert("Ohjelman lisäys epäonnistui!\n\n"+data.ret);
+                        inform($("#dataset-feedback"),data.ret);
                     }
                 },"json");
 			},

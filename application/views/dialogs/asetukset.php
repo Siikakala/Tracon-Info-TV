@@ -25,4 +25,5 @@
             </tr>
         </table>
     </form>
+    <div style="min-height:10px;overflow:hidden;"><div id="dataset-feedback"></div></div>
 </div>
