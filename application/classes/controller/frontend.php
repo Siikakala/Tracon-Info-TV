@@ -16,6 +16,7 @@ class Controller_Frontend extends Controller {
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.framerate.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."flowplayer/flowplayer-3.2.6.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/widget.js\"></script>";
+        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/kinetic-v3.10.1.min.js\"></script>";
         //$this->view->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>"; //tätä ei toistaiseksi käytetä.
     	$this->view->css = html::style("css/admin.css");
     	if(!defined("__tableprefix")){

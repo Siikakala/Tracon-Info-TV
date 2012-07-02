@@ -10,19 +10,65 @@ $().framerate({framerate: 200, logframes: false});
 var page = "0001";
 var page_was = "";
 var twiit = "";
+var marqText;
+var maincont;
 $(function() {
-
-    update_clock();
     var container = $("#text");
+    update_clock();
     var fetch = "";
     window.setTimeout(function(){
         check(1);
     },50);
     window.setTimeout(function(){
-        scrolleri();
+        //scrolleri();
     },500);
 
 });
+
+window.onload = function() {
+        var scroller = new Kinetic.Stage({
+          container: "marquee",
+          width: 690,
+          height: 100
+        });
+        var main = new Kinetic.Stage({
+          container: "text",
+          width: 900,
+          height: 450
+        });
+
+        var layer1 = new Kinetic.Layer();
+        var layer2 = new Kinetic.Layer();
+
+        marqText = new Kinetic.Text({
+          x: 700,
+          y: 2,
+          text: "Info-TV",
+          fontSize: 80,
+          fontStyle: "bold",
+          fontFamily: "Helvetica",
+          textFill: "black"
+        });
+
+        layer1.add(marqText);
+        scroller.add(layer1);
+
+        layer1.setThrottle(2000);
+
+        var initial = 700;
+        var moved = 0;
+
+        scroller.onFrame(function(frame) {
+            marqText.setX(initial-moved);
+            layer1.draw();
+            moved = moved + 3;
+            if (moved > (700+marqText.getTextWidth())) {
+                moved = 0;
+            }
+        });
+
+        scroller.start();
+}
 
 function scrolleri(){
     var container = $(".scrollingtext");
@@ -163,7 +209,8 @@ function check(cont){
                         break;
                     case "scroller":
                         if(value.changed == true){
-                            scroller.html(value.palautus);
+                            //scroller.html(value.palautus);
+                            marqText.setText(value.palautus);
                         }
                         break;
                     case "page":

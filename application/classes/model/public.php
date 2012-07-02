@@ -68,7 +68,7 @@ class Model_Public extends Model_Database {
             default://diashow
                 $session->set("old_stream",-1);
                 $session->set("old_dia",-1);
-                $max = Jelly::query('rulla')->where('hidden','=','0')->count();//montakos niitä näytettäviä dioja oli diashowssa..?
+                $max = Jelly::query('rulla')->where('hidden','=','0')->and_where('instance','=',$session->get('show_inst',1))->count();//montakos niitä näytettäviä dioja oli diashowssa..?
                 $max--;
                 if($session->get("time")){//jos timelimit on olemassa
                     $timestamp = $session->get("timestamp") + $session->get("time");
