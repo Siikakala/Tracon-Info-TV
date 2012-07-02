@@ -165,6 +165,10 @@ class Controller_Admin extends Controller{
                     $this->tuotanto($param1);
                     $this->view->header->title .= " &raquo; Tuotantosuunnitelma";
                     break;
+                case "settings":
+                    $this->asetukset($param1);
+                    $this->view->header->title .= " &raquo; Asetukset";
+                    break;
                 default:
                		$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>
                                                    <p>Debug-dataa:<br /><pre>".print_r($_SESSION,true)."</pre></p>";
@@ -594,6 +598,36 @@ class Controller_Admin extends Controller{
         }
         $this->view->content->text->tablebody = $tablebody;
 
+    }
+
+    private function asetukset(){
+        $this->view->content->text = new view("pages/asetukset");
+        $this->view->footer->dialogs = new view('dialogs/asetukset');
+        $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/asetukset.js\"></script>";
+
+        $current = DB::query(Database::SELECT,"select value from config where opt = 'tableprefix'")->execute(__db)->as_array();
+        $current = $current[0]['value'];
+
+        $data = Jelly::query('asetukset')->select();
+        $dataset = array();
+        foreach($data as $row){
+            if($row->loaded()){
+                $dataset[$row->prefix] = $row->prefix." - ".$row->tapahtuma;
+            }
+        }
+        if(empty($dataset))
+            $dataset[date("Y")] = date("Y")." - default";
+        $moardata = Jelly::query('instances')->select();
+        $instanssit = "<tbody>";
+        foreach($moardata as $row){
+            if($row->loaded()){
+                $instanssit .= "<tr><td>".$this->utf8($row->nimi)."</td><td>".$this->utf8($row->selite)."</td></tr>";
+            }
+        }
+        $instanssit .= "</tbody>";
+
+        $this->view->content->text->dataset = form::select('dataset',$dataset,$current,array("onchange"=>"change_active();","id"=>"datasetti"));
+        $this->view->content->text->instanssit = $instanssit;
     }
 
     public function action_logout(){

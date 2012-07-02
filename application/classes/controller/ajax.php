@@ -72,7 +72,7 @@ class Controller_Ajax extends Controller{
                   ),
             "bofh" => array(
                   "kutsut" =>
-                      array("user_del","user_level","user_pass","user_new","loads"),
+                      array("user_del","user_level","user_pass","user_new","loads","dataset_change","dataset_add","instance_add"),
                   "level"  => 3
                   ),
             "public" => array(
@@ -1065,6 +1065,25 @@ class Controller_Ajax extends Controller{
                     break;
               case "instance":
                     $this->session->set('instance',(int)$_POST['instance']);
+                    $return = array("ret" => true);
+                    break;
+              case "dataset_change":
+                    $dataset = $_POST['dataset'];
+                    $query = DB::query(Database::UPDATE,
+                                    'UPDATE  config '.
+                                    'SET     value = :data '.
+                                    'WHERE   opt = "tableprefix" '
+                                    )->param(':data',$dataset)->execute(__db);
+                    $return = array("ret" => true);
+                    break;
+              case "dataset_add":
+                    $post = $_POST;
+                    Jelly::factory('asetukset')->set(Arr::extract($post,array('prefix','tapahtuma')))->save();
+                    $return = array("ret" => true);
+                    break;
+              case "instance_add":
+                    $post = $_POST;
+                    Jelly::factory('instances')->set(Arr::extract($post,array('nimi','selite')))->save();
                     $return = array("ret" => true);
                     break;
             }
