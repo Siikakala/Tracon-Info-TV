@@ -50,7 +50,60 @@ window.onload = function() {
           textFill: "black"
         });
 
+        var grad1 = new Kinetic.Rect({
+          x: 0,
+          y: 2,
+          width: 20,
+          height: 100,
+          fill:{
+              start:{
+                  x:0,
+                  y:50
+              },
+              end:{
+                  x:20,
+                  y:50
+              },
+              colorStops:[
+                  0, "rgba(255,255,255,1.0)",
+                  1, "rgba(255,255,255,0.0)"
+              ]
+          }
+        });
+
+        var grad2 = new Kinetic.Rect({
+          x: 670,
+          y: 2,
+          width: 20,
+          height: 100,
+          fill:{
+              start:{
+                  x:0,
+                  y:50
+              },
+              end:{
+                  x:20,
+                  y:50
+              },
+              colorStops:[
+                  0, "rgba(255,255,255,0.0)",
+                  1, "rgba(255,255,255,1.0)"
+              ]
+          }
+        });
+
+        //var fill1 = grad1.createLinearGradient(50,0,50,10);
+        //var fill2 = grad2.createLinearGradient(50,0,50,10);
+
+        //fill1.addColorStop(0,'rgba(255,255,255,255)');
+        //fill1.addColorStop(1,'rgba(255,255,255,0)');
+
+        //grad1.fillStyle = fill1;
+        //grad1.fill();
+
         layer1.add(marqText);
+        layer1.add(grad1);
+        layer1.add(grad2);
         scroller.add(layer1);
 
         layer1.setThrottle(2000);
