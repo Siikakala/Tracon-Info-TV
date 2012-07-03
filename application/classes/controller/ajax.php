@@ -1081,7 +1081,7 @@ class Controller_Ajax extends Controller{
                     break;
               case "dataset_add":
                     $post = $_POST;
-                    if(!is_int($post['prefix'])){
+                    if(!is_numeric($post['prefix'])){
                         $return = array("ret" => "Tunnisteen tulee olla numero.");
                     }else{
                         Jelly::factory('asetukset')->set(Arr::extract($post,array('prefix','tapahtuma')))->save();
