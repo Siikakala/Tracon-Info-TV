@@ -11,6 +11,9 @@ class Controller_Admin extends Controller{
     	$this->session = Session::instance();
     	if(!defined("__tableprefix")){
             $tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
+            if($tb == 0){
+                $tb = "dev";
+            }
             define("__tableprefix",$tb);
         }
     	if($this->request->action() != "ajax"){//ei turhaan alusteta viewiä ajax-responselle
@@ -234,7 +237,7 @@ class Controller_Admin extends Controller{
     }
 
     private function dia($param1){
-        $this->view->header->js .= $this->tinymce("admin.css");
+        $this->view->header->js .= $this->tinymce(__tableprefix."-tv.css");
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/dia.js\"></script>";
         $this->view->content->text = new view('pages/dia');
 

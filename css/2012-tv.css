@@ -96,8 +96,62 @@ a.hover:hover, a.hover:active{
     opacity:0.7;
 }
 
-.twtr-tweet-text {
+#twitter {
+    margin: 0 auto;
+}
+
+#twitter .twtr-widget,
+#twitter .twtr-doc {
+    width: 100%;
+    height: auto;
+}
+
+#twitter .twtr-hd {
+    background: #880000;
+    color: #fff;
+    -moz-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+#twitter .twtr-hd *,
+#twitter .twtr-ft *,
+#twitter .twtr-hd h4 a {
+    background: #880000 !important;
+}
+
+#twitter .twtr-hd h3,
+#twitter .twtr-hd h4 {
+    font-weight: bold;
+}
+
+#twitter .twtr-hd h3 {
+    background: #880000 !important;
+    color: #333 !important;
+    font-size: 2.5em !important;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+#twitter .twtr-tweet {
+    background: #fff;
+}
+
+#twitter .twtr-tweet a:link,
+#twitter .twtr-tweet a:visited,
+#twitter .twtr-tweet a:hover,
+#twitter .twtr-ft a:link,
+#twitter .twtr-ft a:visited,
+#twitter .twtr-ft a:hover{
+    color: #800000 !important;
+}
+
+#twitter .twtr-tweet .twtr-tweet-text {
+    padding-bottom: 4px !important;
     font-size: 30px;
+}
+
+#twitter .twtr-tweet .twtr-tweet-text p {
+    color: #333 !important;
 }
 
 #marquee{

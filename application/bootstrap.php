@@ -97,7 +97,7 @@ if (Kohana::$environment === Kohana::PRODUCTION)
 
     define("__documentroot","/var/www/tracon_info-tv/"); //ja kehityshakemistoa.
 
-    define("__tableprefix","dev"); //"Muuttuvan" datan taulujen prefix.
+    //define("__tableprefix","dev"); //"Muuttuvan" datan taulujen prefix.
 
 }
 /**

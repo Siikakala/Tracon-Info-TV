@@ -11,6 +11,9 @@ class Controller_Ajax extends Controller{
     	$this->session = Session::instance();
     	if(!defined("__tableprefix")){
             $tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
+            if($tb == 0){
+                $tb = "dev";
+            }
             define("__tableprefix",$tb);
         }
     }

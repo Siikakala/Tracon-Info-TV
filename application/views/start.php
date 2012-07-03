@@ -38,17 +38,6 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
                   subject: 'Tracon @ Twitter',
                   width: 'auto',
                   height: 400,
-                  theme: {
-                    shell: {
-                      background: '#880000',
-                      color: '#ffffff'
-                    },
-                    tweets: {
-                      background: '#ffffff',
-                      color: '#444444',
-                      links: '#800000'
-                    }
-                  },
                   features: {
                     scrollbar: false,
                     loop: true,
@@ -67,5 +56,6 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
     		<p><span id="client"></span></p>
 		</div>
 	</div>
+	<div id="foot"></div>
 </body>
 </html>

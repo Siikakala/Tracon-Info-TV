@@ -4,7 +4,7 @@
 }
 
 body {
-	background: #CBCBCB url('../imgs/background.png') repeat-x scroll center top;
+	background: #F3F3F3 url('../imgs/footer_tausta.jpg') repeat-x scroll center top;
 	color: #111;
 	font-family: "Helvetica", "Arial", sans-serif;
 	font-size: 50px;
@@ -21,17 +21,16 @@ body.mceContentBody {
 	position: relative;
 	width: 950px;
 	margin: 0 auto 0 auto;
-	z-index: -1;
+	z-index: 10;
 
 }
 #swirl {
 	position: absolute;
-	left: 450px;
+	left: 712px;
 	width: 567px;
 	height: 152px;
-	top:-80px;
-
-	background: transparent url('../imgs/swirl.png') no-repeat scroll left top;
+	top:-64px;
+	background: transparent url('../imgs/logo7.png') no-repeat scroll left top;
 }
 a.del:link, a.del:visited{
     color: #AAA;
@@ -67,7 +66,7 @@ a.hover:hover, a.hover:active{
 #main {
 	border: 2px solid black;
 	background-color: #FFF;
-	margin: 80px auto;
+	margin: 70px auto;
 	width: 1000px;
 	height:650px;
 }
@@ -96,8 +95,62 @@ a.hover:hover, a.hover:active{
     opacity:0.7;
 }
 
-.twtr-tweet-text {
+#twitter {
+    margin: 0 auto;
+}
+
+#twitter .twtr-widget,
+#twitter .twtr-doc {
+    width: 100%;
+    height: auto;
+}
+
+#twitter .twtr-hd {
+    background: #065a64;
+    color: #fff;
+    -moz-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+#twitter .twtr-hd *,
+#twitter .twtr-ft *,
+#twitter .twtr-hd h4 a {
+    background: #065a64 !important;
+}
+
+#twitter .twtr-hd h3,
+#twitter .twtr-hd h4 {
+    font-weight: bold;
+}
+
+#twitter .twtr-hd h3 {
+    background: #065a64 !important;
+    color: #333 !important;
+    font-size: 2.5em !important;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+#twitter .twtr-tweet {
+    background: #fff;
+}
+
+#twitter .twtr-tweet a:link,
+#twitter .twtr-tweet a:visited,
+#twitter .twtr-tweet a:hover,
+#twitter .twtr-ft a:link,
+#twitter .twtr-ft a:visited,
+#twitter .twtr-ft a:hover{
+    color: #2796a1 !important;
+}
+
+#twitter .twtr-tweet .twtr-tweet-text {
+    padding-bottom: 4px !important;
     font-size: 30px;
+}
+
+#twitter .twtr-tweet .twtr-tweet-text p {
+    color: #333 !important;
 }
 
 #marquee{
@@ -131,6 +184,16 @@ div.scrollingtext{
 	font-size: 10px;
 	text-align: center;
 	opacity:0.6;
+}
+
+#foot{
+    position:absolute;
+    top:605px;
+    z-index:-1;
+	margin: 0 auto 0 auto;
+	height:700px;
+	width: 100%;
+	background: url('../imgs/footer_tausta.jpg') repeat-x scroll 50% 0;
 }
 
 label.error {
