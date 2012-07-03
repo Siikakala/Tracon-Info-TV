@@ -42,7 +42,7 @@ class Model_Tuotanto extends Jelly_Model
             'type'  => Jelly::field('string',array(
                             "column" => "type",
                             "type"   => "text",
-                            "other"  => "DEFAULT 'internal'"
+                            "other"  => ""
                         )),
             'event'     => Jelly::field('text',array(
                             "column" => "event",
