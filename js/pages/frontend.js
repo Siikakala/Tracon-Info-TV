@@ -20,6 +20,8 @@ $(function() {
         check(1);
     },50);
 
+    $('#taustakuva').fullscreenr({width: $(window).width()});
+
 });
 
 window.onload = function() {

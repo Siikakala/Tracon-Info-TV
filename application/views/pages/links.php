@@ -14,8 +14,8 @@
     <div>
         <ul>
             <button name="logi" value="<?php print $baseurl; ?>admin/face/logi" class="btn">Lokikirja</button><br/>
-            <button name="lipunmyynti" value="<?php print $baseurl; ?>admin/face/lipunmyynti" class="btn">Lipunmyynti</button><br/>
-            <button name="tiedotteet" value="<?php print $baseurl; ?>admin/face/tiedotteet" class="btn">Tiedotteet</button><br/>
+            <?php if(__db == "dev"): ?><button name="lipunmyynti" value="<?php print $baseurl; ?>admin/face/lipunmyynti" class="btn">Lipunmyynti</button><br/><?php endif ?>
+            <?php if(__db == "dev"): ?><button name="tiedotteet" value="<?php print $baseurl; ?>admin/face/tiedotteet" class="btn">Tiedotteet</button><br/><?php endif ?>
             <button name="tuotanto" value="<?php print $baseurl; ?>admin/face/tuotanto" class="btn">Tuotantosuunnit.</button><br/>
             <button name="ohjelma" value="<?php print $baseurl; ?>admin/face/ohjelma" class="btn">Ohjelma</button><br/>
         </ul>
@@ -24,7 +24,7 @@
     <h3><a href="#" class="head-links">BOFH:</a></h3>
     <div>
         <ul>
-            <button name="clients" value="<?php print $baseurl; ?>admin/face/clients" class="btn">Clientit</button><br/>
+            <?php if(__db == "dev"): ?><button name="clients" value="<?php print $baseurl; ?>admin/face/clients" class="btn">Clientit</button><br/> <?php endif ?>
             <button name="users" value="<?php print $baseurl; ?>admin/face/users" class="btn">Käyttäjät</button><br/>
             <button name="settings" value="<?php print $baseurl; ?>admin/face/settings" class="btn">Asetukset</button><br/>
         </ul>

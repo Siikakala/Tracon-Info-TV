@@ -14,6 +14,7 @@ class Controller_Frontend extends Controller {
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.validate.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.framerate.js\"></script>";
+        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.fullscreenr.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."flowplayer/flowplayer-3.2.6.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/widget.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/kinetic-v3.10.1.min.js\"></script>";
