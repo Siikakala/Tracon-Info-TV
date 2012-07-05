@@ -21,6 +21,9 @@ $(function() {
                     say($("#chatbox").val());
                     $("#chatbox").val('')
                     break;
+                case 115://F4
+                    $("#chatbox").focus().select();
+                    break;
             }
         });
     }else{
@@ -155,7 +158,7 @@ function say(message){
 
 function connect(){
 	log('Yhdistetään...');
-	Server = new chatSocket('ws://10.10.10.2:9300');
+	Server = new chatSocket('ws://hakku.tracon.fi:47774');
 
 	//Let the user know we're connected
 	Server.bind('open', function() {
@@ -170,7 +173,6 @@ function connect(){
 	//Log any messages sent from server
 	Server.bind('message', function( payload ) {
 		log( payload );
-		console.log('\u0007');
 	});
 
 	Server.connect();
