@@ -44,6 +44,9 @@ class Model_Pages_ extends Model_Database {
      * @return string or array of the data.
      */
     public function page($htmlonly=false, $dataonly=false){
+        if($htmlonly === true && $dataonly === true){
+            throw Kohana_Exception("htmlonly and dataonly can't be both true. Choose only one of them.");
+        }
 
     }
 
