@@ -11,6 +11,12 @@
  */
 class Model_Pages_ extends Model_Database {
 
+     //Kind of constructer, what shuold be done before any other method is called.
+     public function before(){
+         parent::before();
+         $session = Session::instance();
+     }
+
     /**
     * Model_Pages_::access() This function is called, when right page has been determined. Checks for
     * user access rights for the model
