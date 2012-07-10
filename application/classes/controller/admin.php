@@ -184,20 +184,10 @@ class Controller_Admin extends Controller{
 
 	private function scroller($param1){
     	$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/scroller.js\"></script>";
-        $query = Jelly::query('scroller')->where('instance','=',$this->session->get('instance',1))->select();
-        $instances = $this->get_instances();
-        if($query->count() > 0)
-            $result = true;
-        else
-            $result = false;
 
-        $this->view->content->text  = new view('pages/scroller');
-        $this->view->content->text->tablebody = "";
-        $this->view->content->text->instances = form::select('instance',$instances,$this->session->get('instance',1),array("onChange"=>"set_instance(this.value);window.setTimeout(function(){refresh_data();},200);"));
+    	$model = new Model_Pages_Scroller();
 
-        if($result) foreach($query as $data){
-            $this->view->content->text->tablebody .= "<tr class=\"".$data->scroll_id."\"><td>".form::input('pos-'.$data->scroll_id,$data->pos,array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data->scroll_id,$data->text,array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data->scroll_id,1,(boolean)$data->hidden,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data->scroll_id.")\" >X</a></td></tr>";
-        }
+        $this->view->content->text = $model->page();
     }
 
     private function rulla($param1){
@@ -653,7 +643,7 @@ class Controller_Admin extends Controller{
         }
     }
 
-    private function get_instances(){
+    public static function get_instances(){
         $instances = Jelly::query('instances')->select();
         if($instances->count() === 0){
             Jelly::factory('instances')->set(array('rul_id'=>1,'nimi'=>'Public','selite'=>'Julkinen'))->save();
@@ -662,7 +652,7 @@ class Controller_Admin extends Controller{
         $instance_list = array();
         foreach($instances as $row){
             if($row->loaded()){
-                $instance_list[$row->inst_id] = $this->utf8($row->nimi);
+                $instance_list[$row->inst_id] = Controller_Admin::utf8($row->nimi);
             }
         }
         return $instance_list;
@@ -674,8 +664,8 @@ class Controller_Admin extends Controller{
     * @param string $str Muunnettava teksti
     * @return string Teksti varmasti UTF-8:na
     */
-	public function utf8($str){
-		if($this->utf8_compliant($str) == 1){
+	public static function utf8($str){
+		if(Controller_Admin::utf8_compliant($str) == 1){
 			$return = $str;
 		}else{
 			$return = utf8_encode($str);
@@ -689,7 +679,7 @@ class Controller_Admin extends Controller{
 	* @param string $str Tunnistettava teksti
 	* @return True/null, true, jos utf-8, kuolee hiljaa jollei.
 	*/
-    public function utf8_compliant($str) {
+    public static function utf8_compliant($str) {
        	if ( strlen($str) == 0 ) {
            	return TRUE;
        	}

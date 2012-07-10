@@ -122,59 +122,16 @@ class Controller_Ajax extends Controller{
                     $return = array("ret"=>$ret);
                     break;
                 case "scroller_save":
-                    $post = $_POST;
-                    $data = array();
-                    $err = " ";
-                    foreach($post as $key => $value){
-                        $parts = explode("-",$key);
-                        $rivi = $parts[1];
-                        $data[$rivi][$parts[0]] = $value;//automagiikka <input name="data-id" value="value"> -> $data['id']['data'] = value
-                    }
-                    foreach($data as $row => $datat){
-                        if(empty($datat["text"]) && empty($datat["pos"])){
-                        }elseif(empty($datat["text"]) || empty($datat["pos"])){
-                            $err .= "Jokin kenttä jäi täyttämättä. Kyseisen rivin tietoja <strong>EI</strong> ole tallennettu.";
-                        }else{
-                            if(!isset($datat["hidden"]))//checkkaamattomat checkboxit ei tuu mukaan ollenkaan.
-                                $datat["hidden"] = false;
-                            if($row >= 0 && $row < 500){//vanha rivi
-                                $row = Jelly::query('scroller',$row)->select();
-                                $row->pos      = $datat["pos"];
-                                $row->text     = $datat["text"];
-                                $row->hidden   = $datat["hidden"];
-                                $row->instance = $this->session->get('instance',1);
-                                $row->save();
-                            }elseif($row >= 500){//uusi rivi
-                                $datat["instance"] = $this->session->get('instance',1);
-                                Jelly::factory('scroller')->set($datat)->save();
-                            }
-                        }
-                    }
-                    $return = array("ret"=>"Scroller päivitetty.$err Odota hetki, päivitetään listaus...");
+                    $model = new Model_Pages_Scroller();
+                    $return = $model->ajax("save",$param2);
                     break;
                 case "scroller_load":
-                	$query = Jelly::query('scroller')->where('instance','=',$this->session->get('instance',1))->order_by('pos','ASC')->select();
-                    if($query->count() > 0)
-                        $result = $query->as_array();
-                    else
-                        $result = false;
-                    $text = form::open(null, array("onsubmit" => "return false;", "id" => "form"));
-                    $text .= "<table id=\"scroller\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Kohta</th><th class=\"ui-state-default\">Teksti</th><th class=\"ui-state-default\">Piilotettu?</th></tr></thead><tbody>";
-
-                    if($result) foreach($result as $row=>$data){
-                        $text .= "<tr class=\"".$data["scroll_id"]."\"><td>".form::input('pos-'.$data["scroll_id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data["scroll_id"],$data["text"],array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["scroll_id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["scroll_id"].")\" >X</a></td></tr>";
-                    }
-                    $text .= "</tbody></table>".form::close();
-                    $return = array("data" => $text);
+                	$model = new Model_Pages_Scroller();
+                    $return = $model->ajax("load",$param2);
                     break;
                 case "scroller_delete":
-                    if(!$param2){
-                        $ret = false;
-                    }else{
-                        Jelly::query('scroller',$param2)->select()->delete();
-                        $ret = true;
-                    }
-                    $return = array("ret" => $ret);
+                    $model = new Model_Pages_Scroller();
+                    $return = $model->ajax("delete",$param2);
                     break;
                 case "rulla_row"://rivin generointi vaatii sen verran että on helpompaa hakee data ajaxilla.
                 	$id = $param2;
