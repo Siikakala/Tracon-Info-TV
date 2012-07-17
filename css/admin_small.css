@@ -10,6 +10,33 @@ body {
 	font-size: 14px;
 }
 
+#help{
+    position:fixed;
+    top:5px;
+    right:55px;
+}
+
+#helpimg{
+    position:fixed;
+}
+
+#helptext{
+    font-size:12px;
+    float:right;
+    width:400px;
+    margin-top:55px;
+    background-color:#EEE;
+    border: 1px solid #000;
+}
+
+#helptext p{
+    padding-left:8px;
+    padding-right:8px;
+}
+#helptext h3{
+    padding-left:10px;
+}
+
 a.del:link, a.del:visited{
     color: #AAA;
     background-color: transparent;

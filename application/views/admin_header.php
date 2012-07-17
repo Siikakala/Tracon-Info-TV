@@ -13,6 +13,14 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 	<?php print $js; ?>
 </head>
 <body>
+    <div id="help">
+        <div id="helpimg">
+            <img alt="Halp!" title="Halp!" src="<?php print URL::base('http',true); ?>imgs/question-mark-icon.png" />
+        </div>
+        <div id="helptext" style="display:none;">
+        <?php print $helppi; ?>
+        </div>
+    </div>
 	<div id="main">
 		<div id="header">
 			<p id="login"><?php print $login; ?></p>

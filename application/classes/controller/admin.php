@@ -44,8 +44,10 @@ class Controller_Admin extends Controller{
                                         ";
         	$this->view->header->login = "";//oletuksena nää on tyhjiä
         	$this->view->header->show = "";
+        	$this->view->header->helppi = "";
             if($this->session->get('logged_in') && $this->request->action() != 'logout'){//mutta jos ollaan kirjauduttu sisään, eikä kirjautumassa ulos
                 $this->view->header->login = "Kirjautunut käyttäjänä: ".$this->session->get('user')."<br />".html::file_anchor('admin/logout','Kirjaudu ulos');//ja näytetään kirjautunut käyttäjä, uloskirjautumislinkki, ja globaali hallinta.
+                $this->view->header->helppi = new view("global_help");
                 if($this->session->get('level',0)>=3){
                     $this->view->header->show = "Serverin loadit: ".`cat /proc/loadavg|awk '{print $1,$2,$3}'`;
                 }

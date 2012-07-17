@@ -1,3 +1,6 @@
+var wide = 0;
+var reconnects = 0;
+var timeoutti;
 $(function() {
     $( 'button, input:submit' ).button();
     $("#links .btn").button({
@@ -33,7 +36,12 @@ $(function() {
     }else{
         $("#chat").hide(0);
     }
+
+
+    $("#helpimg").hover(function(){$("#helptext").show(100)},function(){$("#helptext").hide(100)});
 });
+
+
 
 /**
  *
@@ -115,6 +123,25 @@ function widen(){
             }
         },300);
     }
+    wide_check();
+}
+
+/**
+ *
+ * @access public
+ * @return void
+ **/
+function wide_check(){
+    console.log("wide_check called");
+    if(wide == 0){
+        wide = 1;
+        $(window).resize(function(){
+            window.clearTimeout(timeoutti);
+            timeoutti = window.setTimeout(function(){
+                widen();
+            },100);
+        });
+    }
 }
 
 var Server;
@@ -175,6 +202,10 @@ function connect(){
 	//OH NOES! Disconnection occurred.
 	Server.bind('close', function( data ) {
 		log( "Yhteys katkaistu.<br/>" );
+		reconnects++;
+		window.setTimeout(function(){
+    		connect();
+    	},3000);
 	});
 
 	//Log any messages sent from server
