@@ -14,6 +14,7 @@ body {
     position:fixed;
     top:5px;
     right:55px;
+    z-index:999999;
 }
 
 #helpimg{

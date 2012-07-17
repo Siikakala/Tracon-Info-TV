@@ -191,7 +191,11 @@ function say(message){
 }
 
 function connect(){
-	log('Yhdistetään...');
+	if(reconnects == 0){
+        log('Yhdistetään...');
+    }else{
+        log('Yhdistetään uudelleen ('+reconnects+')...')
+    }
 	Server = new chatSocket('ws://hakku.tracon.fi:47774');
 
 	//Let the user know we're connected
@@ -205,7 +209,7 @@ function connect(){
 		reconnects++;
 		window.setTimeout(function(){
     		connect();
-    	},3000);
+    	},10000);
 	});
 
 	//Log any messages sent from server
