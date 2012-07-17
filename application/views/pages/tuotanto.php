@@ -16,7 +16,7 @@
     </thead>
     <tbody>
         <tr>
-            <form id="tuotanto_add" action="#" onsubmit="add();return false;">
+            <form id="tuotanto_add" action="#" onsubmit="return false;">
             <td width="100"><?php print $priority; ?></td>
             <td width="120"><?php print $category; ?></td>
             <td width="120"><?php print $type; ?></td>
@@ -25,7 +25,7 @@
             <td width="330"><input type="text" name="event" style="width:100%;" maxlength="300" /></td>
             <td><textarea name="notes" style="width:100%;" cols="3" rows="3"></textarea></td>
             <td><input type="text" name="vastuu" style="width:100%;" /></td>
-            <td><input type="text" name="duunarit" style="width:100%;" /></td>
+            <td><input type="text" name="duunarit" style="width:80%;" /><button onclick="add();return false;" style="float:right;margin-right:-13px;">Lisää</button></td>
             </form>
         </tr>
     </tbody>

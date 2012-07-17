@@ -21,6 +21,10 @@ $(function() {
                     say($("#chatbox").val());
                     $("#chatbox").val('')
                     break;
+            }
+        });
+        $(window).bind("keydown",function(e){
+            switch(e.which){
                 case 115://F4
                     $("#chatbox").focus().select();
                     break;
@@ -133,27 +137,30 @@ function send( text ) {
  * @return void
  **/
 function say(message){
-    var Digital = new Date();
-    var hours = Digital.getHours();
-    var minutes = Digital.getMinutes();
-    var seconds = Digital.getSeconds()
-    if(minutes < 10){
-        minutes = "0" + minutes;
-    }
-    if(hours < 10){
-        hours = "0" + hours;
-    }
-    if(seconds < 10){
-        seconds = "0" + seconds;
-    }
-    var nick = '';
-    if($("#nickbox").val() == ''){
-        nick = usr;
+    if(message == ''){
     }else{
-        nick = $("#nickbox").val();
+        var Digital = new Date();
+        var hours = Digital.getHours();
+        var minutes = Digital.getMinutes();
+        var seconds = Digital.getSeconds()
+        if(minutes < 10){
+            minutes = "0" + minutes;
+        }
+        if(hours < 10){
+            hours = "0" + hours;
+        }
+        if(seconds < 10){
+            seconds = "0" + seconds;
+        }
+        var nick = '';
+        if($("#nickbox").val() == ''){
+            nick = usr;
+        }else{
+            nick = $("#nickbox").val();
+        }
+        send("&lt;"+nick+"&gt; "+message);
+        log(hours + ":" + minutes + ":" + seconds + " <i>&lt;Sinä&gt;</i> " + message + "<br/>");
     }
-    send("&lt;"+nick+"&gt; "+message);
-    log(hours + ":" + minutes + ":" + seconds + " <i>&lt;Sinä&gt;</i> " + message + "<br/>");
 }
 
 function connect(){

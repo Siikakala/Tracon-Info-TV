@@ -460,6 +460,17 @@ label.manual {
   bottom: 10px;
 }
 
+.hid .ui-button-text{
+  padding:1px;
+  font-size: 9px;
+}
+
+.hid{
+  position:absolute;
+  bottom:1px;
+  right:1px;
+}
+
 .vastuullinen{
   text-decoration:underline;
   font-weight:bold;

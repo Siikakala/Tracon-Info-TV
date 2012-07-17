@@ -128,6 +128,7 @@ $(function(){
 	$("#slotit_acc").accordion({collapsible:true,active:false,autoHeight:false});
 	$("#salit_acc").accordion({collapsible:true,active:false,autoHeight:false});
     $("#font_color").buttonset();
+    $(".hid").button();
     $(".colorpick").jPicker({
             window:
             {
@@ -234,8 +235,10 @@ $("#salit label").live("click",function(){
                     $("#cal-cont").prepend(element);
                     $("#cal-cont").find('div[oid|="'+ohjelma.oid+'"]').css({'top':pos.top,'left':pos.left});
                 });
+                $(".hid").button();
             }else{
             }
+
             e_dro();
             $(".drag").draggable({
                          snap: ".target",
@@ -257,6 +260,16 @@ $("#salit label").live("click",function(){
             $(element).css({'top':pos.top,'left':pos.left});
         });
     }
+
+});
+
+$("input:checkbox").live("click",function(){
+    var id = $(this).attr("id");
+	var pressed = !$(this).attr("aria-pressed");
+
+    window.setTimeout(function(){
+        $("input:checkbox").button("refresh");
+    },200);
 });
 
 $("#pituusselect").live("change", function(e){

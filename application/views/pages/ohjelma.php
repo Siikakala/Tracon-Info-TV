@@ -8,17 +8,17 @@
         <li><a href="#asetukset">Asetukset</a></li>
         <?php endif ?>
     </ul>
-    <div id="kartta" style="height:600px;">
+    <div id="kartta" style="height:800px;">
         <div id="salit">
             Valitse salit: <?php print $salit; ?>
         </div>
         <br/>
         <div style="float:left;">
-            <ol id="ohjelmanumerot" style="list-style-type: none;position:relative">
+            <ol id="ohjelmanumerot" style="list-style-type: none;position:relative;">
                 <?php print $ohjelmat; ?>
             </ol>
         </div>
-        <div style="height: 500px; max-width:100%; width:auto; min-width:118px; left: 280px; position:absolute; overflow-y:auto">
+        <div style="height: 760px; max-width:100%; width:auto; min-width:118px; left: 280px; position:absolute; overflow-y:auto">
             <div style="position:relative; width=100%; overflow:hidden;" id="cal-cont">
                 <?php print $timetable; ?>
             </div>

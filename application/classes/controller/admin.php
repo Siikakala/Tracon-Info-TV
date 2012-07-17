@@ -23,8 +23,8 @@ class Controller_Admin extends Controller{
         	$this->view->footer = new view('admin_footer');
         	$this->view->header->title = "";
         	$this->view->footer->dialogs = "";
-        	$this->view->header->css = html::style('css/admin_small.css');
-        	$this->view->header->css .= html::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
+        	$this->view->header->css = html::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
+        	$this->view->header->css .= html::style('css/admin_small.css');
         	$this->view->header->js = '<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-1.7.2.min.js"></script>';
         	$this->view->header->js .= "\n".'<script type="text/javascript" src="'.URL::base($this->request).'jquery/jquery-ui-1.8.18.custom.min.js"></script>';
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
@@ -36,6 +36,10 @@ class Controller_Admin extends Controller{
                                     var baseurl = '".URL::base($this->request)."'
                                     var usrlvl = '".$this->session->get('level',0)."'
                                     var usr = '".$this->session->get('user',0)."'
+                                    var begindate = '".date("d.m.Y",strtotime(Jelly::query('tapahtuma')->limit(1)->select()->get('alkuaika')))."'
+                                    if(begindate == \"01.01.1970\"){
+                                        begindate = \"today\";
+                                    }
                                     </script>
                                         ";
         	$this->view->header->login = "";//oletuksena nää on tyhjiä
@@ -527,7 +531,14 @@ class Controller_Admin extends Controller{
             if($row->loaded()){//15min==15px;
                 $le = $row->kesto - 12 + ($row->kesto / 45 * 3);
                 $li = $le +10;
-                $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" oid=\"".$row->id."\" style=\"width:180px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".htmlspecialchars($row->otsikko)."</div></li>";
+                $lyhyt_otsikko = substr(htmlspecialchars($row->otsikko),0,25);
+                trim($lyhyt_otsikko);
+                if(strlen(htmlspecialchars($row->otsikko)) > 25)
+                    $lyhyt_otsikko .= "...";
+                $checked = "";
+                if($row->hidden == 1)
+                    $checked = "checked=\"checked\"";
+                $ohjelmat .= "<li style=\"height:".$li."px;\"><div class=\"ui-widget-content drag ui-corner-all ".$row->kategoria."\" oid=\"".$row->id."\" style=\"width:180px;height:".$le."px;z-index:3;list-style-type: none;padding:5px;position:absolute;\" title=\"".htmlspecialchars($row->otsikko)."\nPitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." \">".$lyhyt_otsikko."<input name=\"piilotettu\" class=\"hid toggle\" type=\"checkbox\" id=\"hidden-".$row->id."\" value=\"1\" ".$checked." /><label class=\"hid\" for=\"hidden-".$row->id."\">Piilotettu?</label></div></li>";
             }
         }
         //</ohjelmanumerot>
@@ -566,15 +577,21 @@ class Controller_Admin extends Controller{
 
     private function tuotanto(){
         $this->view->content->text = new view('pages/tuotanto');
+        $this->view->footer->dialogs = new view('dialogs/tuotanto');
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/pages/tuotanto.js\"></script>";
         $priority = array('0 - Triviaali','1 - Matala','2 - Normaali','3 - Korkea','4 - Ehdoton');
         $category = array('ohjelma'=>'Ohjelma','viestinta'=>'Viestintä','tyovoima'=>'Työvoima','info'=>'Info','teema'=>'Teema','tilat'=>'Tilat','logistiikka'=>'Logistiikka','turva'=>'Turvallisuus','tekniikka'=>'Tekniikka','talous'=>'Talous','kunnia'=>'Kunniavieras','muu'=>'Muu');
         $type = array('public'=>'Julkinen','internal'=>'Sisäinen','ydin'=>'Ydinryhmä','note'=>'Huomio/kommentti');
         $this->view->content->text->priority = form::select('priority',$priority,2,array("style"=>"width:100%;"));
+        $this->view->footer->dialogs->priority = form::select('priority',$priority,2,array("style"=>"width:100%;","id" => "prioriteetti"));
         $this->view->content->text->category = form::select('category[]',$category,'logistiikka',array("style"=>"width:100%;","multiple"));
+        $this->view->footer->dialogs->category = form::select('category[]',$category,'logistiikka',array("style"=>"width:100%;","multiple","id"=>"kategoria"));
         $this->view->content->text->type = form::select('type',$type,'internal',array("style"=>"width:100%;"));
+        $this->view->footer->dialogs->type = form::select('type',$type,'internal',array("style"=>"width:100%;","id" => "tyyppi"));
         $this->view->content->text->hours = form::select('hours',Date::hours(1,true));
+        $this->view->footer->dialogs->hours = form::select('hours',Date::hours(1,true),0,array("id"=>"tunnit"));
         $this->view->content->text->mins = form::select('mins',Date::minutes(1));
+        $this->view->footer->dialogs->mins = form::select('mins',Date::minutes(1),0,array("id"=>"minuutit"));
 
         $data = Jelly::query('tuotanto')->order_by('start','ASC')->select();
         $tablebody = "";
@@ -586,7 +603,7 @@ class Controller_Admin extends Controller{
                 foreach($categories as $cate)
                     $cats[] = $category[$cate];
                 $show_cats = implode(", ",$cats);
-                $tablebody .= "    <td>".$priority[$row->priority]."</td><td>".$show_cats."</td><td>".$type[$row->type]."</td><td>".date('d.m.Y H:i',strtotime($row->start))."</td><td>".$row->length." min</td><td>".$row->event."</td><td>".nl2br($row->notes)."</td><td>".$row->vastuu."</td><td>".$row->duunarit."</td></tr>\n";
+                $tablebody .= "    <tr id=\"".$row->id."\"><td type=\"prioriteetti\">".$priority[$row->priority]."</td><td type=\"kategoria\">".$show_cats."</td><td type=\"tyyppi\">".$type[$row->type]."</td><td type=\"alkuaika\">".date('d.m.Y H:i',strtotime($row->start))."</td><td type=\"pituus\">".$row->length." min</td><td type=\"eventti\">".$row->event."</td><td type=\"lisat\">".nl2br($row->notes)."</td><td type=\"vastuullinen\">".$row->vastuu."</td><td type=\"tekijat\">".$row->duunarit."</td></tr>\n";
             }
         }
         $this->view->content->text->tablebody = $tablebody;

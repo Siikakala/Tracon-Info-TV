@@ -50,12 +50,12 @@ class Controller_Ajax extends Controller{
                   ),
             "info-common" => array(
                   "kutsut" =>
-                      array("ohjelma_add","kategoria_add","slot_add","sali_add","ohjelma_save","ohjelma_load","ohjelma_dash","tuotanto_save","tuotanto_refresh"),
+                      array("ohjelma_add","kategoria_add","slot_add","sali_add","ohjelma_save","ohjelma_load","ohjelma_dash","tuotanto_save","tuotanto_refresh","tuotanto_populate","tuotanto_edit"),
                   "level"  => 2
                   ),
             "info-adv" => array(
                   "kutsut" =>
-                      array("tapahtuma_save"),
+                      array("tapahtuma_save","tuotanto_del"),
                   "level"  => 3
                   ),
             "logi-readonly" => array(
@@ -947,7 +947,14 @@ class Controller_Ajax extends Controller{
                     $d = Jelly::query('ohjelma')->where('sali','like',$post['sali'])->select();
                     $ret = array();
                     foreach($d as $row){
-                        $ret[] = array("oid"=>$row->id,"hour"=>strtotime($row->alkuaika),"kategoria"=>$row->kategoria,"height"=>($row->kesto - 12 + ($row->kesto / 45 * 3)),"title"=>"Pitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." ","nimi"=>htmlspecialchars($row->otsikko));
+                        $lyhyt_otsikko = substr(htmlspecialchars($row->otsikko),0,25);
+                        trim($lyhyt_otsikko);
+                        if(strlen(htmlspecialchars($row->otsikko)) > 25)
+                            $lyhyt_otsikko .= "...";
+                        $checked = "";
+                        if($row->hidden == 1)
+                            $checked = "checked=\"checked\"";
+                        $ret[] = array("oid"=>$row->id,"hour"=>strtotime($row->alkuaika),"kategoria"=>$row->kategoria,"height"=>($row->kesto - 12 + ($row->kesto / 45 * 3)),"title"=>"".htmlspecialchars($row->otsikko)."\nPitäjä: ".$row->pitaja."\nKategoria: ".$row->kategoria."\nKesto: ".$row->kesto."min\nKuvaus: ".$row->kuvaus." ","nimi"=>$lyhyt_otsikko."<input name=\"piilotettu\" class=\"hid\" type=\"checkbox\" id=\"hidden-".$row->id."\" value=\"1\" ".$checked." /><label class=\"hid\" for=\"hidden-".$row->id."\">Piilotettu?</label>");
                     }
                     $return = array("ret" => true,"ohjelmat"=>$ret);
                     break;
@@ -990,7 +997,7 @@ class Controller_Ajax extends Controller{
                             $hilight = "";
                             if((strtotime($row->start)+($row->length*60)) >= time() && time() >= strtotime($row->start))
                                 $hilight = " class=\"new\"";
-                            $tablebody .= "    <tr$hilight><td>".$priority[$row->priority]."</td><td>".$show_cats."</td><td>".$type[$row->type]."</td><td>".date('d.m.Y H:i',strtotime($row->start))."</td><td>".$row->length." min</td><td>".$row->event."</td><td>".nl2br($row->notes)."</td><td>".$row->vastuu."</td><td>".$row->duunarit."</td></tr>\n";
+                            $tablebody .= "    <tr$hilight id=\"".$row->id."\"><td type=\"prioriteetti\">".$priority[$row->priority]."</td><td type=\"kategoria\">".$show_cats."</td><td type=\"tyyppi\">".$type[$row->type]."</td><td type=\"alkuaika\">".date('d.m.Y H:i',strtotime($row->start))."</td><td type=\"pituus\">".$row->length." min</td><td type=\"eventti\">".$row->event."</td><td type=\"lisat\">".nl2br($row->notes)."</td><td type=\"vastuullinen\">".$row->vastuu."</td><td type=\"tekijat\">".$row->duunarit."</td></tr>\n";
                         }
                     }
                     $return = array("ret" => true, "rivit" => $tablebody);
@@ -1018,7 +1025,7 @@ class Controller_Ajax extends Controller{
                                 $hilight = " class=\"starting\"";
                             elseif((strtotime($row->start)+($row->length*60)) >= time() && time() >= strtotime($row->start))
                                 $hilight = " class=\"blink\"";
-                            $tablebody .= "    <tr$hilight><td>".$priority[$row->priority]."<br/>".$show_cats."<br/>".date('d.m.Y H:i',strtotime($row->start))."</td><td>".$row->length." min</td><td>".$row->event."</td><td><span class=\"vastuullinen\">".$row->vastuu."</span>, ".$row->duunarit."</td></tr>\n";
+                            $tablebody .= "    <tr$hilight><td type=\"prioriteetti\">".$priority[$row->priority]."</td><td type=\"kategoria\">".$show_cats."</td><td type=\"tyyppi\">".$type[$row->type]."</td><td type=\"alkuaika\">".date('d.m.Y H:i',strtotime($row->start))."</td><td type=\"pituus\">".$row->length." min</td><td type=\"eventti\">".$row->event."</td><td type=\"lisat\">".nl2br($row->notes)."</td><td type=\"vastuullinen\">".$row->vastuu."</td><td type=\"tekijat\">".$row->duunarit."</td></tr>\n";
                         }
                     }
                     $return = array("ret" => true, "rivit" => $tablebody);
@@ -1048,6 +1055,42 @@ class Controller_Ajax extends Controller{
               case "instance_add":
                     $post = $_POST;
                     Jelly::factory('instances')->set(Arr::extract($post,array('nimi','selite')))->save();
+                    $return = array("ret" => true);
+                    break;
+              case "tuotanto_del":
+                    $post = $_POST;
+                    Jelly::query("tuotanto",$post['row'])->delete();
+                    $return = array("ret" => true);
+                    break;
+              case "tuotanto_populate":
+                    $post = $_POST;
+                    $row = Jelly::query("tuotanto",$post['row'])->select();
+                    $p["prioriteetti"] = $row->priority;
+                    $p["kategoria"] = explode(",",$row->category);
+                    $p["tyyppi"] = $row->type;
+                    $p["datestart"] = date("d.m.Y",strtotime($row->start));
+                    $p["tunnit"] = date("H",strtotime($row->start));
+                    $p["minuutit"] = date("i",strtotime($row->start));
+                    $p["pituus"] = $row->length;
+                    $p["event"] = $row->event;
+                    $p["lisat"] = $row->notes;
+                    $p["vastuu"] = $row->vastuu;
+                    $p["tekijat"] = $row->duunarit;
+                    $return = array("ret" => $p);
+                    break;
+              case "tuotanto_edit":
+                    $post = $_POST;
+                    $d = Jelly::query("tuotanto",$post['row'])->select();
+                    $d->priority = $post['priority'];
+                    $d->category = implode(",",$post['category']);
+                    $d->type = $post['type'];
+                    $d->start = $post['start'];
+                    $d->length = $post['length'];
+                    $d->event = $post['event'];
+                    $d->notes = $post['notes'];
+                    $d->vastuu = $post['vastuu'];
+                    $d->duunarit = $post['duunarit'];
+                    $d->save();
                     $return = array("ret" => true);
                     break;
             }

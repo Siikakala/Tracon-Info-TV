@@ -48,7 +48,7 @@ class Model_Pages_Scroller extends Model_Database {
         $htmlonly = (bool)$htmlonly;
         $dataonly = (bool)$dataonly;
         if($htmlonly === true && $dataonly === true){
-            throw Kohana_Exception("htmlonly and dataonly can't be both true. Choose only one of them.");
+            throw new Kohana_Exception("htmlonly and dataonly can't be both true. Choose only one of them.");
         }
         $return = "";
 
