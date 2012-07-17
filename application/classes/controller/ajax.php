@@ -1084,7 +1084,7 @@ class Controller_Ajax extends Controller{
                     $d->priority = $post['priority'];
                     $d->category = implode(",",$post['category']);
                     $d->type = $post['type'];
-                    $d->start = $post['start'];
+                    $d->start = $post['start']." ".$post['hours'].":".$post['mins'];
                     $d->length = $post['length'];
                     $d->event = $post['event'];
                     $d->notes = $post['notes'];
