@@ -508,7 +508,7 @@ class Controller_Admin extends Controller{
                 $span = 0;
                 else
                 $span = 0;
-                $timetable = "<table class=\"timetable\" z-index=\"1\" cellspacing=\"0\"><thead><tr><th style=\"min-width:80px;\">Slotti</th></tr></thead><tbody>";
+                $timetable = "<table class=\"timetable\" z-index=\"1\" cellspacing=\"0\"><tr><th style=\"min-width:80px;\">Slotti</th></tr>";
                 $slots=4;
                 if($tc->loaded())
                 	$start = strtotime($tc->alkuaika);
