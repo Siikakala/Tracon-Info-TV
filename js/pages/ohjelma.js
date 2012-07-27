@@ -187,8 +187,8 @@ function e_dro(){
                         if(data.ret == true){
                             if(ui.draggable.parent().is("li")){
                                 ui.draggable.parent().css({'height':'0'});
-                            }
-                            ui.draggable.prependTo("#cal-cont");
+                                ui.draggable.prependTo("#cal-cont");
+                            }                            
                     		ui.draggable.css({'top': pos.top, 'left': pos.left,'position': 'absolute'});
                     		ui.draggable.attr('added',added);
                     		ui.draggable.attr('hour',hour);
