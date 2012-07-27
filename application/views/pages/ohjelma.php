@@ -20,7 +20,9 @@
         </div>
         <div style="height: 760px; max-width:100%; width:auto; min-width:118px; left: 280px; position:absolute; overflow-y:auto">
             <div style="position:relative; width:100%; overflow:hidden;" id="cal-cont">
+                <table class="timetable" z-index="1" cellspacing="0"><thead><tr><th style="min-width:80px;">Slotti</th></tr></thead><tbody>
                 <?php print $timetable; ?>
+                </tbody></table>
             </div>
         </div>
     </div>

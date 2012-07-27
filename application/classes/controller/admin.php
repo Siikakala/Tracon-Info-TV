@@ -508,7 +508,7 @@ class Controller_Admin extends Controller{
                 $span = 0;
                 else
                 $span = 0;
-                $timetable = "<table class=\"timetable\" z-index=\"1\" cellspacing=\"0\"><tr><td style=\"min-width:80px;\">Slotti</td></tr>";
+                $timetable = "";
                 $slots=4;
                 if($tc->loaded())
                 	$start = strtotime($tc->alkuaika);
@@ -522,7 +522,6 @@ class Controller_Admin extends Controller{
                 		$timetable .= "<tr id=\"$i$y\" hour=\"$s\" slot=\"$y\"><td style=\"text-align:right;\">".date("H:",$hour). $y * 15 ."</td></tr>";
                 	}
                 }
-                $timetable .= "</tbody></table>";
                 //</ohjelmakartan timetable>
                 
                 
