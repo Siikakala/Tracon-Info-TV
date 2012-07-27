@@ -19,7 +19,7 @@
             </ol>
         </div>
         <div style="height: 760px; max-width:100%; width:auto; min-width:118px; left: 280px; position:absolute; overflow-y:auto">
-        <div style="position:relative; width:100%; overflow:hidden;" id="cal-cont">
+            <div style="position:relative; width:100%; overflow:hidden;" id="cal-cont">
                 <?php print $timetable; ?>
             </div>
         </div>

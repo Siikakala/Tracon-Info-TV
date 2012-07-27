@@ -174,6 +174,7 @@ function e_dro(){
     $(".target").droppable("destroy");
     $(".target").droppable({
                 tolerance: 'pointer',
+                greedy: true,
                 accept: '.drag',
                 hoverClass: 'new',
                 drop: function(event,ui){
