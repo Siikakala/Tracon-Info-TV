@@ -1061,17 +1061,24 @@ class Controller_Ajax extends Controller {
     				$post = $_POST;
     				$id = explode("-",$post['ohjelma']);
     				$id = $id[1];
-    				$d = Jelly::query('ohjelma',$id)->select();
-    				if($d->hidden == 1){
-                        $d->hidden = false;
+    				if(is_numeric($id)){
+        				$d = Jelly::query('ohjelma',$id)->select();
+        				if($d->hidden == 1){
+                            $d->hidden = false;
+                            $v = "false";
+                        }else{
+                            $d->hidden = true;
+                            $v = "true";
+                        }
+                        if($d->kesto == null)
+                            $d->kesto = 0;
                         $d->save();
-                        $v = "false";
+                        $return = array("ret" => true,"value" => $v);
                     }else{
-                        $d->hidden = true;
-                        $d->save();
-                        $v = "true";
+                        if($id == "c"){
+                            $return = array("ret"=>true);//salinappi
+                        }
                     }
-                    $return = array("ret" => true,"value" => $v);
     				break;
     			case "ohjelma_loadedit":
                     $d = Jelly::query("ohjelma",$_POST['ohjelma'])->select();

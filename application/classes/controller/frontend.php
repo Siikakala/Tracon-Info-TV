@@ -10,7 +10,7 @@ class Controller_Frontend extends Controller {
     	//$halp = new Halp();
     	$this->view = new View('start');
         $this->view->js  = "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery-1.7.min.js\"></script>";
-    	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery-ui-1.8.16.custom.min.js\"></script>";
+    	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery-ui-1.8.22.custom.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.validate.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.metadata.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."jquery/jquery.framerate.js\"></script>";

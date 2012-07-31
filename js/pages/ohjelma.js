@@ -207,12 +207,13 @@ $(function(){
         });
 
 
-    $(".drag").draggable({
+            $(".drag").draggable({
                          snap: ".target",
+                         refreshPositions: false,
                          snapMode: "inner",
                          revert: "invalid",
                          zIndex: 4,
-                         cursorAt:{top: 0, left: -20}
+                         cursorAt:{top:0,left: -20}
                          });
 });
 
@@ -299,14 +300,15 @@ $("#salit label").live("click",function(){
             }
 
             e_dro();
+            $(".drag").draggable("destroy");
             $(".drag").draggable({
-                         snap: ".target",
-                         refreshPositions: true,
-                         snapMode: "inner",
-                         revert: "invalid",
-                         zIndex: 4,
-                         cursorAt:{top:0,left: -20}
-                         });
+                     snap: ".target",
+                     refreshPositions: false,
+                     snapMode: "inner",
+                     revert: "invalid",
+                     zIndex: 4,
+                     cursorAt:{top:0,left: -20}
+                     });
         },"json");
 
 
@@ -334,23 +336,25 @@ function fix_checkboxes(){
     },100);
 }
 
-$("input:checkbox").live("click",function(){
+$("input:checkbox").live("click",function(e){
     var id = $(this).attr("id");
 	var pressed = !$(this).attr("aria-pressed");
 	var button = $(this);
 	fetch = baseurl+'ajax/ohjelma_hide/';
 	$.post(fetch, {"ohjelma":id}, function(data){
+    	console.log("hide spawned with id "+id);
     	if(data.ret == true){
         	button.attr("aria-pressed",data.value);
     	}else{
         	alert("Ohjelma piilotus epäonnistui!");
         }
 	},"json");
+	event.stopPropagation();
 });
 
-$("#ohjelmat > div > div.ui-widget-content").live("click",function(e){
+$("#ohjelmat div.ui-widget-content").live("click",function(e){
     $("#e-id").val($(this).attr("oid"));
-
+    console.log("tag:"+$(this).get(0).tagName);
     fetch = baseurl+'ajax/ohjelma_loadedit/';
 	$.post(fetch, {"ohjelma":$(this).attr("oid")}, function(data){
     	$.each(data.ret,function(field,value){

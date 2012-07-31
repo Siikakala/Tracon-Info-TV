@@ -26,7 +26,7 @@ class Controller_Admin extends Controller {
 			$this->view->header->css = html::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
 			$this->view->header->css .= html::style('css/admin_small.css');
 			$this->view->header->js = '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery-1.7.2.min.js"></script>';
-			$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery-ui-1.8.18.custom.min.js"></script>';
+			$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery-ui-1.8.22.custom.min.js"></script>';
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.metadata.js\"></script>";
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/MD5.js\"></script>";
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/chat.js\"></script>";
@@ -458,6 +458,10 @@ class Controller_Admin extends Controller {
 	{
 		$this->view->header->css .= html::style('css/jPicker-1.1.6.min.css');
 		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jpicker-1.1.6.min.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drag-2.2.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drag.live-2.2.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drop-2.2.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drop.live-2.2.js\"></script>";
 		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/ohjelma.js\"></script>";
 		$this->view->content->text = new view('pages/ohjelma');
 		$this->view->content->text->level = $this->session->get('level', 0);
