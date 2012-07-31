@@ -91,3 +91,46 @@
         </table>
     </form>
 </div>
+
+<div id="dialog-edit" title="Muokkaa ohjelmanumeroa">
+    <form action="" method="post" id="ohjelma_edit" accept-charset="utf-8">
+    <input type="hidden" id="e-id" name="id" value="" />
+        <table>
+            <tr>
+                <td><label for="otsikko">Ohjelmanumero:</label></td>
+                <td><input id="e-otsikko" type="text" name="otsikko" value="" size="35" /></td>
+            </tr>
+            <tr>
+                <td><label for="pitaja">Pitäjä:</label></td>
+                <td><input id="e-pitaja" type="text" name="pitaja" value="" size="35" /></td>
+            </tr>
+            <tr>
+                <td><label for="kategoria">Kategoria:</label></td>
+                <td><?php print $ekategoria; ?></td>
+            </tr>
+            <tr>
+                <td><label for="pituus">Pituus:</label></td>
+                <td><?php print $epituus; ?>
+                    &nbsp;&nbsp;&nbsp;
+                    <div id="mp-cont" style="height:16px;width:100px;margin-left:80px;margin-top:-19px;">
+                        <span id="s-muupituus" style="display:none;">
+                            <input id="e-muupituus" type="text" name="muupituus" value="" size="5" /> min
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="kuvaus">Ohjelmakuvaus:</label></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2"><textarea id="e-kuvaus" name="kuvaus" cols="80" rows="15"></textarea></td>
+            </tr>
+        </table>
+        <div style="min-height:18px"><div id="edit-feedback" style="display:none";></div></div>
+    </form>
+</div>
+
+<div id="dialog-confirm" title="Poista ohjelma?">
+	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Oletko varma että haluat poistaa tämän ohjelman?</p>
+</div>

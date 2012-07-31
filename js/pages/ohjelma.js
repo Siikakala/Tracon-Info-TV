@@ -3,6 +3,7 @@ $(document).ready(function() {
       return false; //tapetaan selaimen oma context menu koko sivulta
    });
    widen();
+   fix_checkboxes();
 });
 var row = 0;
 var passerror = 0;
@@ -29,6 +30,29 @@ $(function(){
 			"Sulje": function() {
 				$(this).dialog( "close" );
 				location.reload(true);
+			}
+		}
+	});
+
+	$("#dialog-edit").dialog({
+		resizable: false,
+		autoOpen: false,
+		height:480,
+		width: 550,
+		modal: true,
+		buttons: {
+			"Muokkaa": function() {
+				fetch = baseurl+'ajax/ohjelma_edit/';
+                $.post(fetch, $("#ohjelma_edit").serialize(), function(data){
+                    if(data.ret == true){
+                        inform($("#edit-feedback"),"Muokkaus onnistui!");
+                    }else{
+                        alert("Ohjelman muokkaus epäonnistui!\n\n"+data.ret);
+                    }
+                },"json");
+			},
+			"Sulje": function() {
+				$(this).dialog( "close" );
 			}
 		}
 	});
@@ -95,6 +119,28 @@ $(function(){
                         alert("Salin lisäys epäonnistui!\n\n"+data.ret);
                     }
                 },"json");
+			},
+			"Peruuta": function() {
+				$(this).dialog( "close" );
+			}
+		}
+	});
+
+	$("#dialog-confirm").dialog({
+		resizable: false,
+		autoOpen: false,
+		height:140,
+		modal: true,
+		buttons: {
+			"Poista": function() {
+				fetch = baseurl+'ajax/ohjelma_del/'
+                $.post(fetch, { "ohjelma": row }, function(data){
+                    if(data.ret == true){
+                    }else{
+                        alert("Ohjelman poisto epäonnistui!");
+                    }
+                },"json");
+                $(this).dialog( "close" );
 			},
 			"Peruuta": function() {
 				$(this).dialog( "close" );
@@ -188,7 +234,7 @@ function e_dro(){
                             if(ui.draggable.parent().is("li")){
                                 ui.draggable.parent().css({'height':'0'});
                                 ui.draggable.prependTo("#cal-cont");
-                            }                            
+                            }
                     		ui.draggable.css({'top': pos.top, 'left': pos.left,'position': 'absolute'});
                     		ui.draggable.attr('added',added);
                     		ui.draggable.attr('hour',hour);
@@ -216,6 +262,18 @@ function save(){
             inform(container,"Tallennus epäonnistui!\n\n"+data.ret);
         }
     },"json");
+}
+
+/**
+ *
+ * @access public
+ * @return void
+ **/
+function del(id){
+    row = id;
+    $("#dialog-confirm").dialog('open');
+    event.stopPropagation();
+    return false;
 }
 
 $("#salit label").live("click",function(){
@@ -264,13 +322,54 @@ $("#salit label").live("click",function(){
 
 });
 
+/**
+ *
+ * @access public
+ * @return void
+ **/
+function fix_checkboxes(){
+    $("input:checkbox").button("refresh");
+    window.setTimeout(function(){
+        fix_checkboxes();
+    },100);
+}
+
 $("input:checkbox").live("click",function(){
     var id = $(this).attr("id");
 	var pressed = !$(this).attr("aria-pressed");
+	var button = $(this);
+	fetch = baseurl+'ajax/ohjelma_hide/';
+	$.post(fetch, {"ohjelma":id}, function(data){
+    	if(data.ret == true){
+        	button.attr("aria-pressed",data.value);
+    	}else{
+        	alert("Ohjelma piilotus epäonnistui!");
+        }
+	},"json");
+});
 
-    window.setTimeout(function(){
-        $("input:checkbox").button("refresh");
-    },200);
+$("#ohjelmat > div > div.ui-widget-content").live("click",function(e){
+    $("#e-id").val($(this).attr("oid"));
+
+    fetch = baseurl+'ajax/ohjelma_loadedit/';
+	$.post(fetch, {"ohjelma":$(this).attr("oid")}, function(data){
+    	$.each(data.ret,function(field,value){
+        	if(field == "pituus"){
+                if(0 != $('#e-pituusselect option[value='+value+']').length){
+                    $("#e-pituusselect").val(value);
+                    console.log("select has option "+value+", selecting it");
+                }else{
+                    $("#e-pituusselect").val("muu");
+                    $("#e-muupituus").val(value);
+                    $("#s-muupituus").show();
+                    console.log("select has not option "+value+", selecting muupituus and populate the data");
+                }
+            }else{
+            	$("#e-"+field).val(value);
+        	}
+    	});
+	},"json");
+	$("#dialog-edit").dialog("open");
 });
 
 $("#pituusselect").live("change", function(e){
@@ -278,5 +377,13 @@ $("#pituusselect").live("change", function(e){
     	$("#muupituus").show('slide','','medium');
 	}else{
     	$("#muupituus").hide('slide','','medium');
+    }
+});
+
+$("#e-pituusselect").live("change", function(e){
+	if($(this).val() == "muu"){
+    	$("#e-muupituus").show('slide','','medium');
+	}else{
+    	$("#e-muupituus").hide('slide','','medium');
     }
 });

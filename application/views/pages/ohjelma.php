@@ -26,10 +26,8 @@
             </div>
         </div>
     </div>
-    <div id="ohjelmat">
-        <ol id="ohjelmanumerot" style="list-style-type: none;">
-            <?php print $ohjelmamuoks; ?>
-        </ol>
+    <div id="ohjelmat" style="height:800px;">
+        <?php print $ohjelmamuoks; ?>
     </div>
     <?php if($level >= 3): ?>
     <div id="asetukset">
