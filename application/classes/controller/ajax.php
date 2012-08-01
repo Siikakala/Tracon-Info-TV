@@ -1118,8 +1118,11 @@ class Controller_Ajax extends Controller {
                 case "tekstari_send":
                     $post = $_POST;
                     $sms = new Nexmo_Message();
-                    $d = $sms->sendText($post['number'],"Tracon",$this->utf8($post['message']));
-                    $return = array("ret" => $sms->displayOverview($d));
+                    $d = array();
+                    preg_match_all('/(\d{12})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
+                    foreach($numbers[1] as $key => $number)
+                        $d[] = $sms->sendText($number,"Tracon",$this->utf8($post['message']));
+                    $return = array("ret" => print_r($d,true));
                     break;
 
 			}
