@@ -33,7 +33,7 @@
             <input type="submit" value="Lähetä" onclick="send('ryhmatekstari');return false;" />
         </form>
     </div>
-    <h3><a href="#" class="head-links">CVS-lähetys</a></h3>
+    <h3><a href="#" class="head-links">CSV-lähetys</a></h3>
     <div>
         <p>Ei vielä implementoitu. Seuraa perästä.</p>
     </div>
