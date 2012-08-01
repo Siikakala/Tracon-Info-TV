@@ -178,6 +178,10 @@ class Controller_Admin extends Controller {
 					$this->asetukset($param1);
 					$this->view->header->title .= " &raquo; Asetukset";
 					break;
+				case "tekstarit":
+					$this->tekstarit($param1);
+					$this->view->header->title .= " &raquo; Tekstiviestit";
+					break;
 				default:
 					$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>";
 					if (__db == "dev") $this->view->content->text .= "<p>Debug-dataa:<br /><pre>" . print_r($_SESSION, true) . "</pre></p>";
@@ -645,6 +649,14 @@ class Controller_Admin extends Controller {
 			$this->view->content->text->dataset = form::select('dataset', $dataset, $current, array("onchange" => "change_active();", "id" => "datasetti"));
 			$this->view->content->text->instanssit = $instanssit;
 		}
+
+		private function tekstarit()
+		{
+            $this->view->content->text = new view("pages/tekstari");
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/tekstari.js\"></script>";
+
+        }
+
 
 		public function action_logout()
 		{

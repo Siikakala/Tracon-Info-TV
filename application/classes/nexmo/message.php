@@ -16,7 +16,7 @@
  *
  */
 
-class Nexmo_Message extends Controller {
+class Nexmo_Message extends Model {
 
 	// Nexmo account credentials
 	private $nx_key = '';
@@ -55,11 +55,6 @@ class Nexmo_Message extends Controller {
 	// A few options
 	public $ssl_verify = false; // Verify Nexmo SSL before sending any message
 
-
-	public function before(){
-		$this->nx_key = Kohana::$config->load('auth.nexmo.key');
-		$this->nx_secret = Kohana::$config->load('auth.nexmo.secret');
-	}
 
 
 
@@ -166,7 +161,7 @@ class Nexmo_Message extends Controller {
 	 */
 	private function sendRequest ( $data ) {
 		// Build the post data
-		$data = array_merge($data, array('username' => $this->nx_key, 'password' => $this->nx_secret));
+		$data = array_merge($data, array('username' => Kohana::$config->load('auth.nexmo.key'), 'password' => Kohana::$config->load('auth.nexmo.secret')));
 		$post = '';
 		foreach($data as $k => $v){
 			$post .= "&$k=$v";
@@ -223,14 +218,14 @@ class Nexmo_Message extends Controller {
 			$this->nexmo_response = $response_obj;
 
 			// Find the total cost of this message
-			$response_obj->cost = $total_cost = 0;
-			if (is_array($response_obj->messages)) {
-				foreach ($response_obj->messages as $msg) {
-					$total_cost = $total_cost + (float)$msg->messageprice;
-				}
-
-				$response_obj->cost = $total_cost;
-			}
+//			$response_obj->cost = $total_cost = 0;
+//			if (is_array($response_obj->messages)) {
+//				foreach ($response_obj->messages as $msg) {
+//					$total_cost = $total_cost + (float)$msg->messageprice;
+//				}
+//
+//				$response_obj->cost = $total_cost;
+//			}
 
 			return $response_obj;
 
@@ -300,7 +295,7 @@ class Nexmo_Message extends Controller {
 			$tmp = array('id'=>'', 'status'=>0);
 
 			if ( $message->status != 0) {
-				$tmp['status'] = $message->errortex;
+				$tmp['status'] = $message->errortext;
 			} else {
 				$tmp['status'] = 'OK';
 				$tmp['id'] = $message->messageid;
