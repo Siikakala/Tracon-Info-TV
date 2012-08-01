@@ -27,6 +27,7 @@
         </div>
     </div>
     <div id="ohjelmat" style="height:800px;">
+    <p>Voit muokata ohjelmia klikkaamalla niitä. Oikean yläkulman raksi poistaa ohjelman.</p>
         <?php print $ohjelmamuoks; ?>
     </div>
     <?php if($level >= 3): ?>

@@ -285,6 +285,8 @@ class Model_Public extends Model_Database {
                                         "WHERE   sali = :sali ".
                                         "        AND ".
                                         "        UNIX_TIMESTAMP() BETWEEN UNIX_TIMESTAMP(alkuaika) AND (UNIX_TIMESTAMP(alkuaika)+(kesto*60)) ".
+                                        "        AND ".
+                                        "        hidden = 0 ".
                                         "LIMIT   1"
                                         );
                     $query->parameters(array(":sali"  => $sali
@@ -321,6 +323,8 @@ class Model_Public extends Model_Database {
                                         "WHERE    sali = :sali ".
                                         "         AND ".
                                         "         alkuaika > NOW() ".
+                                        "         AND ".
+                                        "         hidden = 0 ".
                                         "ORDER BY alkuaika ASC ".
                                         "LIMIT   1"
                                         );
