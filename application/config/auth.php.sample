@@ -5,6 +5,10 @@ return array(
     'analytics' => array(
         'dev'  => '',
         'prod' => ''
+    ),
+    'nexmo' => array(//nexmo sms-gateway credentials
+        'key' => '',
+        'secret' => ''
     )
 );
 ?>

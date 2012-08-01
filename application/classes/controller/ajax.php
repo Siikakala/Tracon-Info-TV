@@ -46,7 +46,13 @@ class Controller_Ajax extends Controller {
 				"level" => 3
 				),
 			"info-common" => array("kutsut" =>
-				array("ohjelma_add", "kategoria_add", "slot_add", "sali_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash", "tuotanto_save", "tuotanto_refresh", "tuotanto_populate", "tuotanto_edit","ohjelma_hide","ohjelma_loadedit","ohjelma_edit","ohjelma_del"),
+				array(
+                    "kategoria_add", "slot_add", "sali_add",
+                    "ohjelma_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash",
+                    "tuotanto_save", "tuotanto_refresh", "tuotanto_populate", "tuotanto_edit",
+                    "ohjelma_hide","ohjelma_loadedit","ohjelma_edit","ohjelma_del",
+                    "tekstari_send"
+                ),
 				"level" => 2
 				),
 			"info-adv" => array("kutsut" =>
@@ -1108,6 +1114,12 @@ class Controller_Ajax extends Controller {
                 case "ohjelma_del":
                     Jelly::query('ohjelma',$_POST['ohjelma'])->select()->delete();
                     $return = array("ret" => true);
+                    break;
+                case "tekstari_send":
+                    $post = $_POST;
+                    $sms = new Nexmo_Message();
+                    $d = $sms->sendText($post['number'],"Tracon 7",$this->utf8($post['message']));
+                    $return = array("ret" => $sms->displayOverview($d));
                     break;
 
 			}
