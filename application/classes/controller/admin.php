@@ -36,6 +36,7 @@ class Controller_Admin extends Controller {
 			var baseurl = '" . URL::base($this->request) . "'
 			var usrlvl = '" . $this->session->get('level', 0) . "'
 			var usr = '" . $this->session->get('user', 0) . "'
+			var page = '" . $this->request->action() . "'
 			var begindate = '" . date("d.m.Y", strtotime(Jelly::query('tapahtuma')->limit(1)->select()->get('alkuaika'))) . "'
 			if(begindate == \"01.01.1970\"){
 			begindate = \"today\";
@@ -97,7 +98,7 @@ class Controller_Admin extends Controller {
 			$this->view->content->links = "";
 		} else {
 			// <linkkipalkki>
-			$pages = array("tvadm" => array("scroller", "rulla", "dia", "streams", "frontends", "video"), "info" => array("logi", "lipunmyynti", "tiedotteet", "tuotanto", "ohjelma"), "bofh" => array("clients", "users", "settings"));
+			$pages = array("tvadm" => array("scroller", "rulla", "dia", "streams", "frontends", "video"), "info" => array("logi", "lipunmyynti", "tiedotteet", "tuotanto", "ohjelma", "tekstarit"), "bofh" => array("clients", "users", "settings"));
 			$this->session->set('results', array());
 			function search($array, $key, $search)
 			{

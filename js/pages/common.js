@@ -16,7 +16,7 @@ $(function() {
     });
     update_load();
     update_clock();
-    if(usrlvl > 0){
+    if(usrlvl > 0 && page != "logout"){
         connect();
         $("#chatbox").bind("keydown",function(e){
             switch(e.which){

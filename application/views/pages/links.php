@@ -18,6 +18,7 @@
             <?php if(__db == "dev"): ?><button name="tiedotteet" value="<?php print $baseurl; ?>admin/face/tiedotteet" class="btn">Tiedotteet</button><br/><?php endif ?>
             <button name="tuotanto" value="<?php print $baseurl; ?>admin/face/tuotanto" class="btn">Tuotantosuunnit.</button><br/>
             <button name="ohjelma" value="<?php print $baseurl; ?>admin/face/ohjelma" class="btn">Ohjelma</button><br/>
+            <button name="ohjelma" value="<?php print $baseurl; ?>admin/face/tekstarit" class="btn">Tekstiviestit</button><br/>
         </ul>
     </div>
     <?php if($level >= 3): ?>
