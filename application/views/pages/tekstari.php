@@ -35,6 +35,7 @@
     </div>
     <h3><a href="#" class="head-links">CSV-lähetys</a></h3>
     <div>
-        <p>Ei vielä implementoitu. Seuraa perästä.</p>
+        <p>Hyväksytty syntaksi on /^(\d{12})[;,](.*)$/U eli riveittäin on ensin numero, jonka jälkeen on pilkku tai puolipiste, ja tämän jälkeen on viesti.</p>
+        <div id="fileupload"></div>
     </div>
 <div id="feedback" style="display:none;"></div>

@@ -654,7 +654,7 @@ class Controller_Admin extends Controller {
 		{
             $this->view->content->text = new view("pages/tekstari");
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/tekstari.js\"></script>";
-
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/fileuploader.js\"></script>";
         }
 
 

@@ -51,7 +51,7 @@ class Controller_Ajax extends Controller {
                     "ohjelma_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash",
                     "tuotanto_save", "tuotanto_refresh", "tuotanto_populate", "tuotanto_edit",
                     "ohjelma_hide","ohjelma_loadedit","ohjelma_edit","ohjelma_del",
-                    "tekstari_send"
+                    "tekstari_send", "tekstari_file"
                 ),
 				"level" => 2
 				),
@@ -1123,6 +1123,18 @@ class Controller_Ajax extends Controller {
                     foreach($numbers[1] as $key => $number)
                         $d[] = $sms->sendText($number,"Tracon",$this->utf8($post['message']));
                     $return = array("ret" => print_r($d,true));
+                    break;
+                case "tekstari_file":
+                    $data;
+                    $d = array();
+                    if ($_FILES['uploadedfile']['error'] == UPLOAD_ERR_OK && is_uploaded_file($_FILES['uploadedfile']['tmp_name'])) {
+                        $data = file_get_contents($_FILES['uploadedfile']['tmp_name']);
+                    }
+                    preg_match_all(' /^(\d{12})[;,](.*)$/U',$data,$matches, PREG_SET_ORDER);
+                    foreach($matches as $row){
+                        $d[] = $sms->sendText($row[1],"Tracon",$this->utf8($row[2]));
+                    }
+                    $return = array("success"=>true,"ret" => print_r($d,true));
                     break;
 
 			}

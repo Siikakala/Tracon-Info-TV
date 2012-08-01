@@ -8,8 +8,17 @@ function send(form){
 }
 $(function(){
     $("#tekstari-accord").accordion();
+
+    var uploader = new qq.FileUploader({
+            element: document.getElementById('fileupload'),
+            action: baseurl+'ajax/tekstari_file/',
+            onComplete: function(id, fileName, responseJSON){
+                inform($("#feedback"),responseJSON.ret);
+            },
+        });
 });
 
 $("form").submit(function(e) {
     e.preventDefault();
 });
+
