@@ -93,13 +93,16 @@ function update_clock(){
     },1000);
 }
 
-function inform(container,message){
+function inform(container,message,timeout){
+    if(timeout == undefined){
+        timeout = 4000;
+    }
     container.hide(0);
     container.html(message);
     container.show('drop',{ direction: "right", distance: "-50px" },500);
     window.setTimeout(function(){
         container.hide('drop',{ direction: "right", distance: "100px" },1000);
-    },4000);
+    },timeout);
 }
 
 function normalize(href){

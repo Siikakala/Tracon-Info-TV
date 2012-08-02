@@ -1129,15 +1129,14 @@ class Controller_Ajax extends Controller {
                         $d[] = $sms->sendText($number,"Tracon",$this->utf8($post['message']));
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
-                    $return = array("ret" => print_r($d,true));
+                    $return = array("ret" => "Viesti(t) lähetetty onnistuneesti!");
                     break;
                 case "tekstari_file":
-                    $data;
                     $d = array();
-                    if ($_FILES['uploadedfile']['error'] == UPLOAD_ERR_OK && is_uploaded_file($_FILES['uploadedfile']['tmp_name'])) {
-                        $data = file_get_contents($_FILES['uploadedfile']['tmp_name']);
-                    }
-                    preg_match_all(' /^(\d{12})[;,](.*)$/U',$data,$matches, PREG_SET_ORDER);
+                    $input = fopen("php://input", "r");
+                    $data = stream_get_contents($input);
+                    fclose($input);
+                    preg_match_all('/(\d{12})[;,](.*)/',$data,$matches, PREG_SET_ORDER);
                     $time = count($matches);
                     $exec = ($time * 2 / 10) + 2;
                     $exec = ceil($exec);
@@ -1147,7 +1146,7 @@ class Controller_Ajax extends Controller {
                         $d[] = $sms->sendText($row[1],"Tracon",$this->utf8($row[2]));
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
-                    $return = array("success"=>true,"ret" => print_r($d,true));
+                    $return = array("success"=>true,"ret" => "Viestit lähetetty onnistuneesti!");
                     break;
 
 			}

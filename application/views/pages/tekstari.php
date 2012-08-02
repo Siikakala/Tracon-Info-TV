@@ -38,4 +38,6 @@
         <p>Hyväksytty syntaksi on /^(\d{12})[;,](.*)$/U eli riveittäin on ensin numero, jonka jälkeen on pilkku tai puolipiste, ja tämän jälkeen on viesti.</p>
         <div id="fileupload"></div>
     </div>
-<div id="feedback" style="display:none;"></div>
+</div>
+<br/><br/>
+<div style="min-height:20px"><div id="feedback" style="display:none;"></div></div>
