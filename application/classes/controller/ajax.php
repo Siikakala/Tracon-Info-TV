@@ -1120,8 +1120,15 @@ class Controller_Ajax extends Controller {
                     $sms = new Nexmo_Message();
                     $d = array();
                     preg_match_all('/(\d{12})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
-                    foreach($numbers[1] as $key => $number)
+                    $time = count($matches);
+                    $exec = ($time * 2 / 10) + 2;
+                    $exec = ceil($exec);
+                    //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
+                    set_time_limit($exec);
+                    foreach($numbers[1] as $key => $number){
                         $d[] = $sms->sendText($number,"Tracon",$this->utf8($post['message']));
+                        usleep(200000);//200ms, 5 tekstaria sekunnissa.
+                    }
                     $return = array("ret" => print_r($d,true));
                     break;
                 case "tekstari_file":
@@ -1131,8 +1138,14 @@ class Controller_Ajax extends Controller {
                         $data = file_get_contents($_FILES['uploadedfile']['tmp_name']);
                     }
                     preg_match_all(' /^(\d{12})[;,](.*)$/U',$data,$matches, PREG_SET_ORDER);
+                    $time = count($matches);
+                    $exec = ($time * 2 / 10) + 2;
+                    $exec = ceil($exec);
+                    //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
+                    set_time_limit($exec);
                     foreach($matches as $row){
                         $d[] = $sms->sendText($row[1],"Tracon",$this->utf8($row[2]));
+                        usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
                     $return = array("success"=>true,"ret" => print_r($d,true));
                     break;
