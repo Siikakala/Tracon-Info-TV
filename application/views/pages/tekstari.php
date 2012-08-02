@@ -18,7 +18,8 @@
     </div>
     <h3><a href="#" class="head-links">Ryhmäviesti</a></h3>
     <div>
-        <p>Erota puhelinnumerot toisistaan ei-numeerisella merkillä (rivinvaihto, pilkku, välilyönti tms).</p>
+        <p>Erota puhelinnumerot toisistaan ei-numeerisella merkillä (rivinvaihto, pilkku, välilyönti tms).<br/>
+        <strong>HUOM!</strong> Upload kestää sitä kauemmin, mitä enemmän viestejä lähetät kerralla, koska nexmo sallii 5 viestiä sekunnissa. Odota rauhassa.</p>
         <form action="" method="post" id="ryhmatekstari" accept-charset="utf-8">
             <table>
                 <tr>
@@ -35,7 +36,8 @@
     </div>
     <h3><a href="#" class="head-links">CSV-lähetys</a></h3>
     <div>
-        <p>Hyväksytty syntaksi on /^(\d{12})[;,](.*)$/U eli riveittäin on ensin numero, jonka jälkeen on pilkku tai puolipiste, ja tämän jälkeen on viesti.</p>
+        <p>Hyväksytty syntaksi on /^(\d{12})[;,](.*)$/U eli riveittäin on ensin numero, jonka jälkeen on pilkku tai puolipiste, ja tämän jälkeen on viesti. Esimerkiksi Excelin CSV-export tuottaa tässä muodossa kun numero on A-sarakkeessa ja viesti B-sarakkeessa.</p>
+        <p><strong>HUOM!</strong> Upload kestää sitä kauemmin, mitä enemmän viestejä lähetät kerralla, koska nexmo sallii 5 viestiä sekunnissa. Odota rauhassa.</p>
         <div id="fileupload"></div>
     </div>
 </div>
