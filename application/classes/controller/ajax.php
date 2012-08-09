@@ -1133,6 +1133,7 @@ class Controller_Ajax extends Controller {
                     break;
                 case "tekstari_file":
                     $d = array();
+                    $sms = new Nexmo_Message();
                     $input = fopen("php://input", "r");
                     $data = stream_get_contents($input);
                     fclose($input);
