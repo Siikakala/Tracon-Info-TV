@@ -224,7 +224,7 @@ class Nexmo_Message extends Model {
 				foreach ($response_obj->messages as $msg) {
 					$errors["code"][$i] = (float)$msg->status;
 					if($errors["code"][$i] != 0){
-                        $errors["msg"][$i] = $msg->error-text;
+                        $errors["msg"][$i] = $msg->errortext;
                     }
 					$errors["code"][0] += $errors["code"][$i];
 					$errors["credit"] = number_format($msg->remainingbalance, 3, ',', '');
