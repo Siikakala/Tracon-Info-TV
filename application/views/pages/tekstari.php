@@ -36,9 +36,10 @@
     </div>
     <h3><a href="#" class="head-links">CSV-lähetys</a></h3>
     <div>
-        <p>Hyväksytty syntaksi on /^(\d{12})[;,](.*)$/U eli riveittäin on ensin numero, jonka jälkeen on pilkku tai puolipiste, ja tämän jälkeen on viesti. Esimerkiksi Excelin CSV-export tuottaa tässä muodossa kun numero on A-sarakkeessa ja viesti B-sarakkeessa.</p>
+        <p>Hyväksytty syntaksi on /^(\d{12})[;,](.*)$/U eli riveittäin on ensin numero, jonka jälkeen on pilkku tai puolipiste, ja tämän jälkeen on viesti. Esimerkiksi Excelin CSV-export tuottaa tässä muodossa kun numero on A-sarakkeessa ja viesti B-sarakkeessa. Ennen numeroa olevaa tekstiä ei huomioida.</p>
         <p><strong>HUOM!</strong> Upload kestää sitä kauemmin, mitä enemmän viestejä lähetät kerralla, koska nexmo sallii 5 viestiä sekunnissa. Odota rauhassa.</p>
         <div id="fileupload"></div>
+        <br/><br/>
     </div>
 </div>
 <br/><br/>

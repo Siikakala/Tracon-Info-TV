@@ -1120,16 +1120,28 @@ class Controller_Ajax extends Controller {
                     $sms = new Nexmo_Message();
                     $d = array();
                     preg_match_all('/(\d{12})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
-                    $time = count($matches);
+                    $time = count($numbers);
                     $exec = ($time * 2 / 10) + 2;
                     $exec = ceil($exec);
+                    $errors = 0;
+                    $jaljella = 0;
                     //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
                     set_time_limit($exec);
                     foreach($numbers[1] as $key => $number){
-                        $d[] = $sms->sendText($number,"Tracon",$this->utf8($post['message']));
+                        $d[] = $data = $sms->sendText($number,"Tracon",$this->utf8($post['message']));
+                        if($data["code"][0] != 0){
+                            $errors = 1;
+                            $d = $data;
+                            break;
+                        }
+                        $jaljella = $data["credit"];
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
-                    $return = array("ret" => "Viesti(t) lähetetty onnistuneesti!");
+                    if($errors == 1){
+                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d));
+                    }else{
+                        $return = array("ret" => "Viesti(t) lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €");
+                    }
                     break;
                 case "tekstari_file":
                     $d = array();
@@ -1141,13 +1153,25 @@ class Controller_Ajax extends Controller {
                     $time = count($matches);
                     $exec = ($time * 2 / 10) + 2;
                     $exec = ceil($exec);
+                    $errors = 0;
+                    $jaljella = 0;
                     //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
                     set_time_limit($exec);
                     foreach($matches as $row){
-                        $d[] = $sms->sendText($row[1],"Tracon",$this->utf8($row[2]));
+                        $d[] = $data = $sms->sendText($row[1],"Tracon",$this->utf8($row[2]));
+                        if($data["code"][0] != 0){
+                            $errors = 1;
+                            $d = $data;
+                            break;
+                        }
+                        $jaljella = $data["credit"];
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
-                    $return = array("success"=>true,"ret" => "Viestit lähetetty onnistuneesti!");
+                    if($errors == 1){
+                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d));
+                    }else{
+                        $return = array("success"=>true,"ret" => "Viestit lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €");
+                    }
                     break;
 
 			}

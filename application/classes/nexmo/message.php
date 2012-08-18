@@ -217,17 +217,22 @@ class Nexmo_Message extends Model {
 		if ($response_obj) {
 			$this->nexmo_response = $response_obj;
 
-			// Find the total cost of this message
-//			$response_obj->cost = $total_cost = 0;
-//			if (is_array($response_obj->messages)) {
-//				foreach ($response_obj->messages as $msg) {
-//					$total_cost = $total_cost + (float)$msg->messageprice;
-//				}
-//
-//				$response_obj->cost = $total_cost;
-//			}
+			// Find possible error codes
+			$errors = array("code" => array(0=>0),"credit" => 0);
+			$i = 1;
+			if (is_array($response_obj->messages)) {
+				foreach ($response_obj->messages as $msg) {
+					$errors["code"][$i] = (float)$msg->status;
+					if($errors["code"][$i] != 0){
+                        $errors["msg"][$i] = $msg->error-text;
+                    }
+					$errors["code"][0] += $errors["code"][$i];
+					$errors["credit"] = number_format($msg->remainingbalance, 3, ',', '');
+					$i++;
+				}
+			}
 
-			return $response_obj;
+			return $errors;
 
 		} else {
 			// A malformed response
