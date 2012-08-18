@@ -13,7 +13,11 @@ $(function(){
             element: document.getElementById('fileupload'),
             action: baseurl+'ajax/tekstari_file/',
             onComplete: function(id, fileName, responseJSON){
-                inform($("#feedback"),responseJSON.ret);
+                if(responseJSON.timeout != undefined){
+                    inform($("#feedback"),responseJSON.ret,responseJSON.timeout);
+                }else{
+                    inform($("#feedback"),responseJSON.ret);
+                }
             },
         });
 });

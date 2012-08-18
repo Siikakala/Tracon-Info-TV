@@ -1125,6 +1125,7 @@ class Controller_Ajax extends Controller {
                     $exec = ceil($exec);
                     $errors = 0;
                     $jaljella = 0;
+                    $sent = 0;
                     //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
                     set_time_limit($exec);
                     foreach($numbers[1] as $key => $number){
@@ -1135,12 +1136,17 @@ class Controller_Ajax extends Controller {
                             break;
                         }
                         $jaljella = $data["credit"];
+                        $sent++;
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
                     if($errors == 1){
                         $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d["msg"]));
                     }else{
-                        $return = array("ret" => "Viesti(t) lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €");
+                        if($sent > 1)
+                            $m = "t";
+                        else
+                            $m = "";
+                        $return = array("ret" => "Viesti".$m." (".$sent." kpl) lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €.");
                     }
                     break;
                 case "tekstari_file":
@@ -1155,6 +1161,7 @@ class Controller_Ajax extends Controller {
                     $exec = ceil($exec);
                     $errors = 0;
                     $jaljella = 0;
+                    $sent = 0;
                     //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
                     set_time_limit($exec);
                     foreach($matches as $row){
@@ -1165,12 +1172,13 @@ class Controller_Ajax extends Controller {
                             break;
                         }
                         $jaljella = $data["credit"];
+                        $sent++;
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
                     if($errors == 1){
-                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d["msg"]));
+                        $return = array("ret" => "Lähetys epäonnistui! Viestejä ehdittiin lähettämään onnistuneesti ".$sent." kappaletta. Epäonnistumisen syy: ".implode(", ",$d["msg"]).". Saldoa jäi vielä ".$jaljella." €.","timeout"=>30000);
                     }else{
-                        $return = array("success"=>true,"ret" => "Viestit lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €");
+                        $return = array("success"=>true,"ret" => "Viestit (".$sent." kpl) lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €.");
                     }
                     break;
 
