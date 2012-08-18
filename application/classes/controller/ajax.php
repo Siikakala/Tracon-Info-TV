@@ -1138,7 +1138,7 @@ class Controller_Ajax extends Controller {
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
                     if($errors == 1){
-                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d));
+                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d["msg"]));
                     }else{
                         $return = array("ret" => "Viesti(t) lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €");
                     }
@@ -1168,7 +1168,7 @@ class Controller_Ajax extends Controller {
                         usleep(200000);//200ms, 5 tekstaria sekunnissa.
                     }
                     if($errors == 1){
-                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d));
+                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d["msg"]));
                     }else{
                         $return = array("success"=>true,"ret" => "Viestit lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €");
                     }
