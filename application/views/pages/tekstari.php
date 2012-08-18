@@ -19,7 +19,7 @@
     <h3><a href="#" class="head-links">Ryhmäviesti</a></h3>
     <div>
         <p>Erota puhelinnumerot toisistaan ei-numeerisella merkillä (rivinvaihto, pilkku, välilyönti tms).<br/>
-        <strong>HUOM!</strong> Upload kestää sitä kauemmin, mitä enemmän viestejä lähetät kerralla, koska nexmo sallii 5 viestiä sekunnissa. Odota rauhassa.</p>
+        <strong>HUOM!</strong> Lähetys kestää sitä kauemmin, mitä enemmän viestejä lähetät kerralla, koska nexmo sallii 5 viestiä sekunnissa. Odota rauhassa ilmoitusta.</p>
         <form action="" method="post" id="ryhmatekstari" accept-charset="utf-8">
             <table>
                 <tr>
