@@ -997,7 +997,7 @@ class Controller_Ajax extends Controller {
 								$hilight = " class=\"starting\"";
 							elseif ((strtotime($row->start) + ($row->length * 60)) >= time() && time() >= strtotime($row->start))
 								$hilight = " class=\"blink\"";
-							$tablebody .= "    <tr$hilight><td type=\"prioriteetti\">" . $priority[$row->priority] . "</td><td type=\"kategoria\">" . $show_cats . "</td><td type=\"tyyppi\">" . $type[$row->type] . "</td><td type=\"alkuaika\">" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td type=\"lisat\">" . nl2br($row->notes) . "</td><td type=\"vastuullinen\">" . $row->vastuu . "</td><td type=\"tekijat\">" . $row->duunarit . "</td></tr>\n";
+							$tablebody .= "    <tr$hilight><td>" . $priority[$row->priority] . "<br/>" . $show_cats . "<br/>" . $type[$row->type] . "<br/>" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td><span class=\"vastuullinen\">" . $row->vastuu . "</span>, " . $row->duunarit . "</td></tr>\n";
 						}
 					}
 					$return = array("ret" => true, "rivit" => $tablebody);

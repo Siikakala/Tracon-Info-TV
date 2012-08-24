@@ -145,13 +145,13 @@ function check(cont){
     var y = twitter.queue("fx");
     var x = $("#text_cont").queue("fx");
     if(n.length > 10){
-        container.clearQueue();
+        //container.clearQueue();
     }
     if(y.length > 10){
-        twitter.clearQueue();
+        //twitter.clearQueue();
     }
     if(x.length > 6){
-        $("#text_cont").clearQueue();
+        //$("#text_cont").clearQueue();
     }
     fetch = baseurl+'ajax/check/';
     $.getJSON(fetch, function(data) {
@@ -185,11 +185,11 @@ function check(cont){
                                         twiit = page;
                                         container.hide("puff",300);
                                         window.setTimeout(function(){
-                                            $("#text_cont").hide('blind',300);
-                                        },200);
+                                            $("#text_cont").hide('blind',100);
+                                        },300);
                                         window.setTimeout(function(){
-                                            twitter.show(300);
-                                        },810);
+                                            twitter.show(350);
+                                        },780);
                                         container.html("");
                                         break;
                                     case "video":

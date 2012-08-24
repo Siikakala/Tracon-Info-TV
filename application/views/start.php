@@ -28,30 +28,32 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
     		</div>
 		</div>
 		<div id="twitter" style="display:none;">
-            <script type="text/javascript">
-                new TWTR.Widget({
-                  version: 2,
-                  type: 'search',
-                  rpp: 15,
-                  search: '#tracon',
-                  interval: 4500,
-                  title: '',
-                  subject: 'Tracon @ Twitter',
-                  width: 'auto',
-                  height: 400,
-                  features: {
-                    scrollbar: false,
-                    loop: true,
-                    live: true,
-                    hashtags: true,
-                    timestamp: true,
-                    avatars: true,
-                    toptweets: false,
-                    behavior: 'default'
-                  }
+    		<div id="twitter_cont" style="display:block;position:relative;">
+                <script type="text/javascript">
+                    new TWTR.Widget({
+                      version: 2,
+                      type: 'search',
+                      rpp: 15,
+                      search: '#tracon',
+                      interval: 4500,
+                      title: '',
+                      subject: 'Tracon @ Twitter',
+                      width: 'auto',
+                      height: 400,
+                      features: {
+                        scrollbar: false,
+                        loop: true,
+                        live: true,
+                        hashtags: true,
+                        timestamp: true,
+                        avatars: true,
+                        toptweets: false,
+                        behavior: 'default'
+                      }
 
-                }).render().start();
-            </script>
+                    }).render().start();
+                </script>
+            </div>
         </div>
    		<div id="footer">
     		<p><span id="client"></span></p>
