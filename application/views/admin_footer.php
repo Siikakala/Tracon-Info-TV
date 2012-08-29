@@ -3,9 +3,12 @@
 			<div id="profiler"></div>
 		</div>
 		<div id="chat">
-            <div id="chatlog"></div>
-            <input type="text" id="chatbox" placeholder="Viestisi.." />
-            <input type="text" id="nickbox" size="7" placeholder="Nick" />
+    		<button id="chathide" onclick="$('#inner_chat').toggle('blind',200);">Näytä/piilota chat</button>
+            <div id="inner_chat">
+                <div id="chatlog"></div>
+                <input type="text" id="chatbox" placeholder="Viestisi.." />
+                <input type="text" id="nickbox" size="7" placeholder="Nick" />
+            </div>
         </div>
 		<div id="dialogs"><?php print $dialogs ?></div>
 	</div>

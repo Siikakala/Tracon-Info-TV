@@ -481,6 +481,11 @@ label.manual {
   width: 100%;
 }
 
+#chathide{
+  float:right;
+  margin-bottom:5px;
+}
+
 #nickbox{
   float:left;
   position:absolute;
