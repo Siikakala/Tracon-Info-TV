@@ -232,7 +232,7 @@ class Model_Public extends Model_Database {
                         foreach($query2 as $row){
                             $scrolli[] = $this->utf8($row->text);
                         }
-                    $scroll = implode(" &raquo; ",$scrolli);
+                    $scroll = implode(" » ",$scrolli);
                     $session->set("override",time());
                     $session->set("scrollstamp",time());//muistetaan vielä asettaa se päivitysaika sessiomuuttujaan.
                 }
