@@ -136,7 +136,14 @@ a.hover:hover, a.hover:active{
 	border-left: 2px solid #CCC;
 	margin: 25px 25px 25px 175px;
 	padding: 0px 0px 0px 25px;
-	min-height: 200px;
+	min-height: 420px;
+}
+
+#toggler{
+    float:left;
+    margin-left:-23px;
+    margin-top:-15px;
+    cursor:pointer;
 }
 
 #footer {

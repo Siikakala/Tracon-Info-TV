@@ -1,5 +1,6 @@
 var wide = 0;
 var reconnects = 0;
+var linkshidden = 0;
 var timeoutti;
 $(function() {
     $( 'button, input:submit' ).button();
@@ -41,7 +42,22 @@ $(function() {
     $("#helpimg").hover(function(){$("#helptext").show(100)},function(){$("#helptext").hide(100)});
 });
 
-
+/**
+ *
+ * @access public
+ * @return void
+ **/
+function toggle_links(){
+    if(linkshidden == 0){
+        $("#links").hide('blind',{direction:"horizontal"},200);$("#text").animate({"margin-left":"25px"},200);
+        linkshidden = 1;
+        $("#toggler").html(">>");
+    }else{
+        $("#links").show('blind',{direction:"horizontal"},200);$("#text").animate({"margin-left":"175px"},200);
+        linkshidden = 0;
+        $("#toggler").html("<<");
+    }
+}
 
 /**
  *
