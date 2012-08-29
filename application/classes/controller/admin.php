@@ -590,7 +590,7 @@ class Controller_Admin extends Controller {
 			$this->view->footer->dialogs = new view('dialogs/tuotanto');
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/tuotanto.js\"></script>";
 			$priority = array('0 - Triviaali', '1 - Matala', '2 - Normaali', '3 - Korkea', '4 - Ehdoton');
-			$category = array('ohjelma' => 'Ohjelma', 'viestinta' => 'Viestintä', 'tyovoima' => 'Työvoima', 'info' => 'Info', 'teema' => 'Teema', 'tilat' => 'Tilat', 'logistiikka' => 'Logistiikka', 'turva' => 'Turvallisuus', 'tekniikka' => 'Tekniikka', 'talous' => 'Talous', 'kunnia' => 'Kunniavieras', 'muu' => 'Muu');
+			$category = array('ohjelma' => 'Ohjelma', 'viestinta' => 'Viestintä', 'tyovoima' => 'Työvoima', 'info' => 'Info', 'teema' => 'Teema', 'tilat' => 'Tilat', 'logistiikka' => 'Logistiikka', 'turva' => 'Turvallisuus', 'tekniikka' => 'Tekniikka', 'talous' => 'Talous', 'kunnia' => 'Kunniavieras', 'majoitus' => 'Majoitus', 'lipunmyynti' => 'Lipunmyynti', 'muu' => 'Muu');
 			$type = array('public' => 'Julkinen', 'internal' => 'Sisäinen', 'ydin' => 'Ydinryhmä', 'note' => 'Huomio/kommentti');
 			$this->view->content->text->priority = form::select('priority', $priority, 2, array("style" => "width:100%;"));
 			$this->view->footer->dialogs->priority = form::select('priority', $priority, 2, array("style" => "width:100%;", "id" => "prioriteetti"));

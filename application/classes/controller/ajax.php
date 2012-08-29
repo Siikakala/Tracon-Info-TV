@@ -957,7 +957,7 @@ class Controller_Ajax extends Controller {
 					$data = Jelly::query('tuotanto')->order_by('start', 'ASC')->select();
 					$tablebody = "<tablebody>";
 					$priority = array('0 - Triviaali', '1 - Matala', '2 - Normaali', '3 - Korkea', '4 - Ehdoton');
-					$category = array('ohjelma' => 'Ohjelma', 'viestinta' => 'Viestintä', 'tyovoima' => 'Työvoima', 'info' => 'Info', 'teema' => 'Teema', 'tilat' => 'Tilat', 'logistiikka' => 'Logistiikka', 'turva' => 'Turvallisuus', 'tekniikka' => 'Tekniikka', 'talous' => 'Talous', 'kunnia' => 'Kunniavieras', 'muu' => 'Muu');
+					$category = array('ohjelma' => 'Ohjelma', 'viestinta' => 'Viestintä', 'tyovoima' => 'Työvoima', 'info' => 'Info', 'teema' => 'Teema', 'tilat' => 'Tilat', 'logistiikka' => 'Logistiikka', 'turva' => 'Turvallisuus', 'tekniikka' => 'Tekniikka', 'talous' => 'Talous', 'kunnia' => 'Kunniavieras', 'majoitus' => 'Majoitus', 'lipunmyynti' => 'Lipunmyynti', 'muu' => 'Muu');
 					$type = array('public' => 'Julkinen', 'internal' => 'Sisäinen', 'ydin' => 'Ydinryhmä', 'note' => 'Huomio/kommentti');
 					foreach($data as $row) {
 						if ($row->loaded()) {
@@ -981,7 +981,7 @@ class Controller_Ajax extends Controller {
 					$data = Jelly::query('tuotanto')->where('start', '>=', DB::expr("DATE_SUB(NOW(), INTERVAL length MINUTE)"))->limit(10)->order_by('start', 'ASC')->select();
 					$tablebody = "";
 					$priority = array('0 - Triviaali', '1 - Matala', '2 - Normaali', '3 - Korkea', '4 - Ehdoton');
-					$category = array('ohjelma' => 'Ohjelma', 'viestinta' => 'Viestintä', 'tyovoima' => 'Työvoima', 'info' => 'Info', 'teema' => 'Teema', 'tilat' => 'Tilat', 'logistiikka' => 'Logistiikka', 'turva' => 'Turvallisuus', 'tekniikka' => 'Tekniikka', 'talous' => 'Talous', 'kunnia' => 'Kunniavieras', 'muu' => 'Muu');
+					$category = array('ohjelma' => 'Ohjelma', 'viestinta' => 'Viestintä', 'tyovoima' => 'Työvoima', 'info' => 'Info', 'teema' => 'Teema', 'tilat' => 'Tilat', 'logistiikka' => 'Logistiikka', 'turva' => 'Turvallisuus', 'tekniikka' => 'Tekniikka', 'talous' => 'Talous', 'kunnia' => 'Kunniavieras', 'majoitus' => 'Majoitus', 'lipunmyynti' => 'Lipunmyynti', 'muu' => 'Muu');
 					$type = array('public' => 'Julkinen', 'internal' => 'Sisäinen', 'ydin' => 'Ydinryhmä', 'note' => 'Huomio/kommentti');
 					foreach($data as $row) {
 						if ($row->loaded()) {
