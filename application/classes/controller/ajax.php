@@ -1039,8 +1039,11 @@ class Controller_Ajax extends Controller {
 					$p["kategoria"] = explode(",", $row->category);
 					$p["tyyppi"] = $row->type;
 					$p["datestart"] = date("d.m.Y", strtotime($row->start));
-					$p["tunnit"] = date("H", strtotime($row->start));
-					$p["minuutit"] = date("i", strtotime($row->start));
+					$p["tunnit"] = date("G", strtotime($row->start));
+					$mins = date("i", strtotime($row->start));
+					if($mins < 10)
+        				$mins = substr($mins,1,1);
+                    $p["minuutit"] = $mins;
 					$p["pituus"] = $row->length;
 					$p["event"] = $row->event;
 					$p["lisat"] = $row->notes;
