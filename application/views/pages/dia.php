@@ -19,9 +19,6 @@
    Eri salilyhenteet: <?php print $salit; ?>
 </p>
 <p>
-   <strong>Pistä kuva-urlit johonkin ylös mikäli lisäät kuvia, koska et voi muokata niitä! (tinymce:n bugi)</strong>
-</p>
-<p>
    Muista käyttää esikatselutoimintoa ennen tallennusta. Tallennus tapahtuu levykkeestä,
    esikatselu sen oikealla puolella olevasta napista! Dian voi poistaa oikeassa reunassa
    olevasta napista.<br/>
