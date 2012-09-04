@@ -997,7 +997,7 @@ class Controller_Ajax extends Controller {
 								$hilight = "starting";
 							elseif ((strtotime($row->start) + ($row->length * 60)) >= time() && time() >= strtotime($row->start))
 								$hilight = "blink";
-							$tablebody .= "    <tr class=\"prio-".$row->priority." $hilight\"><td>" . $priority[$row->priority] . "<br/>" . $show_cats . "<br/>" . $type[$row->type] . "<br/>" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td><span class=\"vastuullinen\">" . $row->vastuu . "</span>, " . $row->duunarit . "</td></tr>\n";
+							$tablebody .= "    <tr class=\"prio-".$row->priority." $hilight\" title=\"".$row->notes."\"><td>" . $priority[$row->priority] . "<br/>" . $show_cats . "<br/>" . $type[$row->type] . "<br/>" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td><span class=\"vastuullinen\">" . $row->vastuu . "</span>, " . $row->duunarit . "</td></tr>\n";
 						}
 					}
 					$return = array("ret" => true, "rivit" => $tablebody);
