@@ -992,12 +992,12 @@ class Controller_Ajax extends Controller {
 							$show_cats = implode(", ", $cats);
 							$hilight = "";
 							if ((strtotime($row->start) + ($row->length * 60)) <= (time() + 300) || (time() <= (strtotime($row->start) + 60) && time() >= strtotime($row->start)))
-								$hilight = " class=\"blink ending\"";
+								$hilight = "blink ending";
 							elseif (time() >= (strtotime($row->start)-300) && time() <= strtotime($row->start))
-								$hilight = " class=\"starting\"";
+								$hilight = "starting";
 							elseif ((strtotime($row->start) + ($row->length * 60)) >= time() && time() >= strtotime($row->start))
-								$hilight = " class=\"blink\"";
-							$tablebody .= "    <tr$hilight><td>" . $priority[$row->priority] . "<br/>" . $show_cats . "<br/>" . $type[$row->type] . "<br/>" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td><span class=\"vastuullinen\">" . $row->vastuu . "</span>, " . $row->duunarit . "</td></tr>\n";
+								$hilight = "blink";
+							$tablebody .= "    <tr class=\"prio-".$row->priority." $hilight\"><td>" . $priority[$row->priority] . "<br/>" . $show_cats . "<br/>" . $type[$row->type] . "<br/>" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td><span class=\"vastuullinen\">" . $row->vastuu . "</span>, " . $row->duunarit . "</td></tr>\n";
 						}
 					}
 					$return = array("ret" => true, "rivit" => $tablebody);
