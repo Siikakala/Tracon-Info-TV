@@ -515,6 +515,29 @@ label.manual {
   text-decoration:underline;
   font-weight:bold;
 }
+
+.prio-0{
+  background-color: #3F3;
+  color:black;
+}
+.prio-1{
+  background-color: #44F;
+  color:white;
+}
+.prio-2{
+  background-color: yellow;
+  color:black;
+}
+.prio-3{
+  background-color: orange;
+  color:black;
+}
+.prio-4{
+  background-color: #F33;
+  color:black;
+}
+
+
 @media all
 {
 	#jPicker { margin: 0px 8px; text-align: left; }

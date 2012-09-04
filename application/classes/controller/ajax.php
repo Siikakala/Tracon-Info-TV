@@ -969,7 +969,7 @@ class Controller_Ajax extends Controller {
 							$hilight = "";
 							if ((strtotime($row->start) + ($row->length * 60)) >= time() && time() >= strtotime($row->start))
 								$hilight = " class=\"new\"";
-							$tablebody .= "    <tr$hilight id=\"" . $row->id . "\"><td type=\"prioriteetti\">" . $priority[$row->priority] . "</td><td type=\"kategoria\">" . $show_cats . "</td><td type=\"tyyppi\">" . $type[$row->type] . "</td><td type=\"alkuaika\">" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td type=\"lisat\">" . nl2br($row->notes) . "</td><td type=\"vastuullinen\">" . $row->vastuu . "</td><td type=\"tekijat\">" . $row->duunarit . "</td></tr>\n";
+							$tablebody .= "    <tr$hilight id=\"" . $row->id . "\"><td type=\"prioriteetti\" class=\"prio-".$row->priority."\">" . $priority[$row->priority] . "</td><td type=\"kategoria\">" . $show_cats . "</td><td type=\"tyyppi\">" . $type[$row->type] . "</td><td type=\"alkuaika\">" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td type=\"lisat\">" . nl2br($row->notes) . "</td><td type=\"vastuullinen\">" . $row->vastuu . "</td><td type=\"tekijat\">" . $row->duunarit . "</td></tr>\n";
 						}
 					}
 					$return = array("ret" => true, "rivit" => $tablebody);

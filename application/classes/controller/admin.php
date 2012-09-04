@@ -613,7 +613,7 @@ class Controller_Admin extends Controller {
 					foreach($categories as $cate)
 					$cats[] = $category[$cate];
 					$show_cats = implode(", ", $cats);
-					$tablebody .= "    <tr id=\"" . $row->id . "\"><td type=\"prioriteetti\">" . $priority[$row->priority] . "</td><td type=\"kategoria\">" . $show_cats . "</td><td type=\"tyyppi\">" . $type[$row->type] . "</td><td type=\"alkuaika\">" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td type=\"lisat\">" . nl2br($row->notes) . "</td><td type=\"vastuullinen\">" . $row->vastuu . "</td><td type=\"tekijat\">" . $row->duunarit . "</td></tr>\n";
+					$tablebody .= "    <tr id=\"" . $row->id . "\"><td type=\"prioriteetti\" class=\"prio-".$row->priority."\">" . $priority[$row->priority] . "</td><td type=\"kategoria\">" . $show_cats . "</td><td type=\"tyyppi\">" . $type[$row->type] . "</td><td type=\"alkuaika\">" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td type=\"lisat\">" . nl2br($row->notes) . "</td><td type=\"vastuullinen\">" . $row->vastuu . "</td><td type=\"tekijat\">" . $row->duunarit . "</td></tr>\n";
 				}
 			}
 			$this->view->content->text->tablebody = $tablebody;
