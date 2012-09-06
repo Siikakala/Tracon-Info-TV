@@ -1174,9 +1174,12 @@ class Controller_Ajax extends Controller {
                             $d = $data;
                             break;
                         }
-                        $jaljella = $data["credit"];
+                        if($errors == 0)
+                        	$jaljella = $data["credit"];
                         $sent++;
-                        usleep(200000);//200ms, 5 tekstaria sekunnissa.
+                        for($t=1;$t<=$data["count"][0];$t++){
+                        	usleep(200000);//200ms, 5 tekstaria sekunnissa. Myös multi-part huomioitu.
+                        }
                     }
                     if($errors == 1){
                         $return = array("ret" => "Lähetys epäonnistui! Viestejä ehdittiin lähettämään onnistuneesti ".$sent." kappaletta. Epäonnistumisen syy: ".implode(", ",$d["msg"]).". Saldoa jäi vielä ".$jaljella." €.","timeout"=>30000);
