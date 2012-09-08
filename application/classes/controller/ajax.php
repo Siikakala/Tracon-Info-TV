@@ -991,7 +991,7 @@ class Controller_Ajax extends Controller {
 							$cats[] = $category[$cate];
 							$show_cats = implode(", ", $cats);
 							$hilight = "";
-							if ((strtotime($row->start) + ($row->length * 60)) <= (time() + 300)))// || (time() <= (strtotime($row->start) + 60) && time() >= strtotime($row->start)))
+							if ((strtotime($row->start) + ($row->length * 60)) <= (time() + 300))// || (time() <= (strtotime($row->start) + 60) && time() >= strtotime($row->start)))
 								$hilight = "blink end";
 							elseif (time() >= (strtotime($row->start)-300) && time() <= strtotime($row->start))
 								$hilight = "start";
