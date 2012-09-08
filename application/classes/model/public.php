@@ -103,7 +103,7 @@ class Model_Public extends Model_Database {
 
      public function get_diadata(){
         $session = Session::instance();
-        $query1 = Jelly::query('rulla')->where('hidden','=','0')->and_where('instance','=',$session->get('show_inst',1))->select();
+        $query1 = Jelly::query('rulla')->where('hidden','=','0')->and_where('instance','=',$session->get('show_inst',1))->order_by('pos','ASC')->select();
         if($query1->count() > 0)
             $result1 = $query1->as_array();
         else
