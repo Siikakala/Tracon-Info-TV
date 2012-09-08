@@ -324,6 +324,14 @@ table.stats tr.type-muu-kuitattu td{
     background-color: #92EEEE;
     color:#000;
 }
+.starting {
+    background-color: #22FF22;
+    color:#000;
+}
+.ending{
+    background-color: #999;
+    color:#FFF;
+}
 
 .normal {
     background-color: white;

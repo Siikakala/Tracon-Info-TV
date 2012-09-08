@@ -992,11 +992,11 @@ class Controller_Ajax extends Controller {
 							$show_cats = implode(", ", $cats);
 							$hilight = "";
 							if ((strtotime($row->start) + ($row->length * 60)) <= (time() + 300) || (time() <= (strtotime($row->start) + 60) && time() >= strtotime($row->start)))
-								$hilight = "blink ending";
+								$hilight = "blink end";
 							elseif (time() >= (strtotime($row->start)-300) && time() <= strtotime($row->start))
-								$hilight = "starting";
+								$hilight = "start";
 							elseif ((strtotime($row->start) + ($row->length * 60)) >= time() && time() >= strtotime($row->start))
-								$hilight = "blink";
+								//$hilight = "blink";
 							$tablebody .= "    <tr class=\"$hilight\" title=\"".$row->notes."\"><td class=\"prio-".$row->priority."\">" . $priority[$row->priority] . "<br/>" . $show_cats . "<br/>" . $type[$row->type] . "<br/>" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td><span class=\"vastuullinen\">" . $row->vastuu . "</span>, " . $row->duunarit . "</td></tr>\n";
 						}
 					}
