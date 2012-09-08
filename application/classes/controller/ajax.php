@@ -1160,12 +1160,12 @@ class Controller_Ajax extends Controller {
                     fclose($input);
                     preg_match_all('/(\d{12})[;,](.*)/',$data,$matches, PREG_SET_ORDER);
                     $time = count($matches);
-                    $exec = ($time * 2 / 10) + 2;
+                    $exec = ($time * 2 / 5) + 15;
                     $exec = ceil($exec);
                     $errors = 0;
                     $jaljella = 0;
                     $sent = 0;
-                    //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
+                    //Tekstareiden lähetykseen kuluva aika (olettaen että lähetetään tuplamittaisia viestejä) pyöristettynä seuraavaan sekuntiin + 15 sekuntia varoaikaa lisää.
                     set_time_limit($exec);
                     foreach($matches as $row){
                         $d[] = $data = $sms->sendText($row[1],"Tracon",$this->utf8($row[2]));
@@ -1174,9 +1174,12 @@ class Controller_Ajax extends Controller {
                             $d = $data;
                             break;
                         }
-                        $jaljella = $data["credit"];
+                        if($errors == 0)
+                        	$jaljella = $data["credit"];
                         $sent++;
-                        usleep(200000);//200ms, 5 tekstaria sekunnissa.
+                        for($t=1;$t<=$data["count"][0];$t++){
+                        	usleep(200000);//200ms, 5 tekstaria sekunnissa. Myös multi-part huomioitu.
+                        }
                     }
                     if($errors == 1){
                         $return = array("ret" => "Lähetys epäonnistui! Viestejä ehdittiin lähettämään onnistuneesti ".$sent." kappaletta. Epäonnistumisen syy: ".implode(", ",$d["msg"]).". Saldoa jäi vielä ".$jaljella." €.","timeout"=>30000);
