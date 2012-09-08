@@ -27,18 +27,18 @@
      * @return void
      **/
     function blink_ending(){
-        $(".end").switchClass("normal","ending",800);
+        $(".end").switchClass("blink","ending",800);
         window.setTimeout(function(){
-            $(".end").switchClass("ending","normal",800);
+            $(".end").switchClass("ending","blink",800);
         },800);
         window.setTimeout(function(){
             blink_ending();
         },2000);
     }
     function blink_starting(){
-        $(".start").switchClass("normal","starting",300);
+        $(".start").addClass("starting",300);
         window.setTimeout(function(){
-            $(".start").switchClass("starting","normal",300);
+            $(".start").removeClass("starting",300);
         },300);
         window.setTimeout(function(){
             blink_starting();
