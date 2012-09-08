@@ -995,7 +995,7 @@ class Controller_Ajax extends Controller {
 								$hilight = "blink end";
 							elseif (time() >= (strtotime($row->start)-300) && time() <= strtotime($row->start))
 								$hilight = "start";
-							elseif ((strtotime($row->start) + ($row->length * 60)) >= time() && time() >= strtotime($row->start))
+							//elseif ((strtotime($row->start) + ($row->length * 60)) >= time() && time() >= strtotime($row->start))
 								//$hilight = "blink";
 							$tablebody .= "    <tr class=\"$hilight\" title=\"".$row->notes."\"><td class=\"prio-".$row->priority."\">" . $priority[$row->priority] . "<br/>" . $show_cats . "<br/>" . $type[$row->type] . "<br/>" . date('d.m.Y H:i', strtotime($row->start)) . "</td><td type=\"pituus\">" . $row->length . " min</td><td type=\"eventti\">" . $row->event . "</td><td><span class=\"vastuullinen\">" . $row->vastuu . "</span>, " . $row->duunarit . "</td></tr>\n";
 						}
