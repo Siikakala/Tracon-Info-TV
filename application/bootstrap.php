@@ -3,17 +3,17 @@
 // -- Environment setup --------------------------------------------------------
 
 // Load the core Kohana class
-require SYSPATH.'classes/kohana/core'.EXT;
+require SYSPATH.'classes/Kohana/Core'.EXT;
 
-if (is_file(APPPATH.'classes/kohana'.EXT))
+if (is_file(APPPATH.'classes/Kohana'.EXT))
 {
 	// Application extends the core
-	require APPPATH.'classes/kohana'.EXT;
+	require APPPATH.'classes/Kohana'.EXT;
 }
 else
 {
 	// Load empty core extension
-	require SYSPATH.'classes/kohana'.EXT;
+	require SYSPATH.'classes/Kohana'.EXT;
 }
 
 /**
@@ -147,6 +147,9 @@ Kohana::modules(array(
 ini_set('memory_limit', '-1');
 ini_set('upload_max_filesize','1073741824');//1GB
 ini_set('post_max_size','2147483648');//2GB
+
+Cookie::$salt = "lkjsdflkjsdfljsdgfoyweglhbvsoughwopeghgwhsveldbew7862359LHWEGUWwgh9q8gc2qon";
+
 /**
  * Set the routes. Each route must have a minimum of a name, a URI and a set of
  * defaults for the URI.
@@ -161,7 +164,7 @@ Route::set('backend', '<controller>(/<action>(/<param1>))',
 
 Route::set('admin', '<controller>(/<action>(/<param1>(/<param2>)))',
      array(
-         'controller' => 'admin|android'
+         'controller' => '(admin|android)'
      ))->defaults(array(
          'action' => 'index'
      ));
