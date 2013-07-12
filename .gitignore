@@ -4,3 +4,4 @@ application/config/database.php
 application/config/auth.php
 update.sh
 files/*
+web.config
