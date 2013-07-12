@@ -23,17 +23,17 @@ class Controller_Admin extends Controller {
 			$this->view->footer = new view('admin_footer');
 			$this->view->header->title = "";
 			$this->view->footer->dialogs = "";
-			$this->view->header->css = HTML::style('css/ui-tracon/jquery-ui-1.8.16.custom.css');
+			$this->view->header->css = HTML::style('css/blitzer/jquery-ui-1.10.3.custom.css');
 			$this->view->header->css .= HTML::style('css/admin_small.css');
-			$this->view->header->js = '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery-1.7.2.min.js"></script>';
-			$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery-ui-1.8.22.custom.min.js"></script>';
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.metadata.js\"></script>";
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/MD5.js\"></script>";
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/chat.js\"></script>";
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/common.js\"></script>";
+			$this->view->header->js = '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-2.0.3.min.js"></script>';
+			$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-ui-1.10.3.custom.min.js"></script>';
+			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.metadata.js\"></script>";
+			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/MD5.js\"></script>";
+			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/chat.js\"></script>";
+			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/common.js\"></script>";
 			// $this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
 			$this->view->header->js .= "\n<script type=\"text/javascript\">
-			var baseurl = '" . URL::base($this->request) . "'
+			var baseurl = '" . URL::site('/') . "'
 			var usrlvl = '" . $this->session->get('level', 0) . "'
 			var usr = '" . $this->session->get('user', 0) . "'
 			var page = '" . $this->request->action() . "'
@@ -62,7 +62,7 @@ class Controller_Admin extends Controller {
 	public function action_index()
 	{
 		if (!$this->session->get('logged_in')) {
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/login.js\"></script>";
+			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/login.js\"></script>";
 			$this->view->content->text = "<h2>Kirjaudu sisään</h2><div style=\"margin-left:0px;\">";
 			$this->view->content->text .= Form::open("admin", array("id" => "login", "onsubmit" => "return false;", "style" => "float:left;"));
 			$this->view->content->text .= "<table><tr><td>";
@@ -127,12 +127,12 @@ class Controller_Admin extends Controller {
 			}
 			$this->view->header->js .= "\n<script type=\"text/javascript\">
 			$(function() {
-			$(\"#accord\").accordion({active:" . $active . ",autoHeight: false,icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
+			$(\"#accord\").accordion({active:" . $active . ",heightStyle: 'content',icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
 			});
 			</script>";
 
 			$this->view->content->links = new view ('pages/links');
-			$this->view->content->links->baseurl = URL::base($this->request);
+			$this->view->content->links->baseurl = URL::site('/');
 			$this->view->content->links->level = $this->session->get('level', 0);
 			// </linkkipalkki>
 			switch ($page) { // linkkien käsittely
@@ -199,7 +199,7 @@ class Controller_Admin extends Controller {
 
 	private function scroller($param1)
 	{
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/scroller.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/scroller.js\"></script>";
 
 		$model = new Model_Pages_Scroller();
 
@@ -208,7 +208,7 @@ class Controller_Admin extends Controller {
 
 	private function rulla($param1)
 	{
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/rulla.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/rulla.js\"></script>";
 
 		$query = Jelly::query('rulla')->where('instance', '=', $this->session->get('instance', 1))->order_by('pos')->select();
 		$instances = $this->get_instances();
@@ -246,7 +246,7 @@ class Controller_Admin extends Controller {
 	private function dia($param1)
 	{
 		$this->view->header->js .= $this->tinymce(__tableprefix . "-tv.css");
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/dia.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/dia.js\"></script>";
 		$this->view->content->text = new view('pages/dia');
 
 		$query = Jelly::query('diat')->order_by('dia_id')->select();
@@ -264,8 +264,8 @@ class Controller_Admin extends Controller {
 
 	private function streams($param1)
 	{
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "flowplayer/flowplayer-3.2.6.min.js\"></script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/streams.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "flowplayer/flowplayer-3.2.6.min.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/streams.js\"></script>";
 
 		$this->view->content->text = new view('pages/stream');
 
@@ -305,7 +305,7 @@ class Controller_Admin extends Controller {
 		else $nayta = "false";
 
 		$this->view->header->js .= "\n<script type=\"text/javascript\">var show = $nayta</script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/frontends.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/frontends.js\"></script>";
 
 		if ($this->session->get("g-show_tv"))
 			$show = $this->session->get("g-show_tv"); //pistetään valikoihin oikeet arvot
@@ -381,13 +381,13 @@ class Controller_Admin extends Controller {
 		$this->view->header->js .= '<script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>';
 		$this->view->header->js .= '<script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>';
 		$this->view->header->js .= '<script src="http://blueimp.github.com/jQuery-Image-Gallery/js/jquery.image-gallery.min.js"></script>';
-		$this->view->header->js .= '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery.iframe-transport.js"></script>';
-		$this->view->header->js .= '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery.fileupload.js"></script>';
-		$this->view->header->js .= '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery.fileupload-ip.js"></script>';
-		$this->view->header->js .= '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery.fileupload-ui.js"></script>';
-		$this->view->header->js .= '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/jquery.fileupload-jui.js"></script>';
-		$this->view->header->js .= '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/locale.js"></script>';
-		$this->view->header->js .= '<script type="text/javascript" src="' . URL::base($this->request) . 'jquery/main.js"></script>';
+		$this->view->header->js .= '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery.iframe-transport.js"></script>';
+		$this->view->header->js .= '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery.fileupload.js"></script>';
+		$this->view->header->js .= '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery.fileupload-ip.js"></script>';
+		$this->view->header->js .= '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery.fileupload-ui.js"></script>';
+		$this->view->header->js .= '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery.fileupload-jui.js"></script>';
+		$this->view->header->js .= '<script type="text/javascript" src="' . URL::site('/') . 'jquery/locale.js"></script>';
+		$this->view->header->js .= '<script type="text/javascript" src="' . URL::site('/') . 'jquery/main.js"></script>';
 
 		$this->view->content->text = new view('pages/video');
 	}
@@ -395,7 +395,7 @@ class Controller_Admin extends Controller {
 	private function logi()
 	{
 		$this->view->content->text = new view('pages/loki');
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/logi.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/logi.js\"></script>";
 
 		$rows = DB::query(Database::SELECT,
 			'SELECT   id ' . 
@@ -433,15 +433,15 @@ class Controller_Admin extends Controller {
 	private function dashboard()
 	{
 		$this->view->header->css .= HTML::style('css/dashboardui.css');
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.dashboard.js\"></script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/dashboard.js\"></script>";
-		// $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::base($this->request)."js/widget.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.dashboard.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/dashboard.js\"></script>";
+		// $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."js/widget.js\"></script>";
 		$this->view->content->text = new view('pages/dashboard');
 	}
 
 	private function users()
 	{
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/users.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/users.js\"></script>";
 
 		$levels = array(1 => "Peruskäyttö", 2 => "Laaja käyttö", 3 => "BOFH", 4 => "ÜberBOFH");
 		$this->view->footer->dialogs = new view('dialogs/user');
@@ -481,12 +481,12 @@ class Controller_Admin extends Controller {
 	private function ohjelma()
 	{
 		$this->view->header->css .= HTML::style('css/jPicker-1.1.6.min.css');
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jpicker-1.1.6.min.js\"></script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drag-2.2.js\"></script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drag.live-2.2.js\"></script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drop-2.2.js\"></script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "jquery/jquery.event.drop.live-2.2.js\"></script>";
-		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/ohjelma.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jpicker-1.1.6.min.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.event.drag-2.2.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.event.drag.live-2.2.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.event.drop-2.2.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.event.drop.live-2.2.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/ohjelma.js\"></script>";
 		$this->view->content->text = new view('pages/ohjelma');
 		$this->view->content->text->level = $this->session->get('level', 0);
 
@@ -607,7 +607,7 @@ class Controller_Admin extends Controller {
 		{
 			$this->view->content->text = new view('pages/tuotanto');
 			$this->view->footer->dialogs = new view('dialogs/tuotanto');
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/tuotanto.js\"></script>";
+			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/tuotanto.js\"></script>";
 			$priority = array('0 - Triviaali', '1 - Matala', '2 - Normaali', '3 - Korkea', '4 - Ehdoton');
 			$category = array('ohjelma' => 'Ohjelma', 'viestinta' => 'Viestintä', 'tyovoima' => 'Työvoima', 'info' => 'Info', 'teema' => 'Teema', 'tilat' => 'Tilat', 'logistiikka' => 'Logistiikka', 'turva' => 'Turvallisuus', 'tekniikka' => 'Tekniikka', 'talous' => 'Talous', 'kunnia' => 'Kunniavieras', 'majoitus' => 'Majoitus', 'lipunmyynti' => 'Lipunmyynti', 'muu' => 'Muu');
 			$type = array('public' => 'Julkinen', 'internal' => 'Sisäinen', 'ydin' => 'Ydinryhmä', 'note' => 'Huomio/kommentti');
@@ -642,7 +642,7 @@ class Controller_Admin extends Controller {
 		{
 			$this->view->content->text = new view("pages/asetukset");
 			$this->view->footer->dialogs = new view('dialogs/asetukset');
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/asetukset.js\"></script>";
+			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/asetukset.js\"></script>";
 
 			$current = DB::query(Database::SELECT, "select value from config where opt = 'tableprefix'")->execute(__db)->as_array();
 			$current = $current[0]['value'];
@@ -672,8 +672,8 @@ class Controller_Admin extends Controller {
 		private function tekstarit()
 		{
             $this->view->content->text = new view("pages/tekstari");
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/pages/tekstari.js\"></script>";
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::base($this->request) . "js/fileuploader.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/tekstari.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/fileuploader.js\"></script>";
         }
 
 
@@ -749,7 +749,7 @@ class Controller_Admin extends Controller {
 		{
 			$data = "
                 <!-- TinyMCE -->
-                <script type=\"text/javascript\" src=\"" . URL::base($this->request) . "tiny_mce/3.4.7/jquery.tinymce.js\"></script>
+                <script type=\"text/javascript\" src=\"" . URL::site('/') . "tiny_mce/3.4.7/jquery.tinymce.js\"></script>
                 <script type=\"text/javascript\"><!--
                 function tinymce_setup(){
                 $(function(){

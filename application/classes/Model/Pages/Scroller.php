@@ -61,7 +61,7 @@ class Model_Pages_Scroller extends Model_Database {
 
         if($htmlonly == false && $dataonly == false){
             $view = new view('pages/scroller');
-            $view->instances = form::select('instance',$instances,$session->get('instance',1),array("onChange"=>"set_instance(this.value);window.setTimeout(function(){refresh_data();},200);"));
+            $view->instances = Form::select('instance',$instances,$session->get('instance',1),array("onChange"=>"set_instance(this.value);window.setTimeout(function(){refresh_data();},200);"));
         }
 
         if($dataonly == true)
@@ -71,7 +71,7 @@ class Model_Pages_Scroller extends Model_Database {
 
         if($result) foreach($query as $data){
             if($dataonly == false){
-                $tablebody .= "<tr class=\"".$data->scroll_id."\"><td>".form::input('pos-'.$data->scroll_id,$data->pos,array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data->scroll_id,$data->text,array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data->scroll_id,1,(boolean)$data->hidden,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data->scroll_id.")\" >X</a></td></tr>";
+                $tablebody .= "<tr class=\"".$data->scroll_id."\"><td>".Form::input('pos-'.$data->scroll_id,$data->pos,array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".Form::input('text-'.$data->scroll_id,$data->text,array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".Form::checkbox('hidden-'.$data->scroll_id,1,(boolean)$data->hidden,array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data->scroll_id.")\" >X</a></td></tr>";
             }else{
                 $tablebody[$data->scroll_id]["id"] = $data->scroll_id;
                 $tablebody[$data->scroll_id]["pos"] = $data->pos;
@@ -138,13 +138,13 @@ class Model_Pages_Scroller extends Model_Database {
                         $result = $query->as_array();
                     else
                         $result = false;
-                    $text = form::open(null, array("onsubmit" => "return false;", "id" => "form"));
+                    $text = Form::open(null, array("onsubmit" => "return false;", "id" => "form"));
                     $text .= "<table id=\"scroller\" class=\"stats\" style=\"border-right:0px; border-top:0px; border-bottom:0px;\"><thead><tr><th class=\"ui-state-default\">Kohta</th><th class=\"ui-state-default\">Teksti</th><th class=\"ui-state-default\">Piilotettu?</th></tr></thead><tbody>";
 
                     if($result) foreach($result as $row=>$data){
-                        $text .= "<tr class=\"".$data["scroll_id"]."\"><td>".form::input('pos-'.$data["scroll_id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::input('text-'.$data["scroll_id"],$data["text"],array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".form::checkbox('hidden-'.$data["scroll_id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["scroll_id"].")\" >X</a></td></tr>";
+                        $text .= "<tr class=\"".$data["scroll_id"]."\"><td>".Form::input('pos-'.$data["scroll_id"],$data["pos"],array("size"=>"1","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".Form::input('text-'.$data["scroll_id"],$data["text"],array("size"=>"45","onkeypress"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td>".Form::checkbox('hidden-'.$data["scroll_id"],1,(boolean)$data["hidden"],array("onchange"=>"$(this).parent().parent().addClass(\"new\");"))."</td><td style=\"border:0px; border-bottom-style: none; padding: 0px; width:2px;\"><a href=\"javascript:;\" class=\"del ignore\" onclick=\"dele(".$data["scroll_id"].")\" >X</a></td></tr>";
                     }
-                    $text .= "</tbody></table>".form::close();
+                    $text .= "</tbody></table>".Form::close();
                     $return = array("data" => $text);
                     break;
                 case "delete":

@@ -642,7 +642,7 @@ class Controller_Android extends Controller{
     	}else{//Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.
         	if(empty($_SERVER['HTTP_REFERER'])) $referer = "";//pitää tehdä vaikeesti koska kohanassa ei oo suoraa tähän funkkaria.
         	else $referer = $_SERVER['HTTP_REFERER'];
-            $ref = substr_replace(URL::base($this->request), "", $referer);
+            $ref = substr_replace(URL::site('/'), "", $referer);
             $data = "Sessio on vanhentunut. Kirjaudu uudelleen sisään.";
             $return = array("ret" => $data);
             $ok = false;

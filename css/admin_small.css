@@ -13,12 +13,12 @@ body {
 #help{
     position:fixed;
     top:5px;
-    right:55px;
+    right:5px;
     z-index:999999;
 }
 
 #helpimg{
-    position:fixed;
+    float: right;
 }
 
 #helptext{
@@ -594,3 +594,27 @@ label.manual {
 
 .qq-upload-failed-text {display:none;}
 .qq-upload-fail .qq-upload-failed-text {display:inline;}
+
+
+/* jQuery UI:n viritys, jotta teeman vaihto ei vaikuta, liittyy kaikki menuun. */
+.ui-widget {
+	font-size: 0.9em;
+}
+.ui-widget .ui-widget {
+	font-size: 0.9em;
+}
+.ui-widget button {
+	font-size: 0.8em;
+}
+.ui-accordion {
+    width: 95%;
+}
+.ui-accordion .ui-accordion-content {
+    padding: 1em 1.2em 0em 1.2em;
+}
+.ui-tooltip-content {
+    width: 380px;
+}
+.ui-tooltip {
+    max-width: 400px;
+}

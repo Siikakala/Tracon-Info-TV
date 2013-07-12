@@ -1,12 +1,12 @@
 <h2>&nbsp;</h2>
 <div id="filter_cont" style="float:right;margin-top:-30px;">
     Suodatus/haku:
-    <input type="text" id="filter" name="filter" size="35" title="OR-haku: hakusana1|hakusana2
-        (&quot;Hae kaikki rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2&quot;)
-        AND-haku: hakusana1 hakusana2
-        (&quot;Hae kaikki rivit, joiden kentistä löytyy kaikki hakusanat&quot;)
-        Yhdistelmä: hakusana1|hakusana2 hakusana3
-        (&quot;Hae kaikki rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2, mutta myös hakusana3&quot;)" />
+    <input type="text" id="filter" name="filter" size="35" title="<b>OR-haku: hakusana1|hakusana2</b><br />
+        (&quot;Hae rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2&quot;)<br />
+        <b>AND-haku: hakusana1 hakusana2</b><br />
+        (&quot;Hae rivit, joiden kentistä löytyy kaikki hakusanat&quot;)<br />
+        <b>Yhdistelmä: hakusana1|hakusana2 hakusana3</b><br />
+        (&quot;Hae rivit, joiden kentistä löytyy joko hakusana1 tai hakusana2, mutta myös hakusana3&quot;)" />
     <span class="ui-icon ui-icon-circle-close" style="float:right; margin:-18px 0 0 2px;" onclick="$('#filter').val('');search();"></span>
 </div>
 <div id="add">

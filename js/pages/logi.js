@@ -153,45 +153,45 @@ $(function() {
 	});
 });
 
-$("body").live("click",function(){
-	$(".contextMenu").hide();
-});
 
-$("td").live(
-    "mouseup",function (e){
-        row = $(this).attr("row");
-        tag = $(this).parent().attr("tag");
-        switch(e.which){
-          //left click
-          case 1:
-            if($('#'+row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")){
+
+$(window).delegate("#table td", "click", function (e) {
+    console.log("Mouse click detected");
+    row = $(this).attr("row");
+    tag = $(this).parent().attr("tag");
+    switch (e.which) {
+        //left click   
+        case 1:
+            console.log("Left click");
+            if ($('#' + row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")) {
                 $("#dialog-confirm").dialog('open');
-            }else{
-                fetch = baseurl+'ajax/todo_ack/'
-                $.post(fetch, { "row": row }, function(data){
-                    if(data.ret == true){
-                        $('#'+row).addClass("type-"+tag+"-kuitattu");
-                    }else{
+            } else {
+                fetch = baseurl + 'ajax/todo_ack/'
+                $.post(fetch, { "row": row }, function (data) {
+                    if (data.ret == true) {
+                        $('#' + row).addClass("type-" + tag + "-kuitattu");
+                    } else {
                         alert("Kuittaus epäonnistui!");
                     }
-                },"json");
+                }, "json");
             }
             break;
-          //right click
-          case 3:
+        //right click   
+        case 3:
+            console.log("Right click");
             $("#myMenu").css({ top: e.pageY, left: e.pageX }).show('fast');
-            $("#myMenu").find('a').click(function(){
+            $("#myMenu").find('a').click(function () {
                 $(".contextMenu").hide();
-                switch($(this).attr('href').substr(1)){
+                switch ($(this).attr('href').substr(1)) {
                     case "check":
-                        fetch = baseurl+'ajax/todo_ack/'
-                        $.post(fetch, { "row": row }, function(data){
-                            if(data.ret == true){
-                                $('#'+row).addClass("type-"+tag+"-kuitattu");
-                            }else{
+                        fetch = baseurl + 'ajax/todo_ack/'
+                        $.post(fetch, { "row": row }, function (data) {
+                            if (data.ret == true) {
+                                $('#' + row).addClass("type-" + tag + "-kuitattu");
+                            } else {
                                 alert("Kuittaus epäonnistui!");
                             }
-                        },"json");
+                        }, "json");
                         break;
                     case "del":
                         $("#dialog-confirm-del").dialog('open');
@@ -199,9 +199,13 @@ $("td").live(
                 }
             });
             break;
-        }
     }
-);
+});
+
+$(window).delegate(":not(#table)", "click", function () {
+    $(".contextMenu").hide();
+    console.log("Hid context menu");
+});
 
 $("form").submit(function(e) {
     e.preventDefault();

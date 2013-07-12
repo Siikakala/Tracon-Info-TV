@@ -1193,7 +1193,7 @@ class Controller_Ajax extends Controller {
 			if ($this->session->get("logged_in", false)) {
 				$return = array("ret" => "Sinulla ei ole oikeuksia tähän toimintoon.");
 			} else {
-				$ref = substr_replace(URL::base($this->request), "", $this->request->referer());
+				$ref = substr_replace(URL::site('/'), "", $this->request->referer());
 				$data = "<p>Sessio on vanhentunut. " . HTML::file_anchor('admin/?return=' . $ref, 'Kirjaudu uudelleen') . ", palaat takaisin tälle sivulle.</p>";
 				$return = array("ret" => $data);
 			}

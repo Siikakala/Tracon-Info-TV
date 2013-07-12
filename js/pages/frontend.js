@@ -6,7 +6,6 @@ $.fx.off = false;
 window.onblur = function () {
 $.fx.off = true;
 };
-$().framerate({framerate: 200, logframes: false});
 var page = "0001";
 var page_was = "";
 var twiit = "";

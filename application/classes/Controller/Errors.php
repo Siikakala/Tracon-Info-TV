@@ -66,7 +66,7 @@ class Controller_Errors extends Controller
         $this->view = View::factory('errors/404')
             ->set('error_message', $this->_message)
             ->set('requested_page', $this->_requested_page)
-            ->set('image', url::base($this->request)."imgs/errors/".$this->response->status().".jpg");
+            ->set('image', URL::site('/')."imgs/errors/".$this->response->status().".jpg");
     }
 
     /**
@@ -78,7 +78,7 @@ class Controller_Errors extends Controller
         $this->view = View::factory('errors/500')
             ->set('error_message', $this->_message)
             ->set('requested_page', $this->_requested_page)
-            ->set('image', url::base($this->request)."imgs/errors/".$this->response->status().".jpg");
+            ->set('image', URL::site('/')."imgs/errors/".$this->response->status().".jpg");
     }
 
     public function after(){

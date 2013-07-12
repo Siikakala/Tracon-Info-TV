@@ -2,44 +2,62 @@ var wide = 0;
 var reconnects = 0;
 var linkshidden = 0;
 var timeoutti;
-$(function() {
-    $( 'button, input:submit' ).button();
+$(function () {
+    $('button, input:submit').button();
+    $("[title]").each(function(){
+        $(this).tooltip({ content: $(this).attr("title")});//Käytännössä mahdollistaa titleissä HTML:n käytön.
+    });
     $("#links .btn").button({
-        icons:{
+        icons: {
             primary: "ui-icon-triangle-1-e"
         }
     });
-    $("#links a.head-links").click(function(event){
+    $("#links a.head-links").click(function (event) {
         event.preventDefault();
     });
-    $("#links .btn").click(function(){
+    $("#links .btn").click(function () {
         normalize($(this).attr("value"));
     });
     update_load();
     update_clock();
-    if(usrlvl > 0 && page != "logout"){
+    if (usrlvl > 0 && page != "logout") {
         connect();
-        $("#chatbox").bind("keydown",function(e){
-            switch(e.which){
-                case 13://enter
+        $("#chatbox").bind("keydown", function (e) {
+            switch (e.which) {
+                case 13: //enter
                     say($("#chatbox").val());
                     $("#chatbox").val('')
                     break;
             }
         });
-        $(window).bind("keydown",function(e){
-            switch(e.which){
-                case 115://F4
+        $(window).bind("keydown", function (e) {
+            switch (e.which) {
+                case 115: //F4
                     $("#chatbox").focus().select();
                     break;
             }
         });
-    }else{
+    } else {
         $("#chat").hide(0);
     }
 
-
-    $("#helpimg").hover(function(){$("#helptext").show(100)},function(){$("#helptext").hide(100)});
+    var help_timeoutti;
+    $("#helpimg").hover(
+                    function () { $("#helptext").show(100) },
+                    function () {
+                        window.clearTimeout(help_timeoutti);
+                        help_timeoutti = window.setTimeout(function () {
+                            $("#helptext").hide(100);
+                        },800);
+                    });
+    $("#helptext").hover(
+                    function () { $("#helptext").show(100) },
+                    function () {
+                        window.clearTimeout(help_timeoutti);
+                        help_timeoutti = window.setTimeout(function () {
+                            $("#helptext").hide(100);
+                        },800);
+                    });
 });
 
 /**
