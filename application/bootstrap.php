@@ -148,7 +148,7 @@ ini_set('memory_limit', '-1');
 ini_set('upload_max_filesize','1073741824');//1GB
 ini_set('post_max_size','2147483648');//2GB
 
-Cookie::$salt = "lkjsdflkjsdfljsdgfoyweglhbvsoughwopeghgwhsveldbew7862359LHWEGUWwgh9q8gc2qon";
+Cookie::$salt = Kohana::$config->load('auth')->get('salt');
 
 /**
  * Set the routes. Each route must have a minimum of a name, a URI and a set of

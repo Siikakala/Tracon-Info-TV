@@ -151,7 +151,7 @@ a.hover:hover, a.hover:active{
     color: #2796a1 !important;
 }
 
-#twitter .twtr-tweet .twtr-tweet-text {
+#twitter #twtr-widget-1 .twtr-tweet-text {
     padding-bottom: 4px !important;
     font-size: 30px;
 }

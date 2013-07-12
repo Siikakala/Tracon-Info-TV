@@ -28,31 +28,10 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
     		</div>
 		</div>
 		<div id="twitter" style="display:none;">
-    		<div id="twitter_cont" style="display:block;position:relative;">
-                <script type="text/javascript">
-                    new TWTR.Widget({
-                      version: 2,
-                      type: 'search',
-                      rpp: 15,
-                      search: '#tracon',
-                      interval: 4500,
-                      title: '',
-                      subject: 'Tracon @ Twitter',
-                      width: 'auto',
-                      height: 400,
-                      features: {
-                        scrollbar: false,
-                        loop: true,
-                        live: true,
-                        hashtags: true,
-                        timestamp: true,
-                        avatars: true,
-                        toptweets: false,
-                        behavior: 'default'
-                      }
+    		<div id="twitter_cont" style="display:block;position:relative;margin: -30px auto 0 auto">
+                <a class="twitter-timeline" data-dnt="true" width="900" height="500" data-chrome="nofooter" href="https://twitter.com/search?q=%23tracon" data-widget-id="348032480055529472">Tweets about "#tracon"</a>
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
-                    }).render().start();
-                </script>
             </div>
         </div>
    		<div id="footer">
