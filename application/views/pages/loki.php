@@ -15,9 +15,9 @@
         <label for="tag"> Tyyppi:</label>
         <?php print $select; ?>
         <label for="comment"> Viesti:</label>
-        <input type="text" id="com" name="comment" size="56" />
+        <input type="text" id="com" name="comment" title="<b>Käytä lisääjä-kenttää, älä //Siika</b><br />Pääset siihen nopeasti painamalla tabia <span style='font-size:7px'>(caps lockin päällä oleva nappi)</span>." size="50" />
         <label for="adder"> Lisääjä:</label>
-        <input type="text" id="adder" name="adder" value="<?php print $user; ?>" size="5" />
+        <input type="text" id="adder" name="adder" value="<?php print $user; ?>" size="7" />
         <input type="submit" value="Lisää" />
     </form>
 </div>
@@ -25,7 +25,7 @@
     <div id="feedback"></div>
 </div>
 <div id="table">
-    <table id="taulu" class="stats tablesorter">
+    <table id="taulu" class="stats">
         <thead>
             <tr>
                 <th class="ui-state-default">Aika</th>
