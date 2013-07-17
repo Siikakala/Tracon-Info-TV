@@ -28,6 +28,7 @@ class Controller_Admin extends Controller {
 			$this->view->header->js = '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-2.0.3.min.js"></script>';
 			$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-ui-1.10.3.custom.min.js"></script>';
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.metadata.js\"></script>";
+            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.themeswitcher.js\"></script>";
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/MD5.js\"></script>";
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/chat.js\"></script>";
 			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/common.js\"></script>";
@@ -127,8 +128,14 @@ class Controller_Admin extends Controller {
 			}
 			$this->view->header->js .= "\n<script type=\"text/javascript\">
 			$(function() {
-			$(\"#accord\").accordion({active:" . $active . ",heightStyle: 'content',icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
-			});
+			    $(\"#accord\").accordion({active:" . $active . ",heightStyle: 'content',icons:{ 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }});
+			
+                $('#switcher').themeswitcher({
+                    themePath: '".URL::site('/')."css/',
+                    imgPath: '".URL::site('/')."images/themes/',
+                    loadTheme: 'dot-luv'
+                });
+            });
 			</script>";
 
 			$this->view->content->links = new view ('pages/links');

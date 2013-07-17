@@ -38,6 +38,12 @@ body {
     padding-left:10px;
 }
 
+#switcher {
+    float: left;
+    margin-top: -85px;
+    position: absolute;
+}
+
 a.del:link, a.del:visited{
     color: #AAA;
     background-color: transparent;

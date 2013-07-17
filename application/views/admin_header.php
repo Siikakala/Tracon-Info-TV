@@ -28,3 +28,4 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 			<h1><?php print __title . $title; ?></h1>
 			<div id="kello_container"><p id="kello"></p></div>
 		</div>
+        <div id="switcher"></div>
