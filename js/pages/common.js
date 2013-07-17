@@ -102,7 +102,7 @@ function update_load(){
         var container = $("#show");
         fetch = baseurl+'ajax/loads/'
         $.getJSON(fetch,function(data) {
-            container.html("Serverin loadit: "+data.ret);
+            container.html("Loadit: "+data.ret);
         });
         window.setTimeout(function(){
             update_load();

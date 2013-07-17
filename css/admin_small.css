@@ -4,7 +4,7 @@
 }
 
 body {
-	background-color: #333;
+	background-color: #444;
 	color: #111;
 	font-family: "Helvetica", "Arial", sans-serif;
 	font-size: 14px;
@@ -40,7 +40,7 @@ body {
 
 #switcher {
     float: left;
-    margin-top: -85px;
+    margin-top: -88px;
     position: absolute;
 }
 
@@ -602,7 +602,7 @@ label.manual {
 .qq-upload-fail .qq-upload-failed-text {display:inline;}
 
 
-/* jQuery UI:n viritys, jotta teeman vaihto ei vaikuta, liittyy kaikki menuun. */
+/* jQuery UI:n viritys, jotta teeman vaihto ei vaikuta. */
 .ui-widget {
 	font-size: 0.9em;
 }
@@ -619,8 +619,8 @@ label.manual {
     padding: 1em 1.2em 0em 1.2em;
 }
 .ui-tooltip-content {
-    width: 380px;
+    max-width: 380px;
 }
 .ui-tooltip {
-    max-width: 400px;
+    max-width: 380px;
 }
