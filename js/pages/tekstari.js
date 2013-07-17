@@ -7,7 +7,7 @@ function send(form){
     return false;
 }
 $(function(){
-    $("#tekstari-accord").accordion({autoHeight: false});
+    $("#tekstari-accord").accordion({heightStyle: 'content'});
 
     var uploader = new qq.FileUploader({
             element: document.getElementById('fileupload'),
