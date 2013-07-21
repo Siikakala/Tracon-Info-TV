@@ -155,7 +155,7 @@ $(function() {
 
 
 
-$(window).delegate("#table td", "click", function (e) {
+$("#table").on("click", "td", function (e) {
     console.log("Mouse click detected");
     row = $(this).attr("row");
     tag = $(this).parent().attr("tag");
