@@ -103,11 +103,11 @@ function add(){
     return false;
 }
 
-$("body").live("click",function(){
+$(document).on("click", "body", function(){
    $(".contextMenu").hide();
 });
 
-$("td").live("mouseup",function (e){
+$(document).on("mouseup", "td", function (e){
     row = $(this).parent().attr('id');
     //pitää tehdä näin koska muuten ei saa arvoa jos sattuukin klikkaan sen eventtitekstin päältä
     var eventti = $(this).parent().children('td[type="eventti"]');

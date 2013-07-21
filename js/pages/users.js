@@ -113,11 +113,11 @@ $(function(){
 });
 
 
-$("body").live("click",function(){
+$(document).on("click", "body", function(){
    $(".contextMenu").hide();
 });
 
-$("td").live("mouseup",function (e){
+$(document).on("mouseup", "td", function (e){
     row = $(this).attr('row');
     var user = $(this).parent().attr('usr');
     switch(e.which){
@@ -145,7 +145,7 @@ $("td").live("mouseup",function (e){
     }
 });
 
-$("#pass2").live("keyup",function (e){
+$(document).on("keyup", "#pass2", function (e){
     if($("#pass1").val() != $("#pass2").val()){
         $("#dialog-pass-feedback").html("Salasanat eivät täsmää!");
         passerror = 1;
@@ -154,7 +154,7 @@ $("#pass2").live("keyup",function (e){
         passerror = 0;
     }
 });
-$("#u_pass2").live("keyup",function (e){
+$(document).on("keyup", "#u_pass2", function (e){
     if($("#u_pass1").val() != $("#u_pass2").val()){
         $("#dialog-newuser-feedback").html("Salasanat eivät täsmää!");
         passerror = 1;

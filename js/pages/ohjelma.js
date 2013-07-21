@@ -277,7 +277,7 @@ function del(id){
     return false;
 }
 
-$("#salit label").live("click",function(){
+$(document).on("click", "#salit label", function(){
 	var id = $(this).attr("id");
 	var pressed = $(this).attr("aria-pressed");
     if(pressed == "false"){
@@ -336,7 +336,7 @@ function fix_checkboxes(){
     },100);
 }
 
-$("input:checkbox").live("click",function(e){
+$(document).on("click", "input:checkbox", function(e){
     var id = $(this).attr("id");
 	var pressed = !$(this).attr("aria-pressed");
 	var button = $(this);
@@ -352,7 +352,7 @@ $("input:checkbox").live("click",function(e){
 	event.stopPropagation();
 });
 
-$("#ohjelmat div.ui-widget-content").live("click",function(e){
+$(document).on("click", "#ohjelmat div.ui-widget-content", function(e){
     $("#e-id").val($(this).attr("oid"));
     console.log("tag:"+$(this).get(0).tagName);
     fetch = baseurl+'ajax/ohjelma_loadedit/';
@@ -376,7 +376,7 @@ $("#ohjelmat div.ui-widget-content").live("click",function(e){
 	$("#dialog-edit").dialog("open");
 });
 
-$("#pituusselect").live("change", function(e){
+$(document).on("change", "#pituusselect", function(e){
 	if($(this).val() == "muu"){
     	$("#muupituus").show('slide','','medium');
 	}else{
@@ -384,7 +384,7 @@ $("#pituusselect").live("change", function(e){
     }
 });
 
-$("#e-pituusselect").live("change", function(e){
+$(document).on("change", "#e-pituusselect", function(e){
 	if($(this).val() == "muu"){
     	$("#e-muupituus").show('slide','','medium');
 	}else{

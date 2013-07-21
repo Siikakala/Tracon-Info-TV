@@ -13,7 +13,7 @@ class Controller_Frontend extends Controller {
     	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery-ui-1.10.3.custom.min.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery.fullscreenr.js\"></script>";
         $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."flowplayer/flowplayer-3.2.6.min.js\"></script>";
-        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/kinetic-v4.5.4.min.js\"></script>";
+        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/kinetic-v3.10.1.min.js\"></script>";
         //$this->view->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>"; //tätä ei toistaiseksi käytetä.
     	if(!defined("__tableprefix")){
             $tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
