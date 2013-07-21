@@ -202,7 +202,7 @@ $("#table").on("click", "td", function (e) {
     }
 });
 
-$(window).delegate(":not(#table)", "click", function () {
+$(window).on("click", ":not(#table)", function () {
     $(".contextMenu").hide();
     console.log("Hid context menu");
 });
