@@ -109,7 +109,7 @@ $(function() {
     $("#dialog-confirm").dialog({
 		resizable: false,
 		autoOpen: false,
-		height:140,
+		height:150,
 		modal: true,
 		buttons: {
 			"Poista": function() {
@@ -155,17 +155,34 @@ $(function() {
 
 
 
-$("#table").on("click", "td", function (e) {
+$(document).on("click", "td", function (e) {
     console.log("Mouse click detected");
     row = $(this).attr("row");
     tag = $(this).parent().attr("tag");
-    switch (e.which) {
-        //left click   
-        case 1:
-            console.log("Left click");
-            if ($('#' + row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")) {
-                $("#dialog-confirm").dialog('open');
+    console.log("Left click");
+    if ($('#' + row).is(".type-löytötavara-kuitattu,.type-ongelma-kuitattu,.type-tiedote-kuitattu,.type-kysely-kuitattu,.type-muu-kuitattu")) {
+        $("#dialog-confirm").dialog('open');
+    } else {
+        fetch = baseurl + 'ajax/todo_ack/'
+        $.post(fetch, { "row": row }, function (data) {
+            if (data.ret == true) {
+                $('#' + row).addClass("type-" + tag + "-kuitattu");
             } else {
+                alert("Kuittaus epäonnistui!");
+            }
+         }, "json");
+    }
+});
+
+$(document).on('contextmenu',"td" ,function(e){
+    console.log("Right click detected");
+    row = $(this).attr("row");
+    tag = $(this).parent().attr("tag");
+    $("#myMenu").css({ top: e.pageY, left: e.pageX }).show('fast');
+    $("#myMenu").find('a').click(function () {
+        $(".contextMenu").hide();
+        switch ($(this).attr('href').substr(1)) {
+            case "check":
                 fetch = baseurl + 'ajax/todo_ack/'
                 $.post(fetch, { "row": row }, function (data) {
                     if (data.ret == true) {
@@ -174,35 +191,15 @@ $("#table").on("click", "td", function (e) {
                         alert("Kuittaus epäonnistui!");
                     }
                 }, "json");
-            }
-            break;
-        //right click   
-        case 3:
-            console.log("Right click");
-            $("#myMenu").css({ top: e.pageY, left: e.pageX }).show('fast');
-            $("#myMenu").find('a').click(function () {
-                $(".contextMenu").hide();
-                switch ($(this).attr('href').substr(1)) {
-                    case "check":
-                        fetch = baseurl + 'ajax/todo_ack/'
-                        $.post(fetch, { "row": row }, function (data) {
-                            if (data.ret == true) {
-                                $('#' + row).addClass("type-" + tag + "-kuitattu");
-                            } else {
-                                alert("Kuittaus epäonnistui!");
-                            }
-                        }, "json");
-                        break;
-                    case "del":
-                        $("#dialog-confirm-del").dialog('open');
-                        break;
-                }
-            });
-            break;
-    }
+                break;
+            case "del":
+                $("#dialog-confirm-del").dialog('open');
+                break;
+        }
+    });
 });
 
-$(window).on("click", ":not(#table)", function () {
+$(document).on("click", "body:not(#table)", function () {
     $(".contextMenu").hide();
     console.log("Hid context menu");
 });
