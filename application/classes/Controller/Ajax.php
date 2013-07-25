@@ -1120,72 +1120,25 @@ class Controller_Ajax extends Controller {
                     break;
                 case "tekstari_send":
                     $post = $_POST;
-                    $sms = new Nexmo_Message();
-                    $d = array();
                     preg_match_all('/(\d{12})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
-                    $time = count($numbers);
-                    $exec = ($time * 2 / 10) + 2;
-                    $exec = ceil($exec);
-                    $errors = 0;
-                    $jaljella = 0;
-                    $sent = 0;
-                    //Tekstareiden lähetykseen kuluva aika pyöristettynä seuraavaan sekuntiin + 2 sekuntia varoaikaa lisää.
-                    set_time_limit($exec);
                     foreach($numbers[1] as $key => $number){
-                        $d[] = $data = $sms->sendText($number,"Tracon",$this->utf8($post['message']));
-                        if($data["code"][0] != 0){
-                            $errors = 1;
-                            $d = $data;
-                            break;
-                        }
-                        $jaljella = $data["credit"];
-                        $sent++;
-                        usleep(200000);//200ms, 5 tekstaria sekunnissa.
+                    	$data = array('to' => $number, 'text' => $this->utf8($post['message']));
+                		Jelly::factory('sms_outbox')->set($data)->save();
                     }
-                    if($errors == 1){
-                        $return = array("ret" => "Lähetys epäonnistui! Syy: ".implode(", ",$d["msg"]));
-                    }else{
-                        if($sent > 1)
-                            $m = "t";
-                        else
-                            $m = "";
-                        $return = array("ret" => "Viesti".$m." (".$sent." kpl) lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €.");
-                    }
+                    //Kutsu käsittelijää tässä.
+                    $return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
                     break;
                 case "tekstari_file":
-                    $d = array();
-                    $sms = new Nexmo_Message();
                     $input = fopen("php://input", "r");
                     $data = stream_get_contents($input);
                     fclose($input);
                     preg_match_all('/(\d{12})[;,](.*)/',$data,$matches, PREG_SET_ORDER);
-                    $time = count($matches);
-                    $exec = ($time * 2 / 5) + 15;
-                    $exec = ceil($exec);
-                    $errors = 0;
-                    $jaljella = 0;
-                    $sent = 0;
-                    //Tekstareiden lähetykseen kuluva aika (olettaen että lähetetään tuplamittaisia viestejä) pyöristettynä seuraavaan sekuntiin + 15 sekuntia varoaikaa lisää.
-                    set_time_limit($exec);
                     foreach($matches as $row){
-                        $d[] = $data = $sms->sendText($row[1],"Tracon",$this->utf8($row[2]));
-                        if($data["code"][0] != 0){
-                            $errors = 1;
-                            $d = $data;
-                            break;
-                        }
-                        if($errors == 0)
-                        	$jaljella = $data["credit"];
-                        $sent++;
-                        for($t=1;$t<=$data["count"][0];$t++){
-                        	usleep(200000);//200ms, 5 tekstaria sekunnissa. Myös multi-part huomioitu.
-                        }
+                        $data = array('to' => $row[1], 'text' => $this->utf8($row[2]));
+                        Jelly::factory('sms_outbox')->set($data)->save();
                     }
-                    if($errors == 1){
-                        $return = array("ret" => "Lähetys epäonnistui! Viestejä ehdittiin lähettämään onnistuneesti ".$sent." kappaletta. Epäonnistumisen syy: ".implode(", ",$d["msg"]).". Saldoa jäi vielä ".$jaljella." €.","timeout"=>30000);
-                    }else{
-                        $return = array("success"=>true,"ret" => "Viestit (".$sent." kpl) lähetetty onnistuneesti! Saldoa jäljellä vielä ".$jaljella." €.");
-                    }
+                    //Kutsu käsittelijää tässä.
+                    $return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
                     break;
 
 			}
