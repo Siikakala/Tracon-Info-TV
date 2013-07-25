@@ -187,6 +187,12 @@ Route::set('nexmo', 'nexmo(/<type>)')
         'action'     => 'process_nexmo'
     ));
 
+Route::set('kuole', 'kill')
+    ->defaults(array(
+        'controller' => 'backend',
+        'action'     => 'kill'
+    ));
+
 Route::set('frontpage', '(<id>)')
 	->defaults(array(
 		'controller' => 'frontend',
