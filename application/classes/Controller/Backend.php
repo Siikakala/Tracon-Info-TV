@@ -16,6 +16,65 @@ class Controller_Backend extends Controller {
         throw new Kohana_Exception('Testierrori');
     }
 
+    public function action_process_nexmo(){
+        
+        $which = $this->request->param("type");
+
+        if($which == "inbound"){
+            //Inbound message
+            $nexmo = new Nexmo_Message();
+            if ($nexmo->inboundText()) {
+                //we got message.
+                $data = array('from' => $nexmo->$from, 'messageId' => $nexmo->$message_id, 'text' => $nexmo->$text, 'msisdn' => $nexmo->$msisdn);
+                Jelly::factory('sms_inbox')->set($data)->save();
+                print "200 OK";
+            }
+        }elseif ($which == 'delivery') {
+            //Delivery report
+            $nexmo = new Nexmo_Receipt();
+            if ($nexmo->exists()) {
+                switch ($nexmo->status) {
+                    case $nexmo::STATUS_DELIVERED:
+                        //sukset
+                        $d = Jelly::query('sms_outbox',$nexmo->$clientref)->select();
+                        $d->status = "Delivered";
+                        $d->d_timestamp = DB::expr('NOW()');
+                        $d->save();
+                        print "200 OK";
+                        break;
+                    case $nexmo::STATUS_FAILED:
+                        $d = Jelly::query('sms_outbox',$nexmo->$clientref)->select();
+                        $d->status = "FAILED!";
+                        $d->d_timestamp = DB::expr('NOW()');
+                        $d->save();
+                        print "200 OK";
+                        break;
+                    case $nexmo::STATUS_EXPIRED:
+                        $d = Jelly::query('sms_outbox',$nexmo->$clientref)->select();
+                        $d->status = "Expired";
+                        $d->d_timestamp = DB::expr('NOW()');
+                        $d->save();
+                        print "200 OK";
+                        break;
+                    case $nexmo::STATUS_BUFFERED:
+                        $d = Jelly::query('sms_outbox',$nexmo->$clientref)->select();
+                        $d->status = "Waiting for delivery...";
+                        $d->d_timestamp = DB::expr('NOW()');
+                        $d->save();
+                        print "200 OK";
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+        
+
+
+
+    }
+
     public function action_check(){//nojaa vahvasti sessioihin.
         $page = $this->request->param("page");//kaivetaan sivuparametri routesta
      	if(!$this->session->get("lastpage"))//missä oltiin aikasemmin

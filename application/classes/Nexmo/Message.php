@@ -2,17 +2,17 @@
 
 /**
  * Class NexmoMessage handles the methods and properties of sending an SMS message.
- *
+ * 
  * Usage: $var = new NexoMessage ( $account_key, $account_password );
  * Methods:
  *     sendText ( $to, $from, $message, $unicode = null )
  *     sendBinary ( $to, $from, $body, $udh )
  *     pushWap ( $to, $from, $title, $url, $validity = 172800000 )
  *     displayOverview( $nexmo_response=null )
- *
+ *     
  *     inboundText ( $data=null )
  *     reply ( $text )
- *
+ *     
  *
  */
 
@@ -32,12 +32,12 @@ class Nexmo_Message extends Model {
 	 */
 	var $nx_uri = 'https://rest.nexmo.com/sms/json';
 
-
+	
 	/**
 	 * @var array The most recent parsed Nexmo response.
 	 */
 	private $nexmo_response = '';
-
+	
 
 	/**
 	 * @var bool If recieved an inbound message
@@ -56,6 +56,11 @@ class Nexmo_Message extends Model {
 	public $ssl_verify = false; // Verify Nexmo SSL before sending any message
 
 
+	function NexmoMessage ($api_key, $api_secret) {
+		$this->nx_key = $api_key;
+		$this->nx_secret = $api_secret;
+	}
+
 
 
 	/**
@@ -65,8 +70,8 @@ class Nexmo_Message extends Model {
 	 * message type. Otherwise set to TRUE if you require
 	 * unicode characters.
 	 */
-	function sendText ( $to, $from, $message, $unicode=null ) {
-
+	function sendText ( $to, $from, $message, $clientref, $unicode=null ) {
+	
 		// Making sure strings are UTF-8 encoded
 		if ( !is_numeric($from) && !mb_check_encoding($from, 'UTF-8') ) {
 			trigger_error('$from needs to be a valid UTF-8 encoded string');
@@ -77,37 +82,39 @@ class Nexmo_Message extends Model {
 			trigger_error('$message needs to be a valid UTF-8 encoded string');
 			return false;
 		}
-
+		
 		if ($unicode === null) {
 			$containsUnicode = max(array_map('ord', str_split($message))) > 127;
 		} else {
 			$containsUnicode = (bool)$unicode;
 		}
-
+		
 		// Make sure $from is valid
 		$from = $this->validateOriginator($from);
 
 		// URL Encode
 		$from = urlencode( $from );
 		$message = urlencode( $message );
-
+		
 		// Send away!
 		$post = array(
 			'from' => $from,
 			'to' => $to,
 			'text' => $message,
+			'client-ref' => $clientref,
+			'status-report-req' => 1,
 			'type' => $containsUnicode ? 'unicode' : 'text'
 		);
 		return $this->sendRequest ( $post );
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Prepare new WAP message.
 	 */
 	function sendBinary ( $to, $from, $body, $udh ) {
-
+	
 		//Binary messages must be hex encoded
 		$body = bin2hex ( $body );
 		$udh = bin2hex ( $udh );
@@ -124,10 +131,10 @@ class Nexmo_Message extends Model {
 			'udh' => $udh
 		);
 		return $this->sendRequest ( $post );
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Prepare new binary message.
 	 */
@@ -138,7 +145,7 @@ class Nexmo_Message extends Model {
 			trigger_error('$title and $udh need to be valid UTF-8 encoded strings');
 			return false;
 		}
-
+		
 		// Make sure $from is valid
 		$from = $this->validateOriginator($from);
 
@@ -152,10 +159,10 @@ class Nexmo_Message extends Model {
 			'validity' => $validity
 		);
 		return $this->sendRequest ( $post );
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Prepare and send a new message.
 	 */
@@ -200,10 +207,41 @@ class Nexmo_Message extends Model {
 			return false;
 		}
 
-		$from_nexmo = str_replace('-', '', $from_nexmo);
-
+		
 		return $this->nexmoParse( $from_nexmo );
+	 
+	}
+	
+	
+	/**
+	 * Recursively normalise any key names in an object, removing unwanted characters
+	 */
+	private function normaliseKeys ($obj) {
+		// Determine is working with a class or araay
+		if ($obj instanceof stdClass) {
+			$new_obj = new stdClass();
+			$is_obj = true;
+		} else {
+			$new_obj = array();
+			$is_obj = false;
+		}
 
+
+		foreach($obj as $key => $val){
+			// If we come across another class/array, normalise it
+			if ($val instanceof stdClass || is_array($val)) {
+				$val = $this->normaliseKeys($val);
+			}
+			
+			// Replace any unwanted characters in they key name
+			if ($is_obj) {
+				$new_obj->{str_replace('-', '', $key)} = $val;
+			} else {
+				$new_obj[str_replace('-', '', $key)] = $val;
+			}
+		}
+
+		return $new_obj;
 	}
 
 
@@ -211,37 +249,34 @@ class Nexmo_Message extends Model {
 	 * Parse server response.
 	 */
 	private function nexmoParse ( $from_nexmo ) {
+		$response = json_decode($from_nexmo);
 
-		$response_obj = json_decode( $from_nexmo );
+		// Copy the response data into an object, removing any '-' characters from the key
+		$response_obj = $this->normaliseKeys($response);
 
 		if ($response_obj) {
 			$this->nexmo_response = $response_obj;
 
-			// Find possible error codes
-			$errors = array("code" => array(0=>0),"credit" => 0);
-			$i = 1;
+			// Find the total cost of this message
+			$response_obj->cost = $total_cost = 0;
 			if (is_array($response_obj->messages)) {
 				foreach ($response_obj->messages as $msg) {
-					$errors["code"][$i] = (float)$msg->status;
-					if($errors["code"][$i] != 0){
-						$errors["msg"][$i] = $msg->errortext;
-					}else{
-						$errors["credit"] = number_format($msg->remainingbalance, 3, ',', '');
+					if (property_exists($msg, "messageprice")) {
+						$total_cost = $total_cost + (float)$msg->messageprice;
 					}
-					$errors["code"][0] += $errors["code"][$i];
-					$errors["count"][0] = $msg->messagecount;
-					$i++;
 				}
+
+				$response_obj->cost = $total_cost;
 			}
 
-			return $errors;
+			return $response_obj;
 
 		} else {
 			// A malformed response
 			$this->nexmo_response = array();
 			return false;
 		}
-
+		
 	}
 
 
@@ -269,13 +304,16 @@ class Nexmo_Message extends Model {
 				$ret = substr($ret, 0, 15);
 			}
 		}
-
+		
 		return (string)$ret;
 	}
 
 
 
-
+	/**
+	 * Display a brief overview of a sent message.
+	 * Useful for debugging and quick-start purposes.
+	 */
 	public function displayOverview( $nexmo_response=null ){
 		$info = (!$nexmo_response) ? $this->nexmo_response : $nexmo_response;
 
@@ -283,18 +321,18 @@ class Nexmo_Message extends Model {
 
 		// How many messages were sent?
 		if ( $info->messagecount > 1 ) {
-
+		
 			$status = 'Your message was sent in ' . $info->messagecount . ' parts';
-
+		
 		} elseif ( $info->messagecount == 1) {
-
+		
 			$status = 'Your message was sent';
-
+		
 		} else {
 
 			return 'There was an error sending your message';
 		}
-
+		
 		// Build an array of each message status and ID
 		if (!is_array($info->messages)) $info->messages = array();
 		$message_status = array();
@@ -310,8 +348,8 @@ class Nexmo_Message extends Model {
 
 			$message_status[] = $tmp;
 		}
-
-
+		
+		
 		// Build the output
 		if (isset($_SERVER['HTTP_HOST'])) {
 			// HTML output
@@ -358,7 +396,7 @@ class Nexmo_Message extends Model {
 	/**
 	 * Inbound text methods
 	 */
-
+	
 
 	/**
 	 * Check for any inbound messages, using $_GET by default.
@@ -398,3 +436,5 @@ class Nexmo_Message extends Model {
 	}
 
 }
+
+?>

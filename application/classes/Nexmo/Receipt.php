@@ -2,11 +2,11 @@
 
 /**
  * Class NexmoReceipt handles and incoming message receipts sent by Nexmo
- *
- * Usage: $var = new NexoReceipt ();
+ * 
+ * Usage: $var = new NexmoReceipt ();
  * Methods:
  *     exists ( )
- *
+ *     
  *
  */
 
@@ -22,6 +22,7 @@ class Nexmo_Receipt {
 	public $network = '';
 	public $message_id = '';
 	public $status = '';
+	public $clientref = '';
 	public $received_time = 0;    // Format: UNIX timestamp
 
 	public $found = false;
@@ -41,6 +42,7 @@ class Nexmo_Receipt {
 		$this->from = $data['to'];
 		$this->network = $data['network-code'];
 		$this->message_id = $data['messageId'];
+		$this->clientref = $data['client-ref'];
 		$this->status = strtoupper($data['status']);
 
 		// Format the date into timestamp
@@ -56,3 +58,4 @@ class Nexmo_Receipt {
 		return $this->found;
 	}
 }
+?>

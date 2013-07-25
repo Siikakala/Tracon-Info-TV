@@ -181,12 +181,17 @@ Route::set('frontend', 'tv(/<id>)')
 		'action'     => 'index',
 	));
 
+Route::set('nexmo', 'nexmo(/<type>)')
+    ->defaults(array(
+        'controller' => 'backend',
+        'action'     => 'process_nexmo'
+    ));
+
 Route::set('frontpage', '(<id>)')
 	->defaults(array(
 		'controller' => 'frontend',
 		'action'     => 'to_tv',
 	));
-
 
 /**
  * Error router
