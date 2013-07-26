@@ -25,8 +25,8 @@ class Controller_Backend extends Controller {
             $nexmo = new Nexmo_Message();
             if ($nexmo->inboundText()) {
                 //we got message.
-                $data = array('from' => $nexmo->from, 'messageId' => $nexmo->message_id, 'text' => $nexmo->text, 'msisdn' => $nexmo->msisdn);
-                Jelly::factory('sms_inbox')->set($data)->save();
+                $data = array('from' => $nexmo->from, 'messageId' => $nexmo->message_id, 'text' => $nexmo->text, 'stamp' => DB::expr('NOW()'));
+                Jelly::factory('smsinbox')->set($data)->save();
                 print "200 OK";
             }
         }elseif ($which == 'delivery') {
@@ -36,28 +36,28 @@ class Controller_Backend extends Controller {
                 switch ($nexmo->status) {
                     case $nexmo::STATUS_DELIVERED:
                         //sukset
-                        $d = Jelly::query('sms_outbox',$nexmo->clientref)->select();
+                        $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
                         $d->status = "Delivered";
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";
                         break;
                     case $nexmo::STATUS_FAILED:
-                        $d = Jelly::query('sms_outbox',$nexmo->clientref)->select();
+                        $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
                         $d->status = "FAILED!";
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";
                         break;
                     case $nexmo::STATUS_EXPIRED:
-                        $d = Jelly::query('sms_outbox',$nexmo->clientref)->select();
+                        $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
                         $d->status = "Expired";
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";
                         break;
                     case $nexmo::STATUS_BUFFERED:
-                        $d = Jelly::query('sms_outbox',$nexmo->clientref)->select();
+                        $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
                         $d->status = "Waiting for delivery...";
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();

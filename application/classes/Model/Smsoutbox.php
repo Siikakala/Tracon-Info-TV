@@ -9,7 +9,7 @@ class Model_Smsoutbox extends Jelly_Model
 
         // The table the model is attached to
         // It defaults to the name of the model pluralized
-        $meta->table(__tableprefix.'sms_outbox');
+        $meta->table('sms_outbox');
 
         // Fields defined by the model
         $meta->fields(array(
@@ -18,9 +18,9 @@ class Model_Smsoutbox extends Jelly_Model
                             "type"   => "bigint",
                             "other"  => "PRIMARY KEY AUTO_INCREMENT"
                         )),
-            'messageId' => Jelly::field('integer',array(
+            'messageId' => Jelly::field('text',array(
                             "column" => "messageId",
-                            "type"   => "int",
+                            "type"   => "text",
                             "other"  => ""
                         )),
             'to'        => Jelly::field('text',array(
@@ -43,13 +43,13 @@ class Model_Smsoutbox extends Jelly_Model
                             "type"   => "tinytext",
                             "other"  => ""
                         )),
-            'timestamp' => Jelly::field('timestamp',array(
+            'stamp' => Jelly::field('timestamp',array(
                             "column" => "stamp",
                             "type"   => "timestamp",
                             "format" => "Y-m-d H:i:s",
                             "other"  => "DEFAULT CURRENT_TIMESTAMP"
                         )),
-            'd_timestamp' => Jelly::field('timestamp',array(
+            'd_stamp' => Jelly::field('timestamp',array(
                             "column" => "d_stamp",
                             "type"   => "timestamp",
                             "format" => "Y-m-d H:i:s",

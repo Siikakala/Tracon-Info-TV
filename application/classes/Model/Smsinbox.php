@@ -9,7 +9,7 @@ class Model_Smsinbox extends Jelly_Model
 
         // The table the model is attached to
         // It defaults to the name of the model pluralized
-        $meta->table(__tableprefix.'sms_inbox');
+        $meta->table('sms_inbox');
 
         // Fields defined by the model
         $meta->fields(array(
@@ -18,32 +18,27 @@ class Model_Smsinbox extends Jelly_Model
                             "type"   => "bigint",
                             "other"  => "PRIMARY KEY AUTO_INCREMENT"
                         )),
-            'messageId' => Jelly::field('integer',array(
+            'messageId' => Jelly::field('text',array(
                             "column" => "messageId",
-                            "type"   => "int",
+                            "type"   => "text",
                             "other"  => ""
                         )),
-            'from'   => Jelly::field('text',array(
+            'from'      => Jelly::field('text',array(
                             "column" => "from",
                             "type"   => "text",
                             "other"  => ""
                         )),
-            'text'   => Jelly::field('text',array(
-                            "column" => "comment",
+            'text'      => Jelly::field('text',array(
+                            "column" => "text",
                             "type"   => "text",
                             "other"  => ""
                         )),
-            'msisdn'     => Jelly::field('string',array(
-                            "column" => "adder",
-                            "type"   => "tinytext",
-                            "other"  => ""
-                        )),
-            'timestamp' => Jelly::field('timestamp',array(
+            'stamp'     => Jelly::field('timestamp',array(
                             "column" => "stamp",
                             "type"   => "timestamp",
                             "format" => "Y-m-d H:i:s",
                             "other"  => "DEFAULT CURRENT_TIMESTAMP"
-                        )),
+                        ))
         ));
         $check = new Model_Jelly_Check();
         $test = $check->checks($meta);
