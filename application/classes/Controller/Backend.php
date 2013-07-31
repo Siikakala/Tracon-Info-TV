@@ -92,8 +92,8 @@ class Controller_Backend extends Controller {
                 foreach ($data as $row) {
                     $text .= $row->text;
                 }
-                Jelly::factory('smsinbox')->set(array('from' => $data_one->from, 'messageId' => $data_one->message_id, 'text' => $text, 'stamp' => $data_one->timestamp))->save();
-                //Jelly::query('smsinboxtmp')->where('concatref','=',$ref_id)->delete();
+                Jelly::factory('smsinbox')->set(array('from' => $data_one->from, 'messageId' => $data_one->messageId, 'text' => $text, 'stamp' => $data_one->stamp))->save();
+                Jelly::query('smsinboxtmp')->where('concatref','=',$ref_id)->delete();
             }else{
                 //print "meni elseen";
             }
