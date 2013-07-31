@@ -25,8 +25,14 @@ class Controller_Backend extends Controller {
             $nexmo = new Nexmo_Message();
             if ($nexmo->inboundText()) {
                 //we got message.
-                $data = array('from' => $nexmo->from, 'messageId' => $nexmo->message_id, 'text' => $nexmo->text, 'stamp' => DB::expr('NOW()'));
-                Jelly::factory('smsinbox')->set($data)->save();
+                if ($nexmo->concat) {
+                    $data = array('from' => $nexmo->from, 'messageId' => $nexmo->message_id, 'text' => $nexmo->text, 'stamp' => $nexmo->timestamp, 'concatref' => $nexmo->concatref, 'concattotal' => $nexmo->concattotal, 'concatpart' => $nexmo->concatpart);
+                    Jelly::factory('smsinboxtmp')->set($data)->save();
+                    $this->check_concat_messages($nexmo->concatref);
+                }else{
+                    $data = array('from' => $nexmo->from, 'messageId' => $nexmo->message_id, 'text' => $nexmo->text, 'stamp' => $nexmo->timestamp);
+                    Jelly::factory('smsinbox')->set($data)->save();
+                }
                 print "200 OK";
             }
         }elseif ($which == 'delivery') {
@@ -69,10 +75,34 @@ class Controller_Backend extends Controller {
                 }
             }
         }
-        
+    }
 
+    public function check_concat_messages($ref_id = null){
+        if(empty($ref_id)){
+            $datas = Jelly::query('smsinboxtmp')->select_column(DB::expr('DISTINCT `concatref`'))->select();
+            foreach($datas as $row){
+                $this->check_concat_messages($row->concatref);
+            }
+        }else{
+            $count = Jelly::query('smsinboxtmp')->where('concatref','=',$ref_id)->count();
+            $data_one = Jelly::query('smsinboxtmp')->where('concatref','=',$ref_id)->limit(1)->select();
+            if($data_one->concattotal <= $count){
+                $data = Jelly::query('smsinboxtmp')->select_column(array(DB::expr('DISTINCT `messageId`'),'text'))->where('concatref','=',$ref_id)->order_by('concatpart')->select();
+                $text = "";
+                foreach ($data as $row) {
+                    $text .= $row->text;
+                }
+                Jelly::factory('smsinbox')->set(array('from' => $data_one->from, 'messageId' => $data_one->message_id, 'text' => $text, 'stamp' => $data_one->timestamp))->save();
+                //Jelly::query('smsinboxtmp')->where('concatref','=',$ref_id)->delete();
+            }else{
+                //print "meni elseen";
+            }
+        }
+    }
 
-
+    public function action_messages(){
+        $ref_id = $this->request->param("param1");
+        $this->check_concat_messages($ref_id);
     }
 
     public function action_check(){//nojaa vahvasti sessioihin.

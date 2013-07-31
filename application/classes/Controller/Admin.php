@@ -683,6 +683,18 @@ class Controller_Admin extends Controller {
             $this->view->content->text = new view("pages/tekstari");
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/tekstari.js\"></script>";
             $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/fileuploader.js\"></script>";
+            $nexmo = new Nexmo_Account();
+            $this->view->content->text->saldo = $nexmo->balance();
+            $inbox = Jelly::query('smsinbox')->order_by('stamp','DESC')->limit(15)->select();
+            $inbox_data = "<table class=\"stats\"><thead><tr><td>Lähettäjä</td><td>Viesti</td><td>Vastaanotettu</td></tr></thead><tbody>";
+            foreach($inbox as $row){
+            	if ($row->loaded()) {
+            		$inbox_data .= "<tr><td>+" . $this->utf8($row->from) . "</td><td>" . $this->utf8($row->text) . "</td><td>" . date('d.m.Y H:i', strtotime($row->stamp." UTC")) . "</td></tr>";
+            	}
+            }
+            $inbox_data .= "</table>";
+            $this->view->content->text->inbox = $inbox_data;
+            $this->view->content->text->valitystiedot = "Not implemented yet!";
         }
 
 

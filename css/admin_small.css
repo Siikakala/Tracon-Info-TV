@@ -128,6 +128,19 @@ a.hover:hover, a.hover:active{
     margin-left:-5px;
 }
 
+#saldo-container {
+    float: right;
+    margin-top: -63px;
+    margin-right: -5px;
+    padding: 5px;
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+#huom {
+    width: 570px;
+}
+
 #links li a {
 
 	text-decoration: none;

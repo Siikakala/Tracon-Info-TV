@@ -8,6 +8,8 @@ function send(form){
 }
 $(function(){
     $("#tekstari-accord").accordion({heightStyle: 'content'});
+    $("#inbox-accord").accordion({heightStyle: 'content', active: "false", collapsible: "true"});
+    $("#valitystieto-accord").accordion({heightStyle: 'content', active: "false", collapsible: "true"});
 
     var uploader = new qq.FileUploader({
             element: document.getElementById('fileupload'),

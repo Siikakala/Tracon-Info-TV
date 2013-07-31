@@ -51,6 +51,11 @@ class Nexmo_Message extends Model {
 	public $text = '';
 	public $network = '';
 	public $message_id = '';
+	public $timestamp = '';
+	public $concat = '';
+	public $concatref = '';
+	public $concattotal = '';
+	public $concatpart = '';
 
 	// A few options
 	public $ssl_verify = false; // Verify Nexmo SSL before sending any message
@@ -415,6 +420,13 @@ class Nexmo_Message extends Model {
 		$this->text = $data['text'];
 		$this->network = (isset($data['network-code'])) ? $data['network-code'] : '';
 		$this->message_id = $data['messageId'];
+		$this->timestamp = $data['message-timestamp'];
+		if (isset($data['concat'])) {
+			$this->concat = true;
+			$this->concatref = $data['concat-ref'];
+			$this->concattotal = $data['concat-total'];
+			$this->concatpart = $data['concat-part'];
+		}
 
 		// Flag that we have an inbound message
 		$this->inbound_message = true;

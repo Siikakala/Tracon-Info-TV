@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Model_Smsinbox extends Jelly_Model
+class Model_Smsinboxtmp extends Jelly_Model
 {
     public static function initialize(Jelly_Meta $meta)
     {
@@ -9,7 +9,7 @@ class Model_Smsinbox extends Jelly_Model
 
         // The table the model is attached to
         // It defaults to the name of the model pluralized
-        $meta->table('sms_inbox');
+        $meta->table('sms_tmp_inbox');
 
         // Fields defined by the model
         $meta->fields(array(
@@ -38,7 +38,22 @@ class Model_Smsinbox extends Jelly_Model
                             "type"   => "timestamp",
                             "format" => "Y-m-d H:i:s",
                             "other"  => "DEFAULT 0"
-                        ))
+                        )),
+            'concatref'=> Jelly::field('text',array(
+                            "column" => "concatref",
+                            "type"   => "text",
+                            "other"  => ""
+                        )),
+            'concattotal'=> Jelly::field('text',array(
+                            "column" => "concattotal",
+                            "type"   => "text",
+                            "other"  => ""
+                        )),
+            'concatpart'=> Jelly::field('text',array(
+                            "column" => "concatpart",
+                            "type"   => "text",
+                            "other"  => ""
+                        )),
         ));
         $check = new Model_Jelly_Check();
         $test = $check->checks($meta);
