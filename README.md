@@ -4,10 +4,10 @@ Tracon Info-Manager is the contime information system, which contains several to
 
 Some features:
 * Info-TV (slideshow)
-** Every frontend (browser which shows the slideshow) is individually controllable
-** Several simultaneous slideshows
-** Integrated video player (can play rtmp-streams)
-** Big scroller with several individual pieces and separate slideshow section
+* * Every frontend (browser which shows the slideshow) is individually controllable
+* * Several simultaneous slideshows
+* * Integrated video player (can play rtmp-streams)
+* * Big scroller with several individual pieces and separate slideshow section
 * Log book with regex search and hotkeys
 * Production planning
 * SMS sending and receiving (uses [Nexmo](http://nexmo.com))
