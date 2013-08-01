@@ -103,6 +103,7 @@ class Controller_Backend extends Controller {
     public function action_messages(){
         $ref_id = $this->request->param("param1");
         $this->check_concat_messages($ref_id);
+        print "Reference id: $ref_id. SMS:t prosessoitu.";
     }
 
     public function action_check(){//nojaa vahvasti sessioihin.
