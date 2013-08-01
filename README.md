@@ -15,3 +15,6 @@ Some features:
 * Chat, for internal conversations. Uses websockets and server relays messages between chat and irc. The server side piece: https://github.com/Siikakala/Websocket-IRC-relay
 
 System is using [Kohana](http://kohanaframework.org/) PHP framework.
+
+
+Comments, some variable names and commit messages are in Finnish. Sorry about that.
