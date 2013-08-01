@@ -159,7 +159,7 @@ Route::set('backend', '<controller>(/<action>(/<param1>))',
      array(
          'controller' => 'backend'
      ))->defaults(array(
-         'action' => 'check',
+         'action' => 'to_tv',
      ));
 
 Route::set('admin', '<controller>(/<action>(/<param1>(/<param2>)))',
