@@ -171,8 +171,8 @@ Route::set('admin', '<controller>(/<action>(/<param1>(/<param2>)))',
 
 Route::set('ajax', 'ajax(/<param1>(/<param2>))')
      ->defaults(array(
-         'controller' => 'ajax',
-         'action' => 'ajax'
+        'controller' => 'ajax',
+        'action'     => 'ajax'
      ));
 
 Route::set('frontend', 'tv(/<id>)')
@@ -185,6 +185,12 @@ Route::set('nexmo', 'nexmo(/<type>)')
     ->defaults(array(
         'controller' => 'backend',
         'action'     => 'process_nexmo'
+    ));
+
+Route::set('gearman', 'worker(/<param>)')
+    ->defaults(array(
+        'controller' => 'worker',
+        'action'     => 'worker'
     ));
 
 Route::set('kuole', 'kill')
