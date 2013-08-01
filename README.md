@@ -9,7 +9,7 @@ Some features:
 	* Integrated video player (can play rtmp-streams)
 	* Big scroller with several individual pieces and separate slideshow section
 * Log book with regex search and hotkeys
-* Production planning
+* Production planning (minute schedule)
 * SMS sending and receiving (uses [Nexmo](http://nexmo.com))
 * Dashboard for seeing everything with one glance
 * Chat, for internal conversations. Uses websockets and server relays messages between chat and irc. The server side piece: https://github.com/Siikakala/Websocket-IRC-relay
