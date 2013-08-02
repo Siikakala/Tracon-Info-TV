@@ -24,7 +24,6 @@ class Task_Worker extends Minion_Task {
 			$data = Jelly::query('smsoutbox')->where('processed','=','0')->select();
 			foreach($data as $row){
 				$log->add(Log::INFO,"* Sending message to +:to. Text: >>:text<<, identifier :id", array(":to" => $row->to, ":text" => $row->text, ":id" => $row->id));
-				print "Sending message to +".$row->to.", text: ".$row->text."\n";
 				$response = $nexmo->sendText("+".$row->to,$from,$row->text,$row->id);
 				$parts = $response->messagecount;
 				$log->add(Log::INFO,"** Message sent in :parts parts.",array(":parts" => $parts));
