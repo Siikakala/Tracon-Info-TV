@@ -15,15 +15,20 @@ class Task_Worker extends Minion_Task {
 	}
 
 	function sms_outbox($job){
+		$log = Log::instance();
+		$log->add(Log::INFO,"Starting SMS sending process.");
 		$nexmo = new Nexmo_Message();
 		$from = Konana::$config->load('auth.nexmo.number');
 		do{
 			$data = Jelly::query('smsoutbox')->where('processed','=','0')->select();
 			foreach($data as $row){
+				$log->add(Log::INFO,"* Sending message to :to. Text: >>:text<<, identifier :id", array(":to" => $row->to, ":text" => $row->text, ":id" => $row->id));
 				$response = $nexmo->sendText("+".$row->to,$from,$row->text,$row->id);
 				$parts = $response->messagecount;
+				$log->add(Log::INFO,"** Message sent in :parts parts.",array(":parts",$parts));
 				if(is_array($response->messages)){
 					foreach($response->messages as $msg){
+						$log->add(Log::INFO,"** Message status: :status",array(":status",$msg->status));
 						if($msg->status === 0){
 							//Everything went well.
 							$row->messageId = $msg->messageid;
@@ -35,6 +40,7 @@ class Task_Worker extends Minion_Task {
 							//Throttled.
 							sleep(1);
 						}else{
+							$log->add(Log::INFO,"** Message failure reason :reason.",array(":reason",$msg->errortext));
 							$row->status = "Sending FAILED! Reason: " . $msg->errortext;
 							$row->d_stamp = DB::expr('NOW()');
 							$row->processed = 1;
@@ -43,8 +49,11 @@ class Task_Worker extends Minion_Task {
 						usleep(200000); //200ms
 					}
 				}
+				$log->write();
 			}
 		}while(Jelly::query('smsoutbox')->where('processed','=','0')->count() == 0);
+		$log->add(Log::INFO,"SMS sending process completed. Waiting for next round.");
+		$log->write();
 	}
 
 }
