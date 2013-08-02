@@ -1125,8 +1125,14 @@ class Controller_Ajax extends Controller {
                     	$data = array('to' => $number, 'text' => $this->utf8($post['message']), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0);
                 		Jelly::factory('smsoutbox')->set($data)->save();
                     }
-                    //Kutsu käsittelijää tässä.
-                    $return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
+                    $client = new GearmanClient();
+                    $client->addServer();
+                    $client->doBackground("process_smsoutbox","do your job!");
+                    if ($client->returnCode() != GEARMAN_SUCCESS){
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. Aloita prosessointi käsin.");	
+                    }else{
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
+                    }
                     break;
                 case "tekstari_file":
                     $input = fopen("php://input", "r");
@@ -1137,8 +1143,14 @@ class Controller_Ajax extends Controller {
                         $data = array('to' => $row[1], 'text' => $this->utf8($row[2]), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0);
                         Jelly::factory('smsoutbox')->set($data)->save();
                     }
-                    //Kutsu käsittelijää tässä.
-                    $return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
+                    $client = new GearmanClient();
+                    $client->addServer();
+                    $client->doBackground("process_smsoutbox","do your job!");
+                    if ($client->returnCode() != GEARMAN_SUCCESS){
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. Aloita prosessointi käsin.");	
+                    }else{
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
+                    }
                     break;
 
 			}
@@ -1146,7 +1158,7 @@ class Controller_Ajax extends Controller {
 			if ($this->session->get("logged_in", false)) {
 				$return = array("ret" => "Sinulla ei ole oikeuksia tähän toimintoon.");
 			} else {
-				$ref = substr_replace(URL::site('/'), "", $this->request->referer());
+				$ref = substr_replace(URL::site('/'), "", $this->request->referrer());
 				$data = "<p>Sessio on vanhentunut. " . HTML::file_anchor('admin/?return=' . $ref, 'Kirjaudu uudelleen') . ", palaat takaisin tälle sivulle.</p>";
 				$return = array("ret" => $data);
 			}
