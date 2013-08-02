@@ -1122,8 +1122,8 @@ class Controller_Ajax extends Controller {
                     $post = $_POST;
                     preg_match_all('/(\d{12})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
                     foreach($numbers[1] as $key => $number){
-                    	$data = array('to' => $number, 'text' => $this->utf8($post['message']));
-                		Jelly::factory('sms_outbox')->set($data)->save();
+                    	$data = array('to' => $number, 'text' => $this->utf8($post['message']), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0);
+                		Jelly::factory('smsoutbox')->set($data)->save();
                     }
                     //Kutsu käsittelijää tässä.
                     $return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
@@ -1134,8 +1134,8 @@ class Controller_Ajax extends Controller {
                     fclose($input);
                     preg_match_all('/(\d{12})[;,](.*)/',$data,$matches, PREG_SET_ORDER);
                     foreach($matches as $row){
-                        $data = array('to' => $row[1], 'text' => $this->utf8($row[2]));
-                        Jelly::factory('sms_outbox')->set($data)->save();
+                        $data = array('to' => $row[1], 'text' => $this->utf8($row[2]), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0);
+                        Jelly::factory('smsoutbox')->set($data)->save();
                     }
                     //Kutsu käsittelijää tässä.
                     $return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");

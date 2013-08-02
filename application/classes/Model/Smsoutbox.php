@@ -33,13 +33,13 @@ class Model_Smsoutbox extends Jelly_Model
                             "type"   => "text",
                             "other"  => ""
                         )),
-            'msisdn'    => Jelly::field('string',array(
-                            "column" => "msisdn",
-                            "type"   => "tinytext",
+            'processed' => Jelly::field('boolean',array(
+                            "column" => "processed",
+                            "type"   => "boolean",
                             "other"  => ""
                         )),
             'status'    => Jelly::field('string',array(
-                            "column" => "msisdn",
+                            "column" => "status",
                             "type"   => "tinytext",
                             "other"  => ""
                         )),
@@ -47,7 +47,7 @@ class Model_Smsoutbox extends Jelly_Model
                             "column" => "stamp",
                             "type"   => "timestamp",
                             "format" => "Y-m-d H:i:s",
-                            "other"  => "DEFAULT CURRENT_TIMESTAMP"
+                            "other"  => "DEFAULT 0"
                         )),
             'd_stamp' => Jelly::field('timestamp',array(
                             "column" => "d_stamp",

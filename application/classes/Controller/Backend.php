@@ -50,7 +50,7 @@ class Controller_Backend extends Controller {
                         break;
                     case $nexmo::STATUS_FAILED:
                         $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
-                        $d->status = "FAILED!";
+                        $d->status = "Delivery FAILED!";
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";
