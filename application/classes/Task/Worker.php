@@ -29,7 +29,7 @@ class Task_Worker extends Minion_Task {
 				$log->add(Log::INFO,"** Message sent in :parts parts.",array(":parts" => $parts));
 				if(is_array($response->messages)){
 					foreach($response->messages as $msg){
-						$log->add(Log::INFO,"** Message status: :status",array(":status" => $msg->status));
+						$log->add(Log::INFO,"*** Part status: :status",array(":status" => $msg->status));
 						if($msg->status == 0){
 							//Everything went well.
 							$row->messageId = $msg->messageid;
@@ -60,6 +60,7 @@ class Task_Worker extends Minion_Task {
 			}
 		}while(Jelly::query('smsoutbox')->where('processed','=','0')->count() == 0);
 		$log->add(Log::INFO,"SMS sending process completed. Waiting for next round.");
+		sleep(3);
 		$log->write();
 	}
 
