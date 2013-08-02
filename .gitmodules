@@ -16,3 +16,6 @@
 [submodule "modules/jelly"]
 	path = modules/jelly
 	url = git://github.com/creatoro/jelly.git
+[submodule "modules/minion"]
+	path = modules/minion
+	url = git@github.com:kohana/minion.git

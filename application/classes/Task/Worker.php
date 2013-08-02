@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Worker extends Controller {
+class Task_Worker extends Minion_Task {
 
-	function action_worker(){
+	protected function _execute(array $params){
 		$worker = new GearmanWorker();
 		$worker->addServer();
 		$worker->addFunction('process_smsoutbox','sms_outbox');
