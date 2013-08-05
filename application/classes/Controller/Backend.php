@@ -44,6 +44,7 @@ class Controller_Backend extends Controller {
                         //sukset
                         $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
                         $d->status = "Delivered";
+                        $d->statuscode = "3";
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";
@@ -51,6 +52,11 @@ class Controller_Backend extends Controller {
                     case $nexmo::STATUS_FAILED:
                         $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
                         $d->status = "Delivery FAILED!";
+                        if(isset($nexmo->errcode)){
+                            $d->statuscode = "2".(substr("00".$nexmo->errcode,-2));
+                        }else{
+                            $d->statuscode = "200";
+                        }
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";
@@ -58,13 +64,18 @@ class Controller_Backend extends Controller {
                     case $nexmo::STATUS_EXPIRED:
                         $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
                         $d->status = "Expired";
+                        if(isset($nexmo->errcode)){
+                            $d->statuscode = "3".(substr("00".$nexmo->errcode,-2));
+                        }else{
+                            $d->statuscode = "300";
+                        }
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";
                         break;
                     case $nexmo::STATUS_BUFFERED:
                         $d = Jelly::query('smsoutbox',$nexmo->clientref)->select();
-                        $d->status = "Waiting for delivery...";
+                        $d->status = "Sent, waiting for delivery...";
                         $d->d_timestamp = DB::expr('NOW()');
                         $d->save();
                         print "200 OK";

@@ -51,7 +51,7 @@ class Controller_Ajax extends Controller {
                     "ohjelma_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash",
                     "tuotanto_save", "tuotanto_refresh", "tuotanto_populate", "tuotanto_edit",
                     "ohjelma_hide","ohjelma_loadedit","ohjelma_edit","ohjelma_del",
-                    "tekstari_send", "tekstari_file"
+                    "tekstari_send", "tekstari_file", "tekstari_balance"
                 ),
 				"level" => 2
 				),
@@ -1120,9 +1120,9 @@ class Controller_Ajax extends Controller {
                     break;
                 case "tekstari_send":
                     $post = $_POST;
-                    preg_match_all('/(\d{12})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
+                    preg_match_all('/(\d{9,16})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
                     foreach($numbers[1] as $key => $number){
-                    	$data = array('to' => $number, 'text' => $this->utf8($post['message']), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0);
+                    	$data = array('to' => $number, 'text' => $this->utf8($post['message']), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0, 'statuscode' => 1, 'sender' => $this->session->get('user'));
                 		Jelly::factory('smsoutbox')->set($data)->save();
                     }
                     $client = new GearmanClient();
@@ -1138,9 +1138,9 @@ class Controller_Ajax extends Controller {
                     $input = fopen("php://input", "r");
                     $data = stream_get_contents($input);
                     fclose($input);
-                    preg_match_all('/(\d{12})[;,](.*)/',$data,$matches, PREG_SET_ORDER);
+                    preg_match_all('/(\d{9,16})[;,](.*)/',$data,$matches, PREG_SET_ORDER);
                     foreach($matches as $row){
-                        $data = array('to' => $row[1], 'text' => $this->utf8($row[2]), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0);
+                        $data = array('to' => $row[1], 'text' => $this->utf8($row[2]), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0, 'statuscode' => 1, 'sender' => $this->session->get('user'));
                         Jelly::factory('smsoutbox')->set($data)->save();
                     }
                     $client = new GearmanClient();
@@ -1152,6 +1152,10 @@ class Controller_Ajax extends Controller {
                     	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
                     }
                     break;
+                case "tekstari_balance":
+                	$nexmo = new Nexmo_Account();
+                	$return = array("ret" => $nexmo->balance());
+                	break;
 
 			}
 		} else { // Jos käyttäjä ei ole kirjautunut sisään, tai ei ole admin. Estää abusoinnin siis.

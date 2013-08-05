@@ -11,6 +11,8 @@ $(function(){
     $("#inbox-accord").accordion({heightStyle: 'content', active: "false", collapsible: "true"});
     $("#valitystieto-accord").accordion({heightStyle: 'content', active: "false", collapsible: "true"});
 
+    update_balance();
+
     var uploader = new qq.FileUploader({
             element: document.getElementById('fileupload'),
             action: baseurl+'ajax/tekstari_file/',
@@ -23,6 +25,17 @@ $(function(){
             },
         });
 });
+
+function update_balance(){
+    var container = $("#saldo");
+    fetch = baseurl+"ajax/tekstari_balance/";
+    $.getJSON(fetch,function(data){
+        container.html(data.ret);
+    });
+    window.setTimeout(function(){
+        update_balance();
+    },120000);
+}
 
 $("form").submit(function(e) {
     e.preventDefault();

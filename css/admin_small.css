@@ -131,7 +131,7 @@ a.hover:hover, a.hover:active{
 #saldo-container {
     float: right;
     margin-top: -63px;
-    margin-right: -5px;
+    margin-right: 0px;
     padding: 5px;
     font-size: 15px;
     font-weight: bolder;

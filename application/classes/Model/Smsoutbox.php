@@ -33,6 +33,11 @@ class Model_Smsoutbox extends Jelly_Model
                             "type"   => "text",
                             "other"  => ""
                         )),
+            'sender'    => Jelly::field('text',array(
+                            "column" => "sender",
+                            "type"   => "text",
+                            "other"  => ""
+                        )),
             'processed' => Jelly::field('boolean',array(
                             "column" => "processed",
                             "type"   => "boolean",
@@ -41,6 +46,11 @@ class Model_Smsoutbox extends Jelly_Model
             'status'    => Jelly::field('string',array(
                             "column" => "status",
                             "type"   => "tinytext",
+                            "other"  => ""
+                        )),
+            'statuscode'=> Jelly::field('integer',array(
+                            "column" => "statuscode",
+                            "type"   => "int",
                             "other"  => ""
                         )),
             'stamp' => Jelly::field('timestamp',array(

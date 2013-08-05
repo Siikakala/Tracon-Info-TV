@@ -11,10 +11,14 @@ class Task_Worker extends Minion_Task {
 				echo "return code was " . $worker->returnCode() . ". Exiting..\n";
 				break;
 			}
+			usleep(20000);//20ms
 		}
 	}
 
+	//Statuscodes: 1 = Added to queue, 2 = Sent, 3 = Delivered, 1xx = Error in sending (where xx is code what nexmo returned or 99 for unknown), 200 = Error in delivery, 300 = Expired message.
+
 	function sms_outbox($job){
+		set_time_limit(0);
 		$log = Log::instance();
 		$log->add(Log::INFO,"Starting SMS sending process.");
 		$nexmo = new Nexmo_Message();
@@ -36,6 +40,7 @@ class Task_Worker extends Minion_Task {
 							$row->status = "Sent";
 							$row->d_stamp = DB::expr('NOW()');
 							$row->processed = 1;
+							$row->statuscode = 2;
 							$row->save();
 						}elseif($msg->status == 1){
 							//Throttled.
@@ -45,9 +50,11 @@ class Task_Worker extends Minion_Task {
 							if(isset($msg->errortext)){
 								$log->add(Log::INFO,"** Message failure reason :reason.",array(":reason" => $msg->errortext));
 								$row->status = "Sending FAILED! Reason: " . $msg->errortext;
+								$row->statuscode = "1".(substr("00".$msg->status,-2)); //so nexmo status 3 will convert to to 103.
 							}else{
 								$log->add(Log::INFO,"** Message failure reason unknown.");
 								$row->status = "Sending FAILED! Reason: Unknown.";
+								$row->statuscode = "199";
 							}
 							$row->d_stamp = DB::expr('NOW()');
 							$row->processed = 1;
@@ -58,10 +65,12 @@ class Task_Worker extends Minion_Task {
 				}
 				$log->write();
 			}
-		}while(Jelly::query('smsoutbox')->where('processed','=','0')->count() == 0);
+		}while(Jelly::query('smsoutbox')->where('processed','=','0')->count() > 0);
+		unset($data);
 		$log->add(Log::INFO,"SMS sending process completed. Waiting for next round.");
 		sleep(3);
 		$log->write();
+		return true;
 	}
 
 }

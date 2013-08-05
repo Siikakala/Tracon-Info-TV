@@ -1,5 +1,5 @@
 <div id="huom"><p>Huom! Puhelinnumero(t) tulee syöttää kansainvälisessä muodossa ilman etuplussaa ja välilyöntejä.</p></div>
-<div id="saldo-container">Saldo: <span id="saldo"><?php echo $saldo; ?><span> &euro;</div>
+<div id="saldo-container">Saldo: <span id="saldo"></span> &euro;</div>
 <div id="tekstari-accord">
     <h3><a href="#" class="head-links">Yksittäinen viesti</a></h3>
     <div>
@@ -20,7 +20,7 @@
     <h3><a href="#" class="head-links">Ryhmäviesti</a></h3>
     <div>
         <p>Erota puhelinnumerot toisistaan ei-numeerisella merkillä (rivinvaihto, pilkku, välilyönti tms).<br/>
-        <strong>HUOM!</strong> Lähetys kestää sitä kauemmin, mitä enemmän viestejä lähetät kerralla, koska nexmo sallii 5 viestiä sekunnissa. Voit seurata viestien lähetyksen edistymistä alta.</p>
+        <strong>HUOM!</strong> Lähetys kestää sitä kauemmin, mitä useammalle viestiä lähetät, koska nexmo sallii 5 viestiä sekunnissa. Voit seurata viestien lähetyksen edistymistä alta.</p>
         <form action="" method="post" id="ryhmatekstari" accept-charset="utf-8">
             <table>
                 <tr>
@@ -46,7 +46,7 @@
 <br/><br/>
 <div style="min-height:20px"><div id="feedback" style="display:none;"></div></div>
 <div id="valitystieto-accord">
-    <h3><a href="#" class="head-links">Välitystiedot viimeisimmistä viesteistä</a></h3>
+    <h3><a href="#" class="head-links">Lähetetyt tekstiviestit statuksineen</a></h3>
     <div id="valitystiedot"><?php echo $valitystiedot; ?></div>
 </div>
 <div id="inbox-accord">
