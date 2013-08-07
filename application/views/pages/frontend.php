@@ -1,6 +1,3 @@
-<p>
-     Tällä sivulla voit tarvittaessa pakottaa jonkin frontendin näyttämään vaikkapa pelkkää diashowta, esim. infossa.
-</p>
 <h4>Globaali hallinta:</h4>
 <br/>
 Näytä:<?php print $select; ?>
@@ -31,13 +28,4 @@ Näytä:<?php print $select; ?>
      <div id="feedback_container" style="min-height:20px;">
          <div id="feedback" style="display:none;"></div>
      </div>
-     <p>
-         <strong>HUOM!</strong>
-             <ul>
-                 <li>Listauksessa on vain 15min sisään itsestään ilmoittaneet frontendit</li>
-                 <li>Globaalia asetusta käyttävien näyttöasetukset eivät vaikuta mihinkään.</li>
-                 <li>Frontendit, jotka eivät ole ilmoittaneet itsestään yli viiteen minuuttiin, asetetaan käyttämään globaalia asetusta.</li>
-                 <li>Frontendit, jotka eivät ole ilmoittaneet itsestään yli viikkoon, poistetaan automaattisesti</li>
-             </ul>
-     </p>
 </p>

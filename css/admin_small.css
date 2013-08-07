@@ -28,14 +28,25 @@ body {
     margin-top:55px;
     background-color:#EEE;
     border: 1px solid #000;
+    padding: 5px;
+}
+
+#helptext .ui-accordion{
+  width: 100%;
+}
+
+#helptext h2{
+  text-align: center;
 }
 
 #helptext p{
     padding-left:8px;
     padding-right:8px;
 }
-#helptext h3{
-    padding-left:10px;
+
+#helptext strong{
+    font-weight: bolder;
+    text-decoration: underline;
 }
 
 #switcher {
@@ -130,7 +141,7 @@ a.hover:hover, a.hover:active{
 
 #saldo-container {
     float: right;
-    margin-top: -63px;
+    margin-top: -60px;
     margin-right: 0px;
     padding: 5px;
     font-size: 15px;

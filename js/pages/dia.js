@@ -1,12 +1,13 @@
 var gid = 0;
 
 function load(id){
-
+    widen(1160);
     var container = $("#edit");
     var identti = $("#ident_");
     var ident = $("#ident");
-    container.hide(0);
-    identti.hide(0);
+    container.hide(80);
+    identti.hide(80);
+    $('textarea.tinymce').tinymce().remove();
     if(id == 0){
         container.html("Valitse jokin dia. Mikäli haluamasi dia ei ole listauksessa, lataa sivu uudelleen.");
         container.show("medium");
@@ -31,6 +32,7 @@ function load(id){
 }
 
 function uusi(){
+    widen(1160);
     var container = $("#edit");
     var identti = $("#ident_");
     var ident = $("#ident");

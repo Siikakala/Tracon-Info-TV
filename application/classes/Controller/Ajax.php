@@ -304,11 +304,12 @@ class Controller_Ajax extends Controller {
 						$ret = false;
 					} else {
 						$r = Jelly::query('rulla')->where('selector', '=', $param2)->select();
-						$r2 = Jelly::query('frontends')->where('dia', '=', $param2)->select();
+						$r2 = Jelly::query('frontends')->where('dia', '=', $param2)->and_where('show_tv','=','2')->select();
 						if ($r->count() > 0) {
-							$ret = "Diaa käytetään vielä " . $r->instance . " diashowssa. Poista dia sieltä ensin.";
+							$nimi = Jelly::query('instances',$r[0]->instance)->select();
+							$ret = "Diaa käytetään vielä " . $nimi->nimi . " diashowssa. Poista dia sieltä ensin.";
 						} elseif ($r2->count() > 0) {
-							$ret = "Diaa näytetään tällä hetkellä frontendissä " . $r2->tunniste . ". Poista dia sieltä ensin.";
+							$ret = "Diaa näytetään tällä hetkellä frontendissä " . $r2[0]->tunniste . ". Poista dia sieltä ensin.";
 						} else {
 							Jelly::query('diat', $param2)->select()->delete();
 							$ret = true;

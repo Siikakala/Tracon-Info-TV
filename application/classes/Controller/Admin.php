@@ -16,51 +16,50 @@ class Controller_Admin extends Controller {
 			}
 			define("__tableprefix", $tb);
 		}
-		if ($this->request->action() != "ajax") { // ei turhaan alusteta viewiä ajax-responselle
-			$this->view = new View('admin');
-			$this->view->header = new view('admin_header');
-			$this->view->content = new view ('admin_content');
-			$this->view->footer = new view('admin_footer');
-			$this->view->header->title = "";
-			$this->view->footer->dialogs = "";
-			$this->view->header->css = HTML::style('css/blitzer/jquery-ui.css');
-			$this->view->header->css .= HTML::style('css/admin_small.css');
-			$this->view->header->js = '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-2.0.3.min.js"></script>';
-			$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-ui-1.10.3.custom.min.js"></script>';
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.metadata.js\"></script>";
-            $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.themeswitcher.js\"></script>";
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/MD5.js\"></script>";
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/chat.js\"></script>";
-			$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/common.js\"></script>";
-			// $this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
-			$this->view->header->js .= "\n<script type=\"text/javascript\">
-			var baseurl = '" . URL::site('/') . "'
-			var usrlvl = '" . $this->session->get('level', 0) . "'
-			var usr = '" . $this->session->get('user', 0) . "'
-			var page = '" . $this->request->action() . "'
-			var begindate = '" . date("d.m.Y", strtotime(Jelly::query('tapahtuma')->limit(1)->select()->get('alkuaika'))) . "'
-			if(begindate == \"01.01.1970\"){
-			begindate = \"today\";
-			}
-            $(function(){
-                $('#switcher').themeswitcher({
-                    themePath: '".URL::site('/')."css/',
-                    imgPath: '".URL::site('/')."images/themes/',
-                    loadTheme: 'dark-hive',
-                    height: 400
-                });
+		$this->view = new View('admin');
+		$this->view->header = new view('admin_header');
+		$this->view->content = new view ('admin_content');
+		$this->view->footer = new view('admin_footer');
+		$this->view->header->title = "";
+		$this->view->footer->dialogs = "";
+		$this->view->header->css = HTML::style('css/blitzer/jquery-ui.css');
+		$this->view->header->css .= HTML::style('css/admin_small.css');
+		$this->view->header->js = '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-2.0.3.min.js"></script>';
+		$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-ui-1.10.3.custom.min.js"></script>';
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.metadata.js\"></script>";
+        $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.themeswitcher.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/MD5.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/chat.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/pages/common.js\"></script>";
+		// $this->view->header->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\">
+		var baseurl = '" . URL::site('/') . "'
+		var usrlvl = '" . $this->session->get('level', 0) . "'
+		var usr = '" . $this->session->get('user', 0) . "'
+		var page = '" . $this->request->action() . "'
+		var subpage = '".$this->request->param('param1', null)."'
+		var begindate = '" . date("d.m.Y", strtotime(Jelly::query('tapahtuma')->limit(1)->select()->get('alkuaika'))) . "'
+		if(begindate == \"01.01.1970\"){
+		begindate = \"today\";
+		}
+        $(function(){
+            $('#switcher').themeswitcher({
+                themePath: '".URL::site('/')."css/',
+                imgPath: '".URL::site('/')."images/themes/',
+                loadTheme: 'eggplant',
+                height: 400
             });
-			</script>
-			";
-			$this->view->header->login = ""; //oletuksena nää on tyhjiä
-			$this->view->header->show = "";
-			$this->view->header->helppi = "";
-			if ($this->session->get('logged_in') && $this->request->action() != 'logout') { // mutta jos ollaan kirjauduttu sisään, eikä kirjautumassa ulos
-				$this->view->header->login = "Kirjautunut käyttäjänä: " . $this->session->get('user') . "<br />" . HTML::file_anchor('admin/logout', 'Kirjaudu ulos'); //ja näytetään kirjautunut käyttäjä, uloskirjautumislinkki, ja globaali hallinta.
-				$this->view->header->helppi = new view("global_help");
-				if ($this->session->get('level', 0) >= 3) {
-					$this->view->header->show = "Loadit: " . `cat /proc/loadavg|awk '{print $1,$2,$3}'`;
-				}
+        });
+		</script>
+		";
+		$this->view->header->login = ""; //oletuksena nää on tyhjiä
+		$this->view->header->show = "";
+		$this->view->header->helppi = "Kirjaudu sisään nähdäksesi ohjeet.";
+		if ($this->session->get('logged_in') && $this->request->action() != 'logout') { // mutta jos ollaan kirjauduttu sisään, eikä kirjautumassa ulos
+			$this->view->header->login = "Kirjautunut käyttäjänä: " . $this->session->get('user') . "<br />" . HTML::file_anchor('admin/logout', 'Kirjaudu ulos'); //ja näytetään kirjautunut käyttäjä, uloskirjautumislinkki, ja globaali hallinta.
+			$this->view->header->helppi = new view("global_help");
+			if ($this->session->get('level', 0) >= 3) {
+				$this->view->header->show = "Loadit: " . `cat /proc/loadavg|awk '{print $1,$2,$3}'`;
 			}
 		}
 	}
@@ -695,7 +694,7 @@ class Controller_Admin extends Controller {
             $outbox_data = "<table class=\"stats\"><thead><tr><td>Vastaanottaja</td><td>Viesti</td><td>Lähetetty</td><td>Status</td></tr></thead><tbody>";
             foreach($outbox as $row){
             	if ($row->loaded()) {
-            		$outbox_data .= "<tr><td>+" . $this->utf8($row->to) . "</td><td>" . $this->utf8($row->text) . "</td><td>" . date('d.m.Y H:i', strtotime($row->stamp." UTC")) . "</td><td>" . $this->utf8($row->status) . "</td></tr>";
+            		$outbox_data .= "<tr title=\"Lähettäjä: ".$this->utf8($row->sender)."\"><td>+" . $this->utf8($row->to) . "</td><td>" . $this->utf8($row->text) . "</td><td>" . date('d.m.Y H:i', strtotime($row->stamp)) . "</td><td>" . $this->utf8($row->status) . "</td></tr>";
             	}
             }
             $outbox_data .= "</table>";
@@ -776,72 +775,9 @@ class Controller_Admin extends Controller {
 		{
 			$data = "
                 <!-- TinyMCE -->
-                <script type=\"text/javascript\" src=\"" . URL::site('/') . "tiny_mce/3.4.7/jquery.tinymce.js\"></script>
-                <script type=\"text/javascript\"><!--
-                function tinymce_setup(){
-                $(function(){
-                $('textarea.tinymce').tinymce({
-                script_url : baseurl+\"tiny_mce/3.4.7/tiny_mce.js\",
-
-                // General options
-                theme : \"advanced\",
-                plugins : \"style,layer,advhr,advlink,iespell,inlinepopups,searchreplace,print,contextmenu,paste,directionality,fullscreen,visualchars,nonbreaking,xhtmlxtras,wordcount,advlist,save,preview\",
-
-                // Buttons and toolbar
-                theme_advanced_buttons1 : \"save,preview,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontsizeselect,removeformat,|,cut,copy,paste,|,search,replace,|,image,advhr,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,forecolor,backcolor,|,cancel\",
-                theme_advanced_buttons2 : \"\",
-                theme_advanced_buttons3 : \"\",
-                theme_advanced_toolbar_location : \"external\",
-                theme_advanced_toolbar_align : \"center\",
-                theme_advanced_font_sizes: \"40px,45px,50px,60px,70px,80px,90px,100px\",
-                theme_advanced_statusbar_location : \"bottom\",
-
-                //Font tweaking
-                theme_advanced_fonts : 'Helvetica=helvetica,arial,sans-serif;',
-                style_formats : [
-                {title : 'Paragraph', inline : 'p'},
-                {title : 'Red text', inline : 'span', styles : {color : '#ff0000'}},
-                {title : 'Red header', block : 'h1', styles : {color : '#ff0000'}},
-                {title : 'Example 1', inline : 'span', classes : 'example1'},
-                {title : 'Example 2', inline : 'span', classes : 'example2'},
-                {title : 'Table styles'},
-                {title : 'Table row 1', selector : 'tr', classes : 'tablerow1'}
-                ],
-
-                // Little tweaking.
-                theme_advanced_resizing : false,
-                force_br_newlines : true,
-                force_p_newlines : false,
-                forced_root_block : '',
-                save_onsavecallback : \"tinymce_tallenna\",
-                save_oncancelcallback : \"tinymce_poista\",
-                imagemanager_contextmenu: true,
-                theme_advanced_resizing_use_cookie : false,
-
-                // Editor size
-                height: \"470\",
-                width: \"940\",
-
-                // Preview
-                plugin_preview_width : \"1020\",
-                plugin_preview_height : \"760\",
-                plugin_preview_pageurl : baseurl+\"tiny_mce/preview.html\",
-
-                // Content CSS
-                content_css : baseurl+\"css/$css\",
-                body_id : \"text\",
-                body_class : \"main\",
-
-                setup : function(ed) {//on-demand hack cancel-napin tooltipin vaihtoon.
-                ed.onPostRender.add(function(ed, cm) {
-                document.getElementById(\"loota_cancel\").title = \"Poista dia\";
-                });
-                }
-                });
-                });
-                }
-                --></script>
-
+                <script type=\"text/javascript\" src=\"" . URL::site('/') . "tiny_mce/4.0.2/jquery.tinymce.js\"></script>
+                <script type=\"text/javascript\">var stylesheetti = '$css'; var setted_up = false;</script>
+                <script type=\"text/javascript\" src=\"" . URL::site('/') . "js/tinymce_setup.js\"></script>
                 <!-- /TinyMCE -->
                 ";
 			return $data;

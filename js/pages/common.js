@@ -18,6 +18,12 @@ $(function () {
     $("#links .btn").click(function () {
         normalize($(this).attr("value"));
     });
+    var pages = {scroller:0,rulla:1,dia:2,streams:3,frontends:4,logi:5,tuotanto:6,tekstarit:7}
+    var activehelp = false;
+    if(pages[subpage] != undefined){
+        activehelp = pages[subpage];
+    }
+    $("#help-accord").accordion({heightStyle: 'content', active: activehelp, collapsible: true});
     update_load();
     update_clock();
     if (usrlvl > 0 && page != "logout") {
@@ -42,22 +48,18 @@ $(function () {
     }
 
     var help_timeoutti;
-    $("#helpimg").hover(
-                    function () { $("#helptext").show(100) },
-                    function () {
-                        window.clearTimeout(help_timeoutti);
-                        help_timeoutti = window.setTimeout(function () {
-                            $("#helptext").hide(100);
-                        },800);
-                    });
-    $("#helptext").hover(
-                    function () { $("#helptext").show(100) },
-                    function () {
-                        window.clearTimeout(help_timeoutti);
-                        help_timeoutti = window.setTimeout(function () {
-                            $("#helptext").hide(100);
-                        },800);
-                    });
+    $("#helpimg, #helptext").mouseenter(
+                            function () { 
+                                window.clearTimeout(help_timeoutti);
+                                $("#helptext").show(100);
+                            });
+    $("#helpimg, #helptext").mouseleave(
+                            function () {
+                                window.clearTimeout(help_timeoutti);
+                                help_timeoutti = window.setTimeout(function () {
+                                    $("#helptext").hide(100);
+                                },800);
+                            });
 });
 
 /**
@@ -151,14 +153,19 @@ function normalize(href){
     console.log(href);
 }
 
-function widen(){
+function widen(newsize){
+    if(newsize == undefined){
+        newsize = $(window).width() - 100;
+    }
+    if(newsize > $(window).width()){
+        newsize = $(window).width() - 80;
+    }
     if($(window).width() > 1060){
-        var resize = $(window).width() - 100;
         window.setTimeout(function(){
             if($(window).width() > 1060){
-                $('#main').animate({width:resize+'px'},2000,'easeInOutCubic');
+                $('#main').animate({width:newsize+'px'},1000,'easeInOutCubic');
             }
-        },300);
+        },150);
     }
     wide_check();
 }
