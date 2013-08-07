@@ -59,10 +59,10 @@ function save(){
     },"json");
     window.setTimeout(function(){
         $("#formidata").hide("explode",{pieces:8},1000);
-    },2500);
+    },200);
     window.setTimeout(function(){
         refresh_data();
-    },3470);
+    },300);
     return false;
 }
 

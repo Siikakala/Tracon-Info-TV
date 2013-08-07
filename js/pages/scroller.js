@@ -20,10 +20,10 @@ function save(){
     },"json");
     window.setTimeout(function(){
         $("#formidata").hide("explode",{pieces:8},1000);
-    },2500);
+    },200);
     window.setTimeout(function(){
         refresh_data();
-    },3500);
+    },300);
     return false;
 }
 
@@ -51,18 +51,12 @@ function dele(row){
     }
 }
 
-$(".del").on({
-    mouseenter: function() {
-        $(this).addClass('hover');
-    },
-    mouseleave: function(){
-        $(this).removeClass('hover');
-    },
-    click: function(){
-        if(!$(this).hasClass("ignore")){
-            $(this).parent().parent().remove();
-            var container = $("#feedback");
-            inform(container,"Rivi poistettu. Muista tallentaa muutoksesi!");
-        }
+$(document).on("mouseenter",".del",function() { $(this).addClass('hover'); });
+$(document).on("mouseleave", ".del",function(){ $(this).removeClass('hover'); });
+$(document).on("click", ".del",function(){
+    if(!$(this).hasClass("ignore")){
+        $(this).parent().parent().remove();
+        var container = $("#feedback");
+        inform(container,"Rivi poistettu. Muista tallentaa muutoksesi!");
     }
 });
