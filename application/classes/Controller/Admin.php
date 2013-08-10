@@ -22,10 +22,10 @@ class Controller_Admin extends Controller {
 		$this->view->footer = new view('admin_footer');
 		$this->view->header->title = "";
 		$this->view->footer->dialogs = "";
-		$this->view->header->css = HTML::style('css/blitzer/jquery-ui.css');
+		$this->view->header->css  = HTML::style('css/eggplant/jquery-ui.css');
 		$this->view->header->css .= HTML::style('css/admin_small.css');
-		$this->view->header->js = '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-2.0.3.min.js"></script>';
-		$this->view->header->js .= "\n" . '<script type="text/javascript" src="' . URL::site('/') . 'jquery/jquery-ui-1.10.3.custom.min.js"></script>';
+		$this->view->header->js  = "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery-2.0.3.min.js\"></script>";
+		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery-ui-1.10.3.custom.min.js\"></script>";
 		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.metadata.js\"></script>";
         $this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "jquery/jquery.themeswitcher.js\"></script>";
 		$this->view->header->js .= "\n<script type=\"text/javascript\" src=\"" . URL::site('/') . "js/MD5.js\"></script>";
