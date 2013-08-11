@@ -58,6 +58,7 @@ class Controller_Admin extends Controller {
 		if ($this->session->get('logged_in') && $this->request->action() != 'logout') { // mutta jos ollaan kirjauduttu sisään, eikä kirjautumassa ulos
 			$this->view->header->login = "Kirjautunut käyttäjänä: " . $this->session->get('user') . "<br />" . HTML::file_anchor('admin/logout', 'Kirjaudu ulos'); //ja näytetään kirjautunut käyttäjä, uloskirjautumislinkki, ja globaali hallinta.
 			$this->view->header->helppi = new view("global_help");
+			$this->view->header->helppi->page = $this->request->param('param1', null);
 			if ($this->session->get('level', 0) >= 3) {
 				$this->view->header->show = "Loadit: " . `cat /proc/loadavg|awk '{print $1,$2,$3}'`;
 			}
@@ -195,6 +196,7 @@ class Controller_Admin extends Controller {
 				case "tekstarit":
 					$this->tekstarit($param1);
 					$this->view->header->title .= " &raquo; Tekstiviestit";
+					$this->view->footer->dialogs = new view('dialogs/tekstari-help');
 					break;
 				default:
 					$this->view->content->text = "<p>Olet nyt Info-TV:n hallintapaneelissa. Ole hyvä ja valitse toiminto valikosta.</p><p>Mikäli jokin data ei ole jollakin sivulla päivittynyt, lataa sivu uudelleen.</p>";

@@ -51,7 +51,7 @@ class Controller_Ajax extends Controller {
                     "ohjelma_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash",
                     "tuotanto_save", "tuotanto_refresh", "tuotanto_populate", "tuotanto_edit",
                     "ohjelma_hide","ohjelma_loadedit","ohjelma_edit","ohjelma_del",
-                    "tekstari_send", "tekstari_file", "tekstari_balance"
+                    "tekstari_send", "tekstari_file", "tekstari_balance", "tekstari_progress"
                 ),
 				"level" => 2
 				),
@@ -93,12 +93,12 @@ class Controller_Ajax extends Controller {
 		$resultsi = $this->session->get('results', null);
 		if (empty($resultsi)) {
 			$kutsu_ok = false;
-			throw new Kohana_Exception("Kutsua :param1 ei löydy", array(":param1" => $param1), E_WARNING);
+			throw HTTP_Exception::factory(501,"Kutsua :param1 ei löydy", array(":param1" => $param1));
 		} else {
 			$kutsu_ok = true;
 		}
 		if (count($resultsi) > 1)
-			throw new Kohana_Exception("Kutsu määritelty useampaan kertaan. :param1 määritelty ryhmissä :kutsut.", array(":param1" => $param1, ":kutsut" => implode(", ", $resultsi)), E_NOTICE);
+			throw HTTP_Exception::factory(500,"Kutsu määritelty useampaan kertaan. :param1 määritelty ryhmissä :kutsut.", array(":param1" => $param1, ":kutsut" => implode(", ", $resultsi)));
 
 		if ($kutsu_ok !== true) {
 			$return = array("ret" => false);
@@ -1128,11 +1128,12 @@ class Controller_Ajax extends Controller {
                     }
                     $client = new GearmanClient();
                     $client->addServer();
-                    $client->doBackground("process_smsoutbox","do your job!");
+                    $handle = $client->doBackground("process_smsoutbox","do your job!");
+                    $this->session->set('nexmo_handle',$handle);
                     if ($client->returnCode() != GEARMAN_SUCCESS){
-                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. Aloita prosessointi käsin.");	
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. <span style='color:red'>Ilmoita asiasta tekniikkavastaavalle!</span>");	
                     }else{
-                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta saldon alta.");
                     }
                     break;
                 case "tekstari_file":
@@ -1146,16 +1147,20 @@ class Controller_Ajax extends Controller {
                     }
                     $client = new GearmanClient();
                     $client->addServer();
-                    $client->doBackground("process_smsoutbox","do your job!");
+                    $handle = $client->doBackground("process_smsoutbox","do your job!");
+                    $this->session->set('nexmo_handle',$handle);
                     if ($client->returnCode() != GEARMAN_SUCCESS){
-                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. Aloita prosessointi käsin.");	
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. <span style='color:red'>Ilmoita asiasta tekniikkavastaavalle!</span>");	
                     }else{
-                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta.");
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta saldon alta.");
                     }
                     break;
                 case "tekstari_balance":
                 	$nexmo = new Nexmo_Account();
                 	$return = array("ret" => $nexmo->balance());
+                	break;
+                case "tekstari_progress":
+                	$return = array("ret" => Jelly::query('smsoutbox')->where('processed','=','0')->count());
                 	break;
 
 			}

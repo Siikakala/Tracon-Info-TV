@@ -103,7 +103,16 @@
 			tai massapostituksen CSV-lähetyksenä. Näille kaikille on yhteistä se, että ne haluavat
 			puhelinnumeron <strong>kansainvälisessä</strong> muodossa! Numerossa ei saa olla myöskään 
 			mitään välimerkkejä, kuten välilyöntejä tai viivoja. Ainoastaan alussa oleva plus-merkki on sallittu.
+			Viestit eivät lähde (=numero ei osu regexpiin ja ei tule lisätyksi kantaan) muuten.
 		</p>
+		<p>
+			Höylä lähettää viestinsä numerosta +3584573950776
+		</p>
+		<?php if($page == "tekstarit"): ?>
+		<p>
+			<button onclick="$('#dialog-tekstari-help').dialog('open');">Avaa virhekoodiluettelo</button>
+		</p>
+		<?php endif; ?>
 
 	</div>
 </div>

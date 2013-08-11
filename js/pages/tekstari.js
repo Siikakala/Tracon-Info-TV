@@ -1,9 +1,14 @@
 function send(form){
     var container = $("#feedback");
-    fetch = baseurl+'ajax/tekstari_send/'
-    $.post(fetch,$("#"+form).serialize(),function(data) {
-        inform(container,data.ret);
-    },"json");
+    if($("#"+form+"-message").val() == ""){
+        inform(container,"<span style='color:red; font-size:20px; font-weight:bolder;'>VIESTI PUUTTUU!</span> Kirjoita viesti ja paina vasta sitten lähetä.",10000);
+    }else{
+        fetch = baseurl+'ajax/tekstari_send/'
+        $.post(fetch,$("#"+form).serialize(),function(data) {
+            inform(container,data.ret,6000);
+        },"json");
+        update_progress();
+    }
     return false;
 }
 $(function(){
@@ -12,6 +17,7 @@ $(function(){
     $("#valitystieto-accord").accordion({heightStyle: 'content', active: "false", collapsible: "true"});
 
     update_balance();
+    check_progress();
 
     var uploader = new qq.FileUploader({
             element: document.getElementById('fileupload'),
@@ -24,6 +30,19 @@ $(function(){
                 }
             },
         });
+
+    $("#dialog-tekstari-help").dialog({
+        resizable: true,
+        autoOpen: false,
+        height:750,
+        width:700,
+        modal: true,
+        buttons: {
+            "Ok": function() {
+                $(this).dialog( "close" );
+            }
+        }
+    });
 });
 
 function update_balance(){
@@ -35,6 +54,36 @@ function update_balance(){
     window.setTimeout(function(){
         update_balance();
     },120000);
+}
+
+function check_progress(){
+    fetch = baseurl+"ajax/tekstari_progress/";
+    $.getJSON(fetch,function(data){
+        if(data.ret > 0){
+            update_progress();
+        }
+    });
+}
+
+function update_progress(){
+    var container = $("#progress");
+    var timeout;
+    fetch = baseurl+"ajax/tekstari_progress/";
+    $.getJSON(fetch,function(data){
+        container.html("Jonossa vielä " + data.ret + " viestiä.");
+        if(container.is(":hidden")){
+            container.show('drop',{ direction: "right", distance: "-50px" },500);
+        }
+        if(data.ret > 0){
+            window.setTimeout(function(){
+                update_progress();
+            },1000);
+        }
+        window.clearTimeout(timeout);
+        timeout = window.setTimeout(function () {
+            container.hide('drop',{ direction: "right", distance: "100px" },1000);
+        },5000);
+    });
 }
 
 $("form").submit(function(e) {

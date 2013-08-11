@@ -148,8 +148,17 @@ a.hover:hover, a.hover:active{
     font-weight: bolder;
 }
 
+#progress-container {
+    float: right;
+    margin-top: -35px;
+    margin-right: 0px;
+    padding: 5px;
+}
+
 #huom {
     width: 570px;
+    color:red;
+    font-weight: bolder;
 }
 
 #links li a {

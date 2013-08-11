@@ -1,5 +1,6 @@
-<div id="huom"><p>Huom! Puhelinnumero(t) tulee syöttää kansainvälisessä muodossa ilman etuplussaa ja välilyöntejä.</p></div>
+<div id="huom"><p>Huom! Puhelinnumero(t) tulee syöttää kansainvälisessä muodossa ilman välilyöntejä (esim. +3584573950776). Viesti ei muutoin lähde!</p></div>
 <div id="saldo-container">Saldo: <span id="saldo"></span> &euro;</div>
+<div id="progress-container"><span id="progress" style="display:none;"></span></div>
 <div id="tekstari-accord">
     <h3><a href="#" class="head-links">Yksittäinen viesti</a></h3>
     <div>
@@ -11,7 +12,7 @@
                 </tr>
                 <tr>
                     <td><label for="message">Viesti:</label></td>
-                    <td><input type="text" name="message" value="" size="35" /></td>
+                    <td><input type="text" name="message" id="tekstari-message" value="" size="35" /></td>
                 </tr>
             </table>
             <input type="submit" value="Lähetä" onclick="send('tekstari');return false;" />
@@ -29,7 +30,7 @@
                 </tr>
                 <tr>
                     <td><label for="message">Viesti:</label></td>
-                    <td><input type="text" name="message" value="" size="55" /></td>
+                    <td><input type="text" name="message" value="" id="ryhmatekstari-message" size="55" /></td>
                 </tr>
             </table>
             <input type="submit" value="Lähetä" onclick="send('ryhmatekstari');return false;" />
