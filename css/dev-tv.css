@@ -9,7 +9,7 @@ body {
 	font-family: "Helvetica", "Arial", sans-serif;
 	font-size: 50px;
 	overflow:hidden;
-	cursor:none;
+	background: url('../imgs/background_gradient.png') repeat-x scroll 0 100px, url('../imgs/background8.png');
 }
 
 #taustakuva{
@@ -33,12 +33,23 @@ body.mceContentBody {
 }
 #swirl {
 	position: absolute;
-	left: 712px;
-	width: 567px;
-	height: 152px;
-	top:-64px;
-	background: transparent url('../imgs/logo7.png') no-repeat scroll left top;
+	left: -30px;
+	width: 1024px;
+	height: 124px;
+	top:-50px;
+	background: url('../imgs/logo8.png') no-repeat scroll left top;
 }
+
+#sivuheader{
+	background: url('../imgs/header_repeat.png') no-repeat scroll center 0;
+	position: fixed;
+	top:0;
+	right:-80px;
+	left:-80px;
+	min-width: 1200px;
+	height: 122px;
+}
+
 a.del:link, a.del:visited{
     color: #AAA;
     background-color: transparent;
@@ -74,15 +85,15 @@ a.hover:hover, a.hover:active{
 	border: 2px solid black;
 	background-color: #FFF;
 	margin: 70px auto;
+	margin-top: 50px;
 	width: 1000px;
 	height:650px;
 }
 
 #header {
-	padding: 15px 25px 15px 25px;
-
-/*	background: transparent url('../imgs/logo.png') no-repeat scroll right top;*/
-    background-size: 290px;
+	padding: 30px 5px 5px 5px;
+	/*height:155px;
+	position:fixed;*/
 }
 
 #login {
@@ -92,13 +103,13 @@ a.hover:hover, a.hover:active{
 #kello{
     position:absolute;
     float:right;
-    margin-top:-115px;
-    margin-left:700px;
+    margin-top:-197px;
+    margin-left:800px;
     padding-right:20px;
     padding-top:5px;
     color:#000;
-    font-size:100px;
-    z-index:3;
+    font-size:80px;
+    z-index:13;
     opacity:0.7;
 }
 
@@ -164,7 +175,7 @@ a.hover:hover, a.hover:active{
     overflow: hidden;
     position:relative;
     height:100px;
-    width:690px;
+    width:1000px;
 }
 div.scrollingtext{
 	position:absolute;

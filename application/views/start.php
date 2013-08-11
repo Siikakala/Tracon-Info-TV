@@ -13,10 +13,10 @@ print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";?>
 	<?php print $js; ?>
 </head>
 <body>
-     <img id="taustakuva" src="imgs/tracon7_tahtitausta_2560x1600_jpeg70.jpg" />
      <div id="swirlhack">
 			<div id="swirl"></div>
 		</div>
+    <div id="sivuheader"></div>
 	<div id="main">
 		<div id="header">
 			<h1><div id="marquee" class="marquee" width="690"></div></h1>

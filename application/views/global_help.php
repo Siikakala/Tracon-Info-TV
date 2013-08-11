@@ -1,4 +1,4 @@
-<h2>HALP!</h2>
+<h2>Ohjeet</h2>
 <div id="help-accord">
 	<h3><a href="#" class="head-links">Scroller</a></h3>
 	<div>
@@ -33,7 +33,7 @@
 			jos ohjelmatietokannassa on ohjelmanumero vaikkapa tiistaille, se tulostaa vaikkapa (ti) 14 - 15 Tapahtuman jälkeinen ohjelmanumero.
 		</p>
 		<p>
-			Muista käyttää tarkistaa tuotoksesi! Tallenna save-napista, lisää dia rullaan instanssin infotest ainoaksi diaksi ja tsekkaa
+			Muista tarkistaa tuotoksesi! Tallenna save-napista, lisää dia rullaan instanssin infotest ainoaksi diaksi ja tsekkaa
 			viereisestä välilehdestä tulokset (jossa pitäisi olla kyseinen instanssi pyörimässä). Dian voi poistaa painamalla Delete slide.
 		</p>
 	</div>

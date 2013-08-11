@@ -26,14 +26,14 @@ $(function() {
 window.onload = function() {
         var scroller = new Kinetic.Stage({
           container: "marquee",
-          width: 690,
+          width: 990,
           height: 100
         });
 
         var layer1 = new Kinetic.Layer();
 
         marqText = new Kinetic.Text({
-          x: 700,
+          x: 1000,
           y: 2,
           text: "Info-TV",
           fontSize: 80,
@@ -64,7 +64,7 @@ window.onload = function() {
         });
 
         var grad2 = new Kinetic.Rect({
-          x: 670,
+          x: 970,
           y: 2,
           width: 20,
           height: 100,
@@ -91,14 +91,14 @@ window.onload = function() {
 
         layer1.setThrottle(2000);
 
-        var initial = 700;
+        var initial = 1000;
         var moved = 0;
 
         scroller.onFrame(function(frame) {
             marqText.setX(initial-moved);
             layer1.draw();
             moved = moved + 3;
-            if (moved > (700+marqText.getTextWidth())) {
+            if (moved > (1000+marqText.getTextWidth())) {
                 moved = 0;
             }
         });

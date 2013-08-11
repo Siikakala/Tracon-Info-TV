@@ -22,7 +22,8 @@ class Controller_Frontend extends Controller {
             }
             define("__tableprefix",$tb);
         }
-        $this->view->css = HTML::style("css/".__tableprefix."-tv.css");
+        $this->view->css  = HTML::style("css/".__tableprefix."-tv.css");
+        $this->view->css .= HTML::style("css/hide_cursor.css");
     }
 
     public function action_to_tv(){
