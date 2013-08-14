@@ -161,7 +161,7 @@ function check(cont){
                         break;
                     case "dia":
                         if(value.changed == true){
-                            container.hide("puff",700);
+                            container.hide("fade",700);
 
                             window.setTimeout(function(){
                                 switch(value.part){
@@ -182,7 +182,7 @@ function check(cont){
                                         break;
                                     case "twitter":
                                         twiit = page;
-                                        container.hide("puff",300);
+                                        container.hide("fade",300);
                                         window.setTimeout(function(){
                                             $("#text_cont").hide('blind',100);
                                         },300);
