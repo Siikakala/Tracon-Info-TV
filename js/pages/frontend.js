@@ -144,13 +144,13 @@ function check(cont){
     var y = twitter.queue("fx");
     var x = $("#text_cont").queue("fx");
     if(n.length > 10){
-        //container.clearQueue();
+        container.clearQueue();
     }
     if(y.length > 10){
-        //twitter.clearQueue();
+        twitter.clearQueue();
     }
     if(x.length > 6){
-        //$("#text_cont").clearQueue();
+        $("#text_cont").clearQueue();
     }
     fetch = baseurl+'ajax/check/';
     $.getJSON(fetch, function(data) {

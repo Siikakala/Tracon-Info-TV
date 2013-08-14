@@ -64,7 +64,7 @@ class Controller_Ajax extends Controller {
 				"level" => 1
 				),
 			"logi-common" => array("kutsut" =>
-				array("todo_save", "todo_ack", "todo_unack", "todo_del"),
+				array("todo_save", "todo_ack", "todo_unack", "todo_del", "todo_load", "todo_edit"),
 				"level" => 2
 				),
 			"logi-adv" => array("kutsut" =>
@@ -747,6 +747,24 @@ class Controller_Ajax extends Controller {
 					$d->ack_stamp = DB::expr("NOW()");
 					$d->save();
 					$return = array("ret" => true);
+					break;
+				case "todo_load":
+					$param = $_POST['row'];
+					$d = Jelly::query('logi', $param)->select();
+					$return = array("ret" => true, "tag" => $d->tag, "message" => $d->comment, "adder" => $d->adder);
+					break;
+				case "todo_edit":
+					$param = $_POST['editrow'];
+					if(empty($_POST['editmessage']) || empty($_POST['editadder'])){
+						$return = array("ret" => "Viesti tai lisääjä puuttuu!");
+					}else{
+						$d = Jelly::query('logi', $param)->select();
+						$d->tag = $_POST['edittypes'];
+						$d->adder = $_POST['editadder'];
+						$d->comment = $_POST['editmessage'];
+						$d->save();
+						$return = array("ret" => true);
+					}
 					break;
 				case "todo_unack":
 					$param = $_POST['row'];

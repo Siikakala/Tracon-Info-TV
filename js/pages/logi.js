@@ -56,7 +56,7 @@ var tag = "";
 var timeout;
 
 $(function() {
-    $("#filter_cont").delegate("input","keyup",function(event) {
+    $("#filter_cont").on("input","keyup",function(event) {
         window.clearTimeout(timeout);
         timeout = window.setTimeout(function(){
             search();
@@ -106,6 +106,30 @@ function ref(){
 };
 
 $(function() {
+    $("#dialog-edit").dialog({
+        resizable: true,
+        autoOpen: false,
+        height:210,
+        width:470,
+        modal: true,
+        buttons: {
+            "Muokkaa": function() {
+                fetch = baseurl+'ajax/todo_edit/'
+                $.post(fetch, $("#logi_edit").serialize(), function(data){
+                    if(data.ret == true){
+                        inform($("#dialog-edit-feedback"),"Rivi muokattu.");
+                        search();
+                        window.setTimeout(function(){
+                            $("#dialog-edit").dialog("close");
+                        },2000);
+                    }else{
+                        inform($("#dialog-edit-feedback"),data.ret);
+                    }
+                },"json");
+            }
+        }
+    });
+
     $("#dialog-confirm").dialog({
 		resizable: false,
 		autoOpen: false,
@@ -194,6 +218,20 @@ $(document).on('contextmenu',"td" ,function(e){
                 break;
             case "del":
                 $("#dialog-confirm-del").dialog('open');
+                break;
+            case "edit":
+                fetch = baseurl + 'ajax/todo_load/'
+                $.post(fetch, { "row": row }, function (data) {
+                    if (data.ret == true) {
+                        $("#edittypes").val(data.tag);
+                        $("#editmessage").val(data.message);
+                        $("#editadder").val(data.adder);
+                        $("#editrow").val(row);
+                    }else{
+                        console.log("Edit fetch failed!");
+                    }
+                }, "json");
+                $("#dialog-edit").dialog('open');
                 break;
         }
     });

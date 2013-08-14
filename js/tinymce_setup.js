@@ -35,7 +35,6 @@ function tinymce_setup(){
                         forced_root_block : '',
                         save_enablewhendirty: false,
                         save_onsavecallback : "tinymce_tallenna",
-                        save_oncancelcallback : "tinymce_poista",
                         imagemanager_contextmenu: true,
                         theme_advanced_resizing_use_cookie : false,
 
@@ -51,7 +50,7 @@ function tinymce_setup(){
                         // Content CSS
                         content_css : baseurl+"css/"+stylesheetti,
                         body_id : "text",
-                        body_class : "main",
+                        //body_class : "main",
 
                         setup : function(editor) {//on-demand hack cancel-napin tooltipin vaihtoon.
                                 editor.addButton('deletedia', {

@@ -428,6 +428,7 @@ class Controller_Admin extends Controller {
 
 		if ($rows->count() > 0) {
 			$this->view->footer->dialogs = new view('dialogs/loki');
+			$this->view->footer->dialogs->types = Form::select('edittypes', $types, 2, array("id" => "edittypes"));
 			$tablebody = "";
 			foreach($rows as $row) {
 				if (!empty($row->ack)) {
