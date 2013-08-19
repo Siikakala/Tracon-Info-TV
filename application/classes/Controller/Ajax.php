@@ -34,7 +34,7 @@ class Controller_Ajax extends Controller {
 		$return = "";
 		$this->session->set('results', array());
 		$kutsut = array("infotv-readonly" => array("kutsut" =>
-				array("scroller_load", "rulla_row", "rulla_load", "dia_load", "stream_load", "frontend_load", "lastupdate", "tuotanto_dash"),
+				array("scroller_load", "rulla_row", "rulla_load", "dia_load", "stream_load", "frontend_load", "lastupdate", "tuotanto_dash", "save_nick"),
 				"level" => 1
 				),
 			"infotv-common" => array("kutsut" =>
@@ -1179,6 +1179,10 @@ class Controller_Ajax extends Controller {
                 	break;
                 case "tekstari_progress":
                 	$return = array("ret" => Jelly::query('smsoutbox')->where('processed','=','0')->count());
+                	break;
+                case "save_nick":
+                	$this->session->set("nick",$_POST['nick']);
+                	$return = array("ret" => true);
                 	break;
 
 			}

@@ -54,6 +54,7 @@ $(document).ready(function() {
 var row = 0;
 var tag = "";
 var timeout;
+var timeout2;
 
 $(function() {
     $("#filter_cont").on("input","keyup",function(event) {
@@ -61,13 +62,25 @@ $(function() {
         timeout = window.setTimeout(function(){
             search();
         },200);
-    })
+    });
+    $("#adder").bind("keyup", function(event){
+        window.clearTimeout(timeout2);
+        timeout2 = window.setTimeout(function(){
+            $("#nickbox").val($("#adder").val());
+            fetch = baseurl+'ajax/save_nick/';
+            $.post(fetch,{"nick":$("#adder").val()},function(data){
+                if(data.ret == true){
+                    console.log("Nickin tallennus onnistui");
+                }
+            })
+        },3000);
+    });
 });
 
 function search(){
     var container = $("#table");
     var search = $("#filter").val();
-    fetch = baseurl+'ajax/todo_search/'
+    fetch = baseurl+'ajax/todo_search/';
     $.post(fetch,{ "search": search},function(data) {
         container.html(data.ret);
         if(data.profiler != undefined){
@@ -112,6 +125,18 @@ $(function() {
         height:210,
         width:470,
         modal: true,
+        open: 
+            function(event,ui){
+                $('.ui-dialog-content').css('overflow','hidden');
+        },
+        show: {
+            effect:"blind",
+            duration:300
+        },
+        hide: {
+            effect:"fade",
+            duration:300
+        },
         buttons: {
             "Muokkaa": function() {
                 fetch = baseurl+'ajax/todo_edit/'
@@ -135,6 +160,10 @@ $(function() {
 		autoOpen: false,
 		height:150,
 		modal: true,
+        open: 
+            function(event,ui){
+                $('.ui-dialog-content').css('overflow','hidden');
+        },
 		buttons: {
 			"Poista": function() {
 				fetch = baseurl+'ajax/todo_unack/'
@@ -158,6 +187,10 @@ $(function() {
 		autoOpen: false,
 		height:140,
 		modal: true,
+        open: 
+            function(event,ui){
+                $('.ui-dialog-content').css('overflow','hidden');
+        },
 		buttons: {
 			"Poista": function() {
 				fetch = baseurl+'ajax/todo_del/'

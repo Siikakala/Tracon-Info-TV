@@ -75,7 +75,11 @@
 		"Poista" varmistuskyselyyn. Viemällä hiiren hetkeksi kuitatun rivin päälle näet
 		kuittausajan ja kuittaajan.<br/>
 		Voit poistaa rivin klikkaamalla riviä hiiren kakkosnäppäimellä, ja valitsemalla poista.
-		Poistosta tulee vielä varmistuskysely, ennenkö rivi poistetaan.
+		Poistosta tulee vielä varmistuskysely, ennenkö rivi poistetaan.<br/>
+		Voit muokata riviä klikkaamalla riviä hiiren kakkosnäppäimellä ja valitsemalla muokkkaa.
+		Muuta riviä tarvittavin osin ja paina muokkaa. Saat ilmoituksen "Rivi muokattu" jos muokkaus
+		onnistui ja pikkuikkuna sulkeutuu automaattisesti. Mikäli editointi ei onnistunut, saat ilmoituksen
+		tästä eikä pikkuikkuna sulkeudu.
 		</p>
 		<p>
 		Lokikirjan haussa voit käyttää niinkutsuttuja regexpejä. Tämä tarkoittaa, että

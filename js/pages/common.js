@@ -60,6 +60,22 @@ $(function () {
                                     $("#helptext").hide(100);
                                 },800);
                             });
+    var nickbox_timeout;
+    $("#nickbox").bind("keyup", function(event){
+        window.clearTimeout(nickbox_timeout);
+        console.log("Timeout cleared, nick atm:"+$(this).val());
+        nickbox_timeout = window.setTimeout(function(){
+            if(subpage == "logi"){
+                $("#adder").val($("#nickbox").val());
+            }
+            fetch = baseurl+'ajax/save_nick/';
+            $.post(fetch,{"nick":$("#nickbox").val()},function(data){
+                if(data.ret == true){
+                    console.log("Nickin tallennus onnistui");
+                }
+            });
+        },3000);
+    });
 });
 
 /**
@@ -167,7 +183,7 @@ function widen(newsize){
             }
         },150);
     }
-    wide_check();
+    wide_check(newsize);
 }
 
 /**
@@ -175,14 +191,14 @@ function widen(newsize){
  * @access public
  * @return void
  **/
-function wide_check(){
-    console.log("wide_check called");
+function wide_check(newsize){
+    console.log("wide_check called with newsize "+newsize);
     if(wide == 0){
         wide = 1;
         $(window).resize(function(){
             window.clearTimeout(timeoutti);
             timeoutti = window.setTimeout(function(){
-                widen();
+                widen(newsize);
             },100);
         });
     }
@@ -201,6 +217,8 @@ function log( text ) {
 function send( text ) {
 	Server.send( 'message', text );
 }
+
+
 
 /**
  *
@@ -240,11 +258,12 @@ function connect(){
     }else{
         log('Yhdistetään uudelleen ('+reconnects+')...')
     }
-	Server = new chatSocket('ws://hakku.tracon.fi:47774');
+	Server = new chatSocket('ws://kita.sytes.net:47774');
 
 	//Let the user know we're connected
 	Server.bind('open', function() {
 		log( "Yhdistetty.<br/>" );
+        $("#nickbox").val(nick);
 	});
 
 	//OH NOES! Disconnection occurred.

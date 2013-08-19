@@ -36,6 +36,7 @@ class Controller_Admin extends Controller {
 		var baseurl = '" . URL::site('/') . "'
 		var usrlvl = '" . $this->session->get('level', 0) . "'
 		var usr = '" . $this->session->get('user', 0) . "'
+		var nick = '" . $this->session->get('nick', null) . "'
 		var page = '" . $this->request->action() . "'
 		var subpage = '".$this->request->param('param1', null)."'
 		var begindate = '" . date("d.m.Y", strtotime(Jelly::query('tapahtuma')->limit(1)->select()->get('alkuaika'))) . "'
@@ -423,7 +424,12 @@ class Controller_Admin extends Controller {
 		$types = array("tiedote" => "Tiedote", "ongelma" => "Ongelma", "kysely" => "Kysely", "löytötavara" => "Löytötavara", "muu" => "Muu");
 		$this->view->content->text->select = Form::select('tag', $types, 2, array("id" => "tag"));
 
-		$this->view->content->text->user = $this->session->get('user');
+		if($this->session->get('nick',false) != false){
+			$this->view->content->text->user = $this->session->get('nick');	
+		}else{
+			$this->view->content->text->user = $this->session->get('user');
+		}
+		
 		$this->view->content->text->tablebody = "";
 
 		if ($rows->count() > 0) {
