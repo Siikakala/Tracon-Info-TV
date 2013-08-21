@@ -7,7 +7,7 @@ Then, create application/config/auth.php by cloning the sample. Fill the informa
 
 Then chmod 777 these directories: files, application/logs and application/cache. If these folders does not exist yet, create them. All other files needs to be world-readable and folders accessible. 
 
-Then, edit the .htaccess-file and change the rewrite-base according to relative url, and last line to SetEnv KOHANA_ENV PRODUCTION. The system is coded so that you can switch between development and production systems just by changing that one word. Save and close the file. Related to that, open application/bootstrap.php. Edit line 74 according to your documentroot-folder. Also, edit line 117 if your relative url is something else than / in production.
+Then, edit the .htaccess-file and change the rewrite-base according to relative url, and last line to `SetEnv KOHANA_ENV PRODUCTION`. The system is coded so that you can switch between development and production systems just by changing that one word. Save and close the file. Related to that, open application/bootstrap.php. Edit line 74 according to your documentroot-folder. Also, edit line 117 if your relative url is something else than / in production.
 
 Ok, now the filesystem is a-ok, so we can move on to the database.
 
