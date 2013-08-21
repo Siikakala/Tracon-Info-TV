@@ -1,3 +1,5 @@
+var timeout;
+
 function send(form){
     var container = $("#feedback");
     if($("#"+form+"-message").val() == ""){
@@ -43,6 +45,40 @@ $(function(){
             }
         }
     });
+    $("#dialog-tekstari-sent").dialog({
+        resizable: true,
+        autoOpen: false,
+        height:750,
+        width:700,
+        modal: true,
+        open: function(e,ui){
+            $.getJSON(baseurl+"ajax/tekstari_sent",function(data){
+                $("#dialog-tekstari-sent.ui-dialog-content").html(data.ret);
+            });
+        },
+        buttons: {
+            "Ok": function() {
+                $(this).dialog( "close" );
+            }
+        }
+    });
+    $("#dialog-tekstari-received").dialog({
+        resizable: true,
+        autoOpen: false,
+        height:750,
+        width:700,
+        modal: true,
+        open: function(e,ui){
+            $.getJSON(baseurl+"ajax/tekstari_received",function(data){
+                $("#dialog-tekstari-received.ui-dialog-content").html(data.ret);
+            });
+        },
+        buttons: {
+            "Ok": function() {
+                $(this).dialog( "close" );
+            }
+        }
+    });
 });
 
 function update_balance(){
@@ -67,7 +103,6 @@ function check_progress(){
 
 function update_progress(){
     var container = $("#progress");
-    var timeout;
     fetch = baseurl+"ajax/tekstari_progress/";
     $.getJSON(fetch,function(data){
         container.html("Jonossa vielä " + data.ret + " viestiä.");

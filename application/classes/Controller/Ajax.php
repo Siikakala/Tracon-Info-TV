@@ -51,7 +51,7 @@ class Controller_Ajax extends Controller {
                     "ohjelma_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash",
                     "tuotanto_save", "tuotanto_refresh", "tuotanto_populate", "tuotanto_edit",
                     "ohjelma_hide","ohjelma_loadedit","ohjelma_edit","ohjelma_del",
-                    "tekstari_send", "tekstari_file", "tekstari_balance", "tekstari_progress"
+                    "tekstari_send", "tekstari_file", "tekstari_balance", "tekstari_progress", "tekstari_sent", "tekstari_received"
                 ),
 				"level" => 2
 				),
@@ -1137,11 +1137,15 @@ class Controller_Ajax extends Controller {
                     Jelly::query('ohjelma',$_POST['ohjelma'])->select()->delete();
                     $return = array("ret" => true);
                     break;
+                case "save_nick":
+                	$this->session->set("nick",$_POST['nick']);
+                	$return = array("ret" => true);
+                	break;
                 case "tekstari_send":
                     $post = $_POST;
                     preg_match_all('/(\d{9,16})/', $post['number'], $numbers, PREG_PATTERN_ORDER);
                     foreach($numbers[1] as $key => $number){
-                    	$data = array('to' => $number, 'text' => $this->utf8($post['message']), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0, 'statuscode' => 1, 'sender' => $this->session->get('user'));
+                    	$data = array('to' => $number, 'text' => $this->utf8($post['message']), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0, 'statuscode' => 1, 'status' => 'Waiting for send...', 'sender' => $this->session->get('user'));
                 		Jelly::factory('smsoutbox')->set($data)->save();
                     }
                     $client = new GearmanClient();
@@ -1160,7 +1164,7 @@ class Controller_Ajax extends Controller {
                     fclose($input);
                     preg_match_all('/(\d{9,16})[;,](.*)/',$data,$matches, PREG_SET_ORDER);
                     foreach($matches as $row){
-                        $data = array('to' => $row[1], 'text' => $this->utf8($row[2]), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0, 'statuscode' => 1, 'sender' => $this->session->get('user'));
+                        $data = array('to' => $row[1], 'text' => $this->utf8($row[2]), 'stamp' => DB::expr('NOW()'), 'd_stamp' => 0, 'processed' => 0, 'statuscode' => 1, 'status' => 'Waiting for send...', 'sender' => $this->session->get('user'));
                         Jelly::factory('smsoutbox')->set($data)->save();
                     }
                     $client = new GearmanClient();
@@ -1180,9 +1184,28 @@ class Controller_Ajax extends Controller {
                 case "tekstari_progress":
                 	$return = array("ret" => Jelly::query('smsoutbox')->where('processed','=','0')->count());
                 	break;
-                case "save_nick":
-                	$this->session->set("nick",$_POST['nick']);
-                	$return = array("ret" => true);
+                case "tekstari_sent":
+                	$data = Jelly::query('smsoutbox')->order_by('stamp','ASC')->select();
+                	$outbox = Jelly::query('smsoutbox')->order_by('stamp','DESC')->select();
+		            $outbox_data = "Päivitetty ".date('d.m.Y H:i').".<br/><table class=\"stats\"><thead><tr><td>Vastaanottaja</td><td>Viesti</td><td>Lähetetty</td><td>Status</td></tr></thead><tbody>";
+		            foreach($outbox as $row){
+		            	if ($row->loaded()) {
+		            		$outbox_data .= "<tr title=\"Lähettäjä: ".$this->utf8($row->sender)."\"><td>+" . $this->utf8($row->to) . "</td><td>" . $this->utf8($row->text) . "</td><td>" . date('d.m.Y H:i', strtotime($row->stamp)) . "</td><td>" . $this->utf8($row->status) . "</td></tr>";
+		            	}
+		            }
+		            $outbox_data .= "</table>";
+                	$return = array("ret" => $outbox_data);
+                	break;
+                case "tekstari_received":
+	                $inbox = Jelly::query('smsinbox')->order_by('stamp','DESC')->select();
+		            $inbox_data = "Päivitetty ".date('d.m.Y H:i').".<br/><table class=\"stats\"><thead><tr><td>Lähettäjä</td><td>Viesti</td><td>Vastaanotettu</td></tr></thead><tbody>";
+		            foreach($inbox as $row){
+		            	if ($row->loaded()) {
+		            		$inbox_data .= "<tr><td>+" . $this->utf8($row->from) . "</td><td>" . $this->utf8($row->text) . "</td><td>" . date('d.m.Y H:i', strtotime($row->stamp." UTC")) . "</td></tr>";
+		            	}
+		            }
+		            $inbox_data .= "</table>";
+                	$return = array("ret" => $inbox_data);
                 	break;
 
 			}

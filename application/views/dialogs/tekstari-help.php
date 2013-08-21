@@ -39,3 +39,6 @@
 		<tr><td>99</td><td>General Error</td></tr>
 	</table>
 </div>
+
+<div id="dialog-tekstari-sent" title="Lähetetyt tekstiviestit"></div>
+<div id="dialog-tekstari-received" title="Vastaanotetut tekstiviestit"></div>

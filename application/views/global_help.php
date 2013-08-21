@@ -112,6 +112,16 @@
 		<p>
 			Höylä lähettää viestinsä numerosta +3584573950776
 		</p>
+		<p>
+			Kahdessa alemmassa alasvetokentässä on 15 viimeisintä lähetettyä ja vastaanotettua tekstiviestiä. Kentistä
+			löytyy myös napit, joilla voit tarkastella kaikkia lähetettyjä tai vastaanotettuja tekstiviestejä. 
+			Napit avaavat erillisen laatikon, jonka sisältö päivitetään aina sitä avattaessa, eli tiedot voi päivittää
+			sulkemalla laatikon ok-napista ja avaamalla sen uudelleen.
+		</p>
+		<p>
+			Mikäli jono ei tunnu lyhenevän, taustalähetysprosessi lienee kuollut. Se yritetään automaattisesti käynnistää
+			uudelleen minuutin kuluessa, mutta mikäli näin ei tapahtu, ilmoita tekniikkavastaavalle.
+		</p>
 		<?php if($page == "tekstarit"): ?>
 		<p>
 			<button onclick="$('#dialog-tekstari-help').dialog('open');">Avaa virhekoodiluettelo</button>

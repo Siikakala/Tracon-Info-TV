@@ -48,9 +48,9 @@
 <div style="min-height:20px"><div id="feedback" style="display:none;"></div></div>
 <div id="valitystieto-accord">
     <h3><a href="#" class="head-links">Lähetetyt tekstiviestit statuksineen</a></h3>
-    <div id="valitystiedot"><?php echo $valitystiedot; ?></div>
+    <div id="valitystiedot"><button onclick="$('#dialog-tekstari-sent').dialog('open');">Tarkastele kaikkia lähetettyjä tekstiviestejä</button><br/><br/><?php echo $valitystiedot; ?></div>
 </div>
 <div id="inbox-accord">
     <h3><a href="#" class="head-links">Vastaanotetut tekstiviestit</a></h3>
-    <div id="inbox"><?php echo $inbox; ?></div>
+    <div id="inbox"><button onclick="$('#dialog-tekstari-received').dialog('open');">Tarkastele kaikkia vastaanotettuja tekstiviestejä</button><br/><br/><?php echo $inbox; ?></div>
 </div>
