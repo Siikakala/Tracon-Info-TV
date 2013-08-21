@@ -57,4 +57,4 @@ Remember to replace your username and password hash above. You can use code bell
 	print"\nHash ready for database: ".$mysqlhash."\n";
 	?>
 
-After these, you should be able to log in. The system will make additional database tables by itself (and needs all permissions to database because of that). If you are greeted by internal server error 500, check the apache error log, and internal log in application/logs/<year>/<month>/<day>.php.
+After these, you should be able to log in. The system will make additional database tables by itself (and needs all permissions to database because of that). If you are greeted by internal server error 500, check the apache error log, and internal log in application/logs/`<year>`/`<month>`/`<day>`.php.
