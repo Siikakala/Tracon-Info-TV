@@ -20,4 +20,4 @@ System is using [Kohana](http://kohanaframework.org/) PHP framework.
 Comments, some variable names and commit messages are in Finnish. Sorry about that.
 
 
-One little note about SMS sending: you can start the worker with `$ ./minion worker` but **DO NOT** start more than one. Nexmo limits the sending speed to 5 messages per second and the worker tries to be slow enought to not be throttled. With multiple workers some individual messages could be sent multiple times needlessly and Nexmo will certainly throttle the sending.
+One little note about SMS sending: you can start the worker with `$ ./minion worker` but **DO NOT** start more than one. Nexmo limits the sending speed to 5 messages per second and the worker tries to be slow enought not to be throttled. With multiple workers some individual messages could be sent multiple times needlessly and Nexmo will certainly throttle the sending.
