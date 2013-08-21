@@ -47,7 +47,7 @@ Make connection to the database and copy-paste following:
 	/*!40000 ALTER TABLE `kayttajat` ENABLE KEYS */;
 	UNLOCK TABLES;
 
-Remember to replace your username and password hash above. You can use code bellow to generate the hash (texts will not be hidden, make sure no-one is eyesdropping). Replace the secret and run it from command line like php password.php.
+Remember to replace your username and password hash above. You can use code bellow to generate the hash (texts will not be hidden, make sure no-one is eavesdropping). Replace the secret and run it from command line like php password.php.
 
 	<?php
 	print"Enter your password: ";
