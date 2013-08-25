@@ -12,7 +12,7 @@ function tinymce_setup(){
                         menu: {
                                 //no menu
                         },
-                        toolbar: "save,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontsizeselect,removeformat,|,cut,copy,paste,|,search,replace,|,image,advhr,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,forecolor,backcolor,|,deletedia",
+                        toolbar: "save,|,bold,italic,underline,strikethrough,|,alignleft,aligncenter,alignright,alignjustify,formatselect,fontsizeselect,removeformat,|,cut,copy,paste,|,search,replace,|,image,advhr,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,forecolor,backcolor,|,deletedia",
                         fontsize_formats: "40px 45px 50px 60px 70px 80px 90px 100px",
                         statusbar: "bottom",
 
