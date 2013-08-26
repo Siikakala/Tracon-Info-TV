@@ -73,7 +73,7 @@ $(function () {
                 if(data.ret == true){
                     console.log("Nickin tallennus onnistui");
                 }
-            });
+            }, "json");
         },3000);
     });
 });
