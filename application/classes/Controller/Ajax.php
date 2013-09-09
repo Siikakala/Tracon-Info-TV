@@ -1172,9 +1172,9 @@ class Controller_Ajax extends Controller {
                     $handle = $client->doBackground("process_smsoutbox","do your job!");
                     $this->session->set('nexmo_handle',$handle);
                     if ($client->returnCode() != GEARMAN_SUCCESS){
-                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. <span style='color:red'>Ilmoita asiasta tekniikkavastaavalle!</span>");	
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon, mutta niiden prosessoinnin aloitus epäonnistui. <span style='color:red'>Ilmoita asiasta tekniikkavastaavalle!</span>", "success"=true);	
                     }else{
-                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta saldon alta.");
+                    	$return = array("ret" => "Viesti(t) on lisätty lähetysjonoon. Voit seurata lähetyksen edistymistä tältä sivulta saldon alta.", "success"=true);
                     }
                     break;
                 case "tekstari_balance":
