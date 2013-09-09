@@ -30,6 +30,7 @@ $(function(){
                 }else{
                     inform($("#feedback"),responseJSON.ret);
                 }
+                update_progress();
             },
         });
 
