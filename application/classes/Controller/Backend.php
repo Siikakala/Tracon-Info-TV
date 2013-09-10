@@ -119,13 +119,17 @@ class Controller_Backend extends Controller {
 
     public function action_ohjelmadata(){
     	$first = Request::factory("https://condb.tracon.fi/admin/")->execute();
+    	print "<pre>";
+    	var_dump($first);
     	$keksi = explode("=",$first->headers()["set-cookie"][0]);
     	$keksi = explode(";",$keksi[1]);
     	$keksi = $keksi[0];
-    	print $keksi;
-    	$second = Request::factory("https://condb.tracon.fi/admin/")->method("POST")->post(array('csrfmiddlewaretoken' => $keksi, 'username' => 'hoyla', 'password' => Kohana::$config->load('auth')->get('hoyla'), 'this_is_the_login_form' => '1', 'next' => '/data.json'))->execute();
-    	$data = $second->body();
-    	var_dump($data);
+    	$toinenkeksi = $first->headers()["set-cookie"];
+    	
+    	$second = Request::factory("https://condb.tracon.fi/admin/")->method("POST")->post(array('csrfmiddlewaretoken' => $keksi, 'username' => 'hoyla', 'password' => Kohana::$config->load('auth')->get('hoyla'), 'this_is_the_login_form' => '1', 'next' => '/data.json'))->headers('X-CSRFToken',$keksi)->cookie($toinenkeksi)->execute();
+    	//$data = $second->body();
+    	var_dump($second);
+    	print "</pre>";
     	//print json_decode($data);
     }
 
