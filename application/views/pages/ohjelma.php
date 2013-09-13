@@ -1,3 +1,10 @@
+<button name="update" onclick="update_programme();">Päivitä ohjelmatietokanta condb:stä</button>
+<div style="min-height:20px;">
+    <div id="update_feedback" style="display:none;"></div>
+</div> 
+<?php if(Kohana::$environment === Kohana::DEVELOPMENT): ?>
+<h4>Only in development</h4>
+<hr/>
 <button name="add" onclick="$(&quot;#dialog-add&quot;).dialog(&#039;open&#039;);">Lisää uusi ohjelmanumero</button>
 <br/><br/>
 <div id="tabit">
@@ -115,3 +122,4 @@
     </div>
     <?php endif ?>
 </div>
+<?php endif; ?>

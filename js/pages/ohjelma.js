@@ -265,6 +265,16 @@ function save(){
     },"json");
 }
 
+function update_programme(){
+    var container = $("#update_feedback");
+    fetch = baseurl+'ajax/ohjelma_update/'
+    $.getJSON(fetch,function(data) {
+        if(data.ret == true){
+            inform(container,"Ohjelmadata päivitetty onnistuneesti.");
+        }
+    });
+}
+
 /**
  *
  * @access public

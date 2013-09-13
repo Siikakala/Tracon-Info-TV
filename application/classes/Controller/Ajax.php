@@ -48,7 +48,7 @@ class Controller_Ajax extends Controller {
 			"info-common" => array("kutsut" =>
 				array(
                     "kategoria_add", "slot_add", "sali_add",
-                    "ohjelma_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash",
+                    "ohjelma_add", "ohjelma_save", "ohjelma_load", "ohjelma_dash", "ohjelma_update",
                     "tuotanto_save", "tuotanto_refresh", "tuotanto_populate", "tuotanto_edit",
                     "ohjelma_hide","ohjelma_loadedit","ohjelma_edit","ohjelma_del",
                     "tekstari_send", "tekstari_file", "tekstari_balance", "tekstari_progress", "tekstari_sent", "tekstari_received"
@@ -599,6 +599,35 @@ class Controller_Ajax extends Controller {
 						}
 					}
 					$return = array("ret" => $ret);
+					break;
+				case "ohjelma_update":
+					$first = Request::factory("https://condb.tracon.fi/data.json")->cookie('sessionid',Kohana::$config->load('auth')->get('hoylasession'))->execute();
+			    	$data = json_decode($first->body());
+			    	$import = "";
+			    	$categorys = array();
+			    	$tunnisteet array();
+			    	foreach($data as $id => $row){
+			    		if($row['model'] == "timetable.room" || $row['model'] == "timetable.programme" || $row['model'] == "timetable.category"){
+			    			$model = explode(".",$row['model']);
+			    			$model = $model[1];
+			    			switch ($model) {
+			    				case 'room':
+			    					$tunniste = str_replace(" ", "_", strtolower($row['fields']['name']));
+			    					$tunnisteet[$row['pk']] = $tunniste;
+			    					$kanta = Jelly::factory('salit')->set(array('id'=>$row['pk'],'tunniste'=>$tunniste,'nimi'=>$row['fields']['name']))->save();
+			    					break;
+			    				case 'programme':
+			    					if(isset($category[$row['fields']['category']]) && $category[$row['fields']['category']] == true){
+			    						$kanta = Jelly::factory('ojelma')->set(array('alkuaika' => date('Y-m-d H:i:s', strtotime($row['fields']['start_time'])), 'kesto' => $row['fields']['length'], 'sali' => $tunnisteet[$row['fields']['room']], 'otsikko' => $row['fields']['title']))->save();
+			    					}
+			    					break;
+			    				case 'category':
+			    					$category[$row['pk']] = $row['fields']['public'];
+			    					break;
+			    			}
+			    		}
+			    	}
+			    	$return = array("ret" => true);
 					break;
 				case "lastupdate":// x)
 					$return = array("ret" => date("d.m.Y H:i"));

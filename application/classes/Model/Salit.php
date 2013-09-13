@@ -16,7 +16,7 @@ class Model_Salit extends Jelly_Model
             'id'        => Jelly::field('primary',array(
                             "column" => "id",
                             "type"   => "bigint",
-                            "other"  => "PRIMARY KEY AUTO_INCREMENT"
+                            "other"  => "PRIMARY KEY"
                         )),
             'tunniste'  => Jelly::field('string',array(
                             "column" => "tunniste",
