@@ -613,7 +613,7 @@ class Controller_Ajax extends Controller {
 			    			switch ($model) {
 			    				case 'room':
 			    					$tunniste = str_replace(" ", "_", strtolower($row->fields->name));
-			    					$tunnisteet[$row['pk']] = $tunniste;
+			    					$tunnisteet[$row->pk] = $tunniste;
 			    					$kanta = Jelly::factory('salit')->set(array('id'=>$row->pk,'tunniste'=>$tunniste,'nimi'=>$row->fields->name))->save();
 			    					break;
 			    				case 'programme':
