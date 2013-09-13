@@ -607,9 +607,9 @@ class Controller_Ajax extends Controller {
 			    	$categorys = array();
 			    	$tunnisteet = array();
 			    	$query1 = "TRUNCATE" . __tableprefix . "ohjelma";
-			    	DB::query(Database::DELETE, DB::expr($query1))->execute(_db);
+			    	DB::query(Database::DELETE, $query1)->execute(_db);
 			    	$query2 = "TRUNCATE" . __tableprefix . "salit";
-			    	DB::query(Database::DELETE, DB::expr($query2))->execute(_db);
+			    	DB::query(Database::DELETE, $query2)->execute(_db);
 			    	foreach($data as $id => $row){
 			    		if($row->model == "timetable.room" || $row->model == "timetable.programme" || $row->model == "timetable.category"){
 			    			$model = explode(".",$row->model);
