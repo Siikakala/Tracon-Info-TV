@@ -607,22 +607,22 @@ class Controller_Ajax extends Controller {
 			    	$categorys = array();
 			    	$tunnisteet = array();
 			    	foreach($data as $id => $row){
-			    		if($row['model'] == "timetable.room" || $row['model'] == "timetable.programme" || $row['model'] == "timetable.category"){
-			    			$model = explode(".",$row['model']);
+			    		if($row->model == "timetable.room" || $row->model == "timetable.programme" || $row->model == "timetable.category"){
+			    			$model = explode(".",$row->model);
 			    			$model = $model[1];
 			    			switch ($model) {
 			    				case 'room':
-			    					$tunniste = str_replace(" ", "_", strtolower($row['fields']['name']));
+			    					$tunniste = str_replace(" ", "_", strtolower($row->fields->name);
 			    					$tunnisteet[$row['pk']] = $tunniste;
-			    					$kanta = Jelly::factory('salit')->set(array('id'=>$row['pk'],'tunniste'=>$tunniste,'nimi'=>$row['fields']['name']))->save();
+			    					$kanta = Jelly::factory('salit')->set(array('id'=>$row->pk,'tunniste'=>$tunniste,'nimi'=>$row->fields->name))->save();
 			    					break;
 			    				case 'programme':
-			    					if(isset($category[$row['fields']['category']]) && $category[$row['fields']['category']] == true){
-			    						$kanta = Jelly::factory('ojelma')->set(array('alkuaika' => date('Y-m-d H:i:s', strtotime($row['fields']['start_time'])), 'kesto' => $row['fields']['length'], 'sali' => $tunnisteet[$row['fields']['room']], 'otsikko' => $row['fields']['title']))->save();
+			    					if(isset($category[$row->fields->category]) && $category[$row->fields->category] == true){
+			    						$kanta = Jelly::factory('ojelma')->set(array('alkuaika' => date('Y-m-d H:i:s', strtotime($row->fields->start_time)), 'kesto' => $row->fields->length, 'sali' => $tunnisteet[$row->fields->room], 'otsikko' => $row->fields->title))->save();
 			    					}
 			    					break;
 			    				case 'category':
-			    					$category[$row['pk']] = $row['fields']['public'];
+			    					$category[$row->pk] = $row->fields->public;
 			    					break;
 			    			}
 			    		}
