@@ -605,7 +605,7 @@ class Controller_Ajax extends Controller {
 			    	$data = json_decode($first->body());
 			    	$import = "";
 			    	$categorys = array();
-			    	$tunnisteet array();
+			    	$tunnisteet = array();
 			    	foreach($data as $id => $row){
 			    		if($row['model'] == "timetable.room" || $row['model'] == "timetable.programme" || $row['model'] == "timetable.category"){
 			    			$model = explode(".",$row['model']);
