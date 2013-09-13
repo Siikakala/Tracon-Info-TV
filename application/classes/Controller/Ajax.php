@@ -606,9 +606,9 @@ class Controller_Ajax extends Controller {
 			    	$import = "";
 			    	$categorys = array();
 			    	$tunnisteet = array();
-			    	$query1 = "TRUNCATE" . __tableprefix . "ohjelma";
+			    	$query1 = "TRUNCATE " . __tableprefix . "ohjelma";
 			    	DB::query(Database::DELETE, $query1)->execute(__db);
-			    	$query2 = "TRUNCATE" . __tableprefix . "salit";
+			    	$query2 = "TRUNCATE " . __tableprefix . "salit";
 			    	DB::query(Database::DELETE, $query2)->execute(__db);
 			    	foreach($data as $id => $row){
 			    		if($row->model == "timetable.room" || $row->model == "timetable.programme" || $row->model == "timetable.category"){
