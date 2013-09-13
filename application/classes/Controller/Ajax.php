@@ -622,7 +622,7 @@ class Controller_Ajax extends Controller {
 			    					break;
 			    				case 'programme':
 			    					if(isset($category[$row->fields->category]) && $category[$row->fields->category] == true){
-			    						$kanta = Jelly::factory('ojelma')->set(array('alkuaika' => date('Y-m-d H:i:s', strtotime($row->fields->start_time)), 'kesto' => $row->fields->length, 'sali' => $tunnisteet[$row->fields->room], 'otsikko' => $row->fields->title))->save();
+			    						$kanta = Jelly::factory('ohjelma')->set(array('alkuaika' => date('Y-m-d H:i:s', strtotime($row->fields->start_time)), 'kesto' => $row->fields->length, 'sali' => $tunnisteet[$row->fields->room], 'otsikko' => $row->fields->title))->save();
 			    					}
 			    					break;
 			    				case 'category':
