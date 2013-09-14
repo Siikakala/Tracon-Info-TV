@@ -48,7 +48,7 @@ function tinymce_setup(){
                         plugin_preview_pageurl : baseurl+"tiny_mce/preview.html",
 
                         // Content CSS
-                        content_css : baseurl+"css/"+stylesheetti,
+                        content_css : baseurl+"css/tiny_mce.css",
                         body_id : "text",
                         //body_class : "main",
 
