@@ -1,3 +1,4 @@
+# Development stopped! Will be migrated to [Kompassi](https://github.com/Siikakala/kompassi)
 ## Tracon Info-Manager (aka. Höylä) running on Kohana PHP Framework, version 3.3 (release)
 
 Tracon Info-Manager is the information system used during the event, which contains several tools for conventions. Mainly developed for [Tracon](http://tracon.fi). Uses lots of ajax and therefore works best with Google Chrome/Chromium (doesn't work at all with IE, some things doesn't work as should or are not performing fast enough with Firefox and Opera).
