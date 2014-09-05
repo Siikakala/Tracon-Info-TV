@@ -1,11 +1,4 @@
-jQuery.fx.interval = 5;
-window.onfocus = function () {
-$.fx.off = false;
-};
 
-window.onblur = function () {
-$.fx.off = true;
-};
 var page = "0001";
 var page_was = "";
 var twiit = "";
@@ -19,92 +12,7 @@ $(function() {
         check(1);
     },50);
 
-    $('#taustakuva').fullscreenr({width: $(window).width()});
-
 });
-
-window.onload = function() {
-        var scroller = new Kinetic.Stage({
-          container: "marquee",
-          width: 990,
-          height: 100
-        });
-
-        var layer1 = new Kinetic.Layer();
-
-        marqText = new Kinetic.Text({
-          x: 1000,
-          y: 2,
-          text: "Info-TV",
-          fontSize: 80,
-          fontStyle: "bold",
-          fontFamily: "Helvetica",
-          textFill: "black"
-        });
-
-        var grad1 = new Kinetic.Rect({
-          x: 0,
-          y: 2,
-          width: 20,
-          height: 100,
-          fill:{
-              start:{
-                  x:0,
-                  y:50
-              },
-              end:{
-                  x:20,
-                  y:50
-              },
-              colorStops:[
-                  0, "rgba(255,255,255,1.0)",
-                  1, "rgba(255,255,255,0.0)"
-              ]
-          }
-        });
-
-        var grad2 = new Kinetic.Rect({
-          x: 970,
-          y: 2,
-          width: 20,
-          height: 100,
-          fill:{
-              start:{
-                  x:0,
-                  y:50
-              },
-              end:{
-                  x:20,
-                  y:50
-              },
-              colorStops:[
-                  0, "rgba(255,255,255,0.0)",
-                  1, "rgba(255,255,255,1.0)"
-              ]
-          }
-        });
-
-        layer1.add(marqText);
-        layer1.add(grad1);
-        layer1.add(grad2);
-        scroller.add(layer1);
-
-        layer1.setThrottle(2000);
-
-        var initial = 1000;
-        var moved = 0;
-
-        scroller.onFrame(function(frame) {
-            marqText.setX(initial-moved);
-            layer1.draw();
-            moved = moved + 3;
-            if (moved > (1000+marqText.getTextWidth())) {
-                moved = 0;
-            }
-        });
-
-        scroller.start();
-}
 
 function update_clock(){
     var kello = $("#kello");
@@ -176,7 +84,7 @@ function check(cont){
                                                 }
                                             });
                                             window.setTimeout(function(){
-                                                container.show('clip',300);
+                                                container.show('fade',300);
                                             },100);
                                         },300);
                                         break;
@@ -190,31 +98,6 @@ function check(cont){
                                             twitter.show(350);
                                         },780);
                                         container.html("");
-                                        break;
-                                    case "video":
-                                        twitter.hide(300);
-                                        window.setTimeout(function(){
-                                            container.show(0);
-                                            $("#text_cont").show(0);
-                                            window.setTimeout(function(){
-                                                container.html(value.palautus);
-                                                flowplayer("player", baseurl+"flowplayer/flowplayer.swf", {
-                                                    clip : {
-                                                        autoPlay: true,
-                                                        autoBuffering: true,
-                                                        live:true,
-                                                        provider:'influxis'
-                                                    },
-                                                    plugins:{
-                                                        influxis:{
-                                                            url:baseurl+'flowplayer/flowplayer.rtmp-3.2.3.swf',
-                                                            netConnectionUrl:value.video
-                                                        },
-                                                        controls: null
-                                                    }
-                                                });
-                                            },100);
-                                        },310);
                                         break;
                                 }
                             },702);
@@ -239,6 +122,6 @@ function check(cont){
     if(cont == 1){
         window.setTimeout(function(){
             check(1);
-        },1500);
+        },2000);
     }
 }

@@ -9,12 +9,13 @@ class Controller_Frontend extends Controller {
     	$this->session = Session::instance();
     	//$halp = new Halp();
     	$this->view = new View('start');
-        $this->view->js  = "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery-2.0.3.min.js\"></script>";
-    	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery-ui-1.10.3.custom.min.js\"></script>";
-        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery.fullscreenr.js\"></script>";
-        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."flowplayer/flowplayer-3.2.6.min.js\"></script>";
-        $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/kinetic-v3.10.1.min.js\"></script>";
-        //$this->view->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>"; //tätä ei toistaiseksi käytetä.
+        $this->view->js  = "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery-2.1.1.min.js\"></script>";
+        // $this->view->js  .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery.mobile.custom.min.js\"></script>";
+    	// $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery-ui.min.js\"></script>";
+        // $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/jquery.fullscreenr.js\"></script>";
+        // $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."flowplayer/flowplayer-3.2.6.min.js\"></script>";
+        // $this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."jquery/kinetic-v3.10.1.min.js\"></script>";
+        // $this->view->js .= "\n<script src=\"http://yui.yahooapis.com/3.4.0/build/yui/yui-min.js\"></script>"; //tätä ei toistaiseksi käytetä.
     	if(!defined("__tableprefix")){
             $tb = DB::query(Database::SELECT,"SELECT value FROM config WHERE opt = 'tableprefix'")->execute(__db)->get('value',date('Y'));
             if($tb == 0){
@@ -38,7 +39,7 @@ class Controller_Frontend extends Controller {
         </script>
     	';
     	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."js/pages/frontend.js\"></script>";
-    	$this->view->text = "Tervetuloa seuraamaan Tracon 8:n inforuutua.<br><br>Odota hetki, synkronoidutaan inforuutujärjestelmään.";
+    	$this->view->text = "Tervetuloa seuraamaan Tracon 9:n inforuutua.<br><br>Odota hetki, synkronoidutaan inforuutujärjestelmään.";
 		$this->response->body($this->view->render());
 	}
 
