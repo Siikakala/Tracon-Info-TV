@@ -46,75 +46,39 @@ function drawTimer(percent,index){
 function check(cont){
 
     var container = $("#text");
-    var twitter = $("#twitter");
-    var scroller = $("#rullaaja");
-    var n = container.queue("fx");
-    var y = twitter.queue("fx");
-    var x = $("#text_cont").queue("fx");
-    if(n.length > 10){
-        container.clearQueue();
-    }
-    if(y.length > 10){
-        twitter.clearQueue();
-    }
-    if(x.length > 6){
-        $("#text_cont").clearQueue();
-    }
     fetch = baseurl+'ajax/check/';
     $.getJSON(fetch, function(data) {
         if(data.ret == true){
             $.each(data,function(index,value){
                 switch(index){
-                    case "ret":
-                        break;
-                    case "dia":
-                        if(value.changed == true){
-                            container.hide("fade",700);
-
-                            window.setTimeout(function(){
-                                switch(value.part){
-                                    case "text":
-                                        twitter.hide(290);
-                                        $("#text_cont").show('blind',300);
-                                        window.setTimeout(function(){
-                                            container.html(value.palautus);
-                                            $.each(value.pie,function(index2,value2){
-                                                if(value2){
-                                                    drawTimer(value2,index2);
-                                                }
-                                            });
-                                            window.setTimeout(function(){
-                                                container.show('fade',300);
-                                            },100);
-                                        },300);
-                                        break;
-                                    case "twitter":
-                                        twiit = page;
-                                        container.hide("fade",300);
-                                        window.setTimeout(function(){
-                                            $("#text_cont").hide('blind',100);
-                                        },300);
-                                        window.setTimeout(function(){
-                                            twitter.show(350);
-                                        },780);
-                                        container.html("");
-                                        break;
+                  case "ret":
+                      break;
+                  case "dia":
+                      if(value.changed == true){
+                        switch(value.part){
+                          case "text":
+                            container.html(value.palautus);
+                            $.each(value.pie,function(index2,value2){
+                                if(value2){
+                                    drawTimer(value2,index2);
                                 }
-                            },702);
+                            });
+                            break;
                         }
-                        break;
-                    case "fcn":
-                        $("#client").html(value.name);
-                        break;
-                    case "scroller":
-                        if(value.changed == true){
-                            marqText.setText(value.palautus);
-                        }
-                        break;
-                    case "page":
-                        page_was = page;
-                        page = value;
-                        break;
+                      }
+                      break;
+                  case "fcn":
+                      $("#client").html(value.name);
+                      break;
+                  case "scroller":
+                      if(value.changed == true){
+                          marqText.setText(value.palautus);
+                      }
+                      break;
+                  case "page":
+                      page_was = page;
+                      page = value;
+                      break;
                 }
             });
         }

@@ -24,7 +24,7 @@ class Controller_Frontend extends Controller {
             define("__tableprefix",$tb);
         }
         $this->view->css  = HTML::style("css/".__tableprefix."-tv.css");
-        $this->view->css .= HTML::style("css/hide_cursor.css");
+        // $this->view->css .= HTML::style("css/hide_cursor.css");
     }
 
     public function action_to_tv(){
@@ -39,7 +39,7 @@ class Controller_Frontend extends Controller {
         </script>
     	';
     	$this->view->js .= "\n<script type=\"text/javascript\" src=\"".URL::site('/')."js/pages/frontend.js\"></script>";
-    	$this->view->text = "Tervetuloa seuraamaan Tracon 9:n inforuutua.<br><br>Odota hetki, synkronoidutaan inforuutujärjestelmään.";
+    	$this->view->text = "<span style=\"font-size:80px\">Tervetuloa seuraamaan Tracon 9:n inforuutua.</span><br><br>Odota hetki, synkronoidutaan inforuutujärjestelmään.";
 		$this->response->body($this->view->render());
 	}
 
